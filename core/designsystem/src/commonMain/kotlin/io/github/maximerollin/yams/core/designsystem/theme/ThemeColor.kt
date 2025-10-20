@@ -1,119 +1,90 @@
 package io.github.maximerollin.yams.core.designsystem.theme
 
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
-// Yams Brand Colors
+// Yams Brand Colors - Warm & Cozy
 internal val YamsGold = Color(0xFFDEBA48) // #deba48
 internal val YamsBrown = Color(0xFF3A322F) // #3A322F
 
-// Light Theme Colors
-internal val YamsGold50 = Color(0xFFFDF8E8)
-internal val YamsGold100 = Color(0xFFFAF0D1)
-internal val YamsGold200 = Color(0xFFF5E1A3)
-internal val YamsGold300 = Color(0xFFF0D275)
-internal val YamsGold400 = Color(0xFFEBC347)
+// Warm Paper Palette
+internal val PaperCream = Color(0xFFFAF6F0) // Main background - warm cream
+internal val PaperWhite = Color(0xFFFFFBF5) // Surface - slightly warmer white
+internal val PaperBeige = Color(0xFFF5EFE7) // Cards/elevated surfaces
+internal val PaperTan = Color(0xFFE8DFD2) // Dividers/borders
+
+// Gold Variants - Warm tones
+internal val YamsGold50 = Color(0xFFFDF9EB)
+internal val YamsGold100 = Color(0xFFFAF2D7)
+internal val YamsGold200 = Color(0xFFF5E5AF)
+internal val YamsGold300 = Color(0xFFF0D887)
+internal val YamsGold400 = Color(0xFFEBCB5F)
 internal val YamsGold500 = YamsGold // Primary
 internal val YamsGold600 = Color(0xFFB29539)
 internal val YamsGold700 = Color(0xFF86702B)
 internal val YamsGold800 = Color(0xFF594A1C)
 internal val YamsGold900 = Color(0xFF2D250E)
 
-// Brown Variants
-internal val YamsBrown50 = Color(0xFFF7F6F5)
-internal val YamsBrown100 = Color(0xFFEFEDEB)
-internal val YamsBrown200 = Color(0xFFDFDBD7)
-internal val YamsBrown300 = Color(0xFFCFC9C3)
-internal val YamsBrown400 = Color(0xFFBFB7AF)
-internal val YamsBrown500 = Color(0xFFAFA59B)
-internal val YamsBrown600 = Color(0xFF8C7F73)
-internal val YamsBrown700 = Color(0xFF695F55)
-internal val YamsBrown800 = YamsBrown // Secondary
+// Brown Variants - Rich and warm
+internal val YamsBrown50 = Color(0xFFF8F6F4)
+internal val YamsBrown100 = Color(0xFFF0EDE8)
+internal val YamsBrown200 = Color(0xFFE1DBD1)
+internal val YamsBrown300 = Color(0xFFD2C9BA)
+internal val YamsBrown400 = Color(0xFFC3B7A3)
+internal val YamsBrown500 = Color(0xFFB4A58C)
+internal val YamsBrown600 = Color(0xFF8C7F6E)
+internal val YamsBrown700 = Color(0xFF695F52)
+internal val YamsBrown800 = YamsBrown // Secondary - deep brown
 internal val YamsBrown900 = Color(0xFF1D1916)
 
-// Neutral Colors
-internal val YamsGray50 = Color(0xFFFAFAFA)
-internal val YamsGray100 = Color(0xFFF5F5F5)
-internal val YamsGray200 = Color(0xFFEEEEEE)
-internal val YamsGray300 = Color(0xFFE0E0E0)
-internal val YamsGray400 = Color(0xFFBDBDBD)
-internal val YamsGray500 = Color(0xFF9E9E9E)
-internal val YamsGray600 = Color(0xFF757575)
-internal val YamsGray700 = Color(0xFF616161)
-internal val YamsGray800 = Color(0xFF424242)
-internal val YamsGray900 = Color(0xFF212121)
+// Warm Neutral Colors
+internal val WarmGray50 = Color(0xFFFCFAF7)
+internal val WarmGray100 = Color(0xFFF7F4F0)
+internal val WarmGray200 = Color(0xFFEEE9E3)
+internal val WarmGray300 = Color(0xFFE0D8CE)
+internal val WarmGray400 = Color(0xFFC4BAB0)
+internal val WarmGray500 = Color(0xFFA89C92)
+internal val WarmGray600 = Color(0xFF8A7F75)
+internal val WarmGray700 = Color(0xFF6D6258)
+internal val WarmGray800 = Color(0xFF4A4239)
+internal val WarmGray900 = Color(0xFF2B2620)
 
-// Semantic Colors
-internal val YamsSuccess = Color(0xFF4CAF50)
-internal val YamsWarning = Color(0xFFFF9800)
-internal val YamsError = Color(0xFFF44336)
-internal val YamsInfo = Color(0xFF2196F3)
+// Semantic Colors - Slightly warmer tones
+internal val YamsSuccess = Color(0xFF5CB85C) // Warmer green
+internal val YamsWarning = Color(0xFFF0AD4E) // Warmer orange
+internal val YamsError = Color(0xFFD9534F) // Warmer red
+internal val YamsInfo = Color(0xFF5BC0DE) // Warmer blue
 
-// Light Color Scheme
-internal val YamsLightColors = lightColorScheme(
+// Warm Paper-Style Color Scheme
+internal val YamsColorScheme = lightColorScheme(
     primary = YamsGold500,
     onPrimary = Color.White,
     primaryContainer = YamsGold100,
     onPrimaryContainer = YamsGold900,
     
-    secondary = YamsBrown800,
-    onSecondary = Color.White,
+    secondary = YamsBrown700,
+    onSecondary = PaperWhite,
     secondaryContainer = YamsBrown200,
     onSecondaryContainer = YamsBrown900,
     
     tertiary = YamsInfo,
     onTertiary = Color.White,
-    tertiaryContainer = Color(0xFFE3F2FD),
-    onTertiaryContainer = Color(0xFF0D47A1),
+    tertiaryContainer = Color(0xFFE8F5F9),
+    onTertiaryContainer = Color(0xFF0D3C55),
     
-    background = YamsGray50,
-    onBackground = YamsGray900,
+    background = PaperCream, // Warm cream background
+    onBackground = WarmGray900,
     
-    surface = Color.White,
-    onSurface = YamsGray900,
-    surfaceVariant = YamsGray100,
-    onSurfaceVariant = YamsGray700,
+    surface = PaperWhite, // Slightly warm white for surfaces
+    onSurface = WarmGray900,
+    surfaceVariant = PaperBeige, // Beige for cards
+    onSurfaceVariant = WarmGray700,
     
-    outline = YamsGray400,
-    outlineVariant = YamsGray200,
+    outline = WarmGray400,
+    outlineVariant = PaperTan,
     
     error = YamsError,
     onError = Color.White,
-    errorContainer = Color(0xFFFFEBEE),
-    onErrorContainer = Color(0xFFB71C1C)
-)
-
-// Dark Color Scheme
-internal val DarkColors = darkColorScheme(
-    primary = YamsGold400,
-    onPrimary = YamsGold900,
-    primaryContainer = YamsGold700,
-    onPrimaryContainer = YamsGold100,
-    
-    secondary = YamsBrown400,
-    onSecondary = YamsBrown900,
-    secondaryContainer = YamsBrown700,
-    onSecondaryContainer = YamsBrown100,
-    
-    tertiary = Color(0xFF90CAF9),
-    onTertiary = Color(0xFF0D47A1),
-    tertiaryContainer = Color(0xFF1976D2),
-    onTertiaryContainer = Color(0xFFE3F2FD),
-    
-    background = YamsGray900,
-    onBackground = YamsGray100,
-    
-    surface = YamsGray800,
-    onSurface = YamsGray100,
-    surfaceVariant = YamsGray700,
-    onSurfaceVariant = YamsGray300,
-    
-    outline = YamsGray500,
-    outlineVariant = YamsGray700,
-    
-    error = Color(0xFFEF5350),
-    onError = Color(0xFFFFFFFF),
-    errorContainer = Color(0xFFB71C1C),
-    onErrorContainer = Color(0xFFFFCDD2)
+    errorContainer = Color(0xFFFDECEB),
+    onErrorContainer = Color(0xFF8B0000)
 )

@@ -16,16 +16,10 @@ public fun NavController.navigateToWelcome(builder: NavOptionsBuilder.() -> Unit
 
 public fun NavGraphBuilder.welcomeScreen(
     onNavigateToNewGame: () -> Unit,
-    onNavigateToPlayers: () -> Unit,
-    onNavigateToHistory: () -> Unit,
-    onNavigateToStatistics: () -> Unit,
 ) {
     composable<WelcomeRoute> {
         WelcomeRoute(
             onNavigateToNewGame = onNavigateToNewGame,
-            onNavigateToPlayers = onNavigateToPlayers,
-            onNavigateToHistory = onNavigateToHistory,
-            onNavigateToStatistics = onNavigateToStatistics
         )
     }
 }

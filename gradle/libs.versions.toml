@@ -30,6 +30,7 @@ play-integrity = "1.5.0"
 play-review = "2.0.2"
 reorderable = "3.0.0"
 sqldelight = "2.1.0"
+jetbrainsKotlinJvm = "2.2.20"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
@@ -94,3 +95,4 @@ sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 yams-kotlin-multiplatform = { id = "io.github.maximerollin.yams-kotlin-multiplatform" }
 yams-compose-multiplatform = { id = "io.github.maximerollin.yams-compose-multiplatform" }
 yams-feature = { id = "io.github.maximerollin.yams-feature" }
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }

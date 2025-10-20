@@ -37,7 +37,7 @@ public data class YamsColor(
     val diceDots: Color = Color.Unspecified,
 )
 
-public val YamsLightCustomColors: YamsColor = YamsColor(
+public val YamsCustomColors: YamsColor = YamsColor(
     // Brand Colors
     gold = YamsGold,
     onGold = Color.White,
@@ -61,42 +61,13 @@ public val YamsLightCustomColors: YamsColor = YamsColor(
     onInfo = Color.White,
     
     // Dice Colors
-    diceBackground = Color.White,
+    diceBackground = PaperWhite,
     diceSelected = YamsGold200,
-    diceDots = YamsBrown800,
-)
-
-public val YamsDarkCustomColors: YamsColor = YamsColor(
-    // Brand Colors
-    gold = YamsGold400,
-    onGold = YamsGold900,
-    brown = YamsBrown400,
-    onBrown = YamsBrown900,
-    
-    // Ranking Colors
-    firstPlace = Color(0xFFFFD700), // Gold
-    onFirstPlace = YamsBrown900,
-    secondPlace = Color(0xFFC0C0C0), // Silver
-    onSecondPlace = YamsBrown900,
-    thirdPlace = Color(0xFFCD7F32), // Bronze
-    onThirdPlace = Color.White,
-    
-    // Semantic Colors
-    success = Color(0xFF66BB6A),
-    onSuccess = Color.White,
-    warning = Color(0xFFFFB74D),
-    onWarning = YamsBrown900,
-    info = Color(0xFF42A5F5),
-    onInfo = Color.White,
-    
-    // Dice Colors
-    diceBackground = YamsGray700,
-    diceSelected = YamsGold600,
-    diceDots = YamsGray100,
+    diceDots = YamsBrown700,
 )
 
 public val LocalYamsColor: ProvidableCompositionLocal<YamsColor> =
-    staticCompositionLocalOf { YamsLightCustomColors }
+    staticCompositionLocalOf { YamsCustomColors }
 
 public val YamsTheme.colors: YamsColor
     @Composable

@@ -52,6 +52,7 @@ kotlin {
 
             implementation(projects.core.designsystem)
             implementation(projects.feature.welcome)
+            implementation(projects.feature.home)
 
             implementation(libs.androidx.navigation)
             implementation(libs.koin.compose)
