@@ -14,10 +14,4 @@ kotlin {
             implementation(libs.koin.core)
         }
     }
-
-    compilerOptions {
-        freeCompilerArgs.addAll(
-            "-opt-in=kotlin.time.ExperimentalTime",
-        )
-    }
 }

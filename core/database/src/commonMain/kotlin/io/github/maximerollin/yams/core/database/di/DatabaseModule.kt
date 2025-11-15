@@ -4,7 +4,11 @@ import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import io.github.maximerollin.yams.core.database.AppDatabase
 import io.github.maximerollin.yams.core.database.AppDatabaseBuilderFactory
 import io.github.maximerollin.yams.core.database.DefaultTransactionRunner
+import io.github.maximerollin.yams.core.database.GameLocalDataSource
+import io.github.maximerollin.yams.core.database.RoomGameLocalDataSource
+import io.github.maximerollin.yams.core.database.RoomUserLocalDataSource
 import io.github.maximerollin.yams.core.database.TransactionRunner
+import io.github.maximerollin.yams.core.database.UserLocalDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import org.koin.core.module.Module
@@ -21,9 +25,12 @@ public val databaseModule: Module = module {
     }
 
     // Dao
+    factory { get<AppDatabase>().userDao() }
     factory { get<AppDatabase>().gameDao() }
 
     // DataSources
+    factory<UserLocalDataSource> { RoomUserLocalDataSource(get()) }
+    factory<GameLocalDataSource> { RoomGameLocalDataSource(get()) }
 
     // Transaction
     factory<TransactionRunner> { DefaultTransactionRunner(get()) }
