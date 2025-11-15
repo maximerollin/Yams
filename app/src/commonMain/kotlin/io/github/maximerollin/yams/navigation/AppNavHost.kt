@@ -11,6 +11,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import io.github.maximerollin.yams.AppViewModel
+import io.github.maximerollin.yams.feature.game.creation.navigation.gameCreationScreen
+import io.github.maximerollin.yams.feature.game.creation.navigation.navigateToGameCreation
+import io.github.maximerollin.yams.feature.game.preparation.navigation.gamePreparationScreen
+import io.github.maximerollin.yams.feature.game.preparation.navigation.navigateToGamePreparation
 import io.github.maximerollin.yams.feature.home.navigation.homeScreen
 import io.github.maximerollin.yams.feature.welcome.navigation.welcomeScreen
 import org.koin.compose.koinInject
@@ -59,10 +63,29 @@ typealias ExitAnimation = @JvmSuppressWildcards (AnimatedContentTransitionScope<
 private fun NavGraphBuilder.screens(navController: NavHostController) {
     welcomeScreen(
         onNavigateToNewGame = {
+            navController.navigateToGameCreation()
         },
     )
 
     homeScreen(
 
+    )
+
+    gameCreationScreen(
+        onNavigateToPreparation = {
+            navController.navigateToGamePreparation()
+        },
+        onNavigateBack = {
+            navController.navigateUp()
+        },
+    )
+
+    gamePreparationScreen(
+        onStartGame = {
+            // TODO: Navigate to active game screen
+        },
+        onNavigateBack = {
+            navController.navigateUp()
+        },
     )
 }
