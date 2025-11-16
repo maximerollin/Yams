@@ -7,6 +7,8 @@ kotlin {
         commonMain.dependencies {
             // Data
             api(projects.data.game)
+            api(projects.data.user)
+            api(projects.data.preference)
 
             // Coil
             implementation(libs.coil.compose)

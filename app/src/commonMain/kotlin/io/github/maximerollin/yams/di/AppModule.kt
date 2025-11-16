@@ -1,6 +1,7 @@
 package io.github.maximerollin.yams.di
 
 import io.github.maximerollin.yams.AppViewModel
+import io.github.maximerollin.yams.feature.game.preparation.di.featureGamePreparationModule
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -11,6 +12,10 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val appModule = module {
+    includes(
+        featureGamePreparationModule,
+    )
+
     single(named("IO")) { Dispatchers.IO }
     single(named("Default")) { Dispatchers.Default }
     single { CoroutineScope(SupervisorJob() + get<CoroutineDispatcher>(named("Default"))) }
