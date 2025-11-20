@@ -1,6 +1,7 @@
 package io.github.maximerollin.yams.di
 
 import io.github.maximerollin.yams.AppViewModel
+import io.github.maximerollin.yams.feature.game.creation.di.featureGameCreationModule
 import io.github.maximerollin.yams.feature.game.preparation.di.featureGamePreparationModule
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -13,6 +14,7 @@ import org.koin.dsl.module
 
 val appModule = module {
     includes(
+        featureGameCreationModule,
         featureGamePreparationModule,
     )
 

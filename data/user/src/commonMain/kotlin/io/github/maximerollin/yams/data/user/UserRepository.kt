@@ -32,7 +32,7 @@ internal class DefaultUserRepository(
     private val userLocalDataSource: UserLocalDataSource,
     private val fileLocalDataSource: FileLocalDataSource,
     private val coroutineScope: CoroutineScope,
-): UserRepository {
+) : UserRepository {
     override fun getUsers(): Flow<List<User>> = userLocalDataSource
         .getUsers()
         .map { it.map(UserEntity::asExternalModel) }
@@ -46,17 +46,19 @@ internal class DefaultUserRepository(
         .map { it?.asExternalModel() }
 
     @OptIn(ExperimentalUuidApi::class)
-    override suspend fun createUser(name: String, avatar: PlatformFile?): UserId = createOrUpdateUser(
-        id = UserId(Uuid.random().toString()),
-        name = name,
-        avatar = avatar,
-    )
+    override suspend fun createUser(name: String, avatar: PlatformFile?): UserId =
+        createOrUpdateUser(
+            id = UserId(Uuid.random().toString()),
+            name = name,
+            avatar = avatar,
+        )
 
-    override suspend fun updateUser(id: UserId, name: String, avatar: PlatformFile?): UserId = createOrUpdateUser(
-        id = id,
-        name = name,
-        avatar = avatar,
-    )
+    override suspend fun updateUser(id: UserId, name: String, avatar: PlatformFile?): UserId =
+        createOrUpdateUser(
+            id = id,
+            name = name,
+            avatar = avatar,
+        )
 
     override suspend fun deleteUser(id: UserId) {
         createOrUpdateUser(
@@ -75,12 +77,13 @@ internal class DefaultUserRepository(
         avatar: PlatformFile?,
     ): UserId {
         return coroutineScope.async {
-            val bytes = avatar?.exists()?.let { fileLocalDataSource.compressPhoto(byteArray = avatar.readBytes()) }
+            val bytes = avatar?.exists()
+                ?.let { fileLocalDataSource.compressPhoto(byteArray = avatar.readBytes()) }
 
             val savedPhoto = fileLocalDataSource.updateEntityFile(
                 entity = FileEntity.User,
                 entityId = id.value,
-                byteArray= bytes,
+                byteArray = bytes,
             )
 
             userLocalDataSource.setUser(
