@@ -7,7 +7,7 @@ import io.github.maximerollin.yams.core.file.FileLocalDataSource
 import io.github.maximerollin.yams.core.model.User
 import io.github.maximerollin.yams.core.model.UserId
 import io.github.maximerollin.yams.data.user.mapper.asExternalModel
-import io.github.vinceglb.filekit.PlatformFile
+import io.github.maximerollin.yams.data.user.model.UserCreateAvatar
 import io.github.vinceglb.filekit.exists
 import io.github.vinceglb.filekit.readBytes
 import kotlinx.coroutines.CoroutineScope
@@ -23,8 +23,8 @@ public interface UserRepository {
     public fun getUsers(): Flow<List<User>>
     public fun getUsersByIds(ids: Set<UserId>): Flow<List<User>>
     public fun getUserById(id: UserId): Flow<User?>
-    public suspend fun createUser(name: String, avatar: PlatformFile?): UserId
-    public suspend fun updateUser(id: UserId, name: String, avatar: PlatformFile?): UserId
+    public suspend fun createUser(name: String, avatar: UserCreateAvatar?): UserId
+    public suspend fun updateUser(id: UserId, name: String, avatar: UserCreateAvatar?): UserId
     public suspend fun deleteUser(id: UserId)
 }
 
@@ -46,14 +46,14 @@ internal class DefaultUserRepository(
         .map { it?.asExternalModel() }
 
     @OptIn(ExperimentalUuidApi::class)
-    override suspend fun createUser(name: String, avatar: PlatformFile?): UserId =
+    override suspend fun createUser(name: String, avatar: UserCreateAvatar?): UserId =
         createOrUpdateUser(
             id = UserId(Uuid.random().toString()),
             name = name,
             avatar = avatar,
         )
 
-    override suspend fun updateUser(id: UserId, name: String, avatar: PlatformFile?): UserId =
+    override suspend fun updateUser(id: UserId, name: String, avatar: UserCreateAvatar?): UserId =
         createOrUpdateUser(
             id = id,
             name = name,
@@ -74,11 +74,22 @@ internal class DefaultUserRepository(
     private suspend fun createOrUpdateUser(
         id: UserId,
         name: String,
-        avatar: PlatformFile?,
+        avatar: UserCreateAvatar?,
     ): UserId {
         return coroutineScope.async {
-            val bytes = avatar?.exists()
-                ?.let { fileLocalDataSource.compressPhoto(byteArray = avatar.readBytes()) }
+            val bytes = when (avatar) {
+                is UserCreateAvatar.Drawable -> avatar.bytes
+
+                is UserCreateAvatar.File -> {
+                    if (avatar.file.exists()) {
+                        fileLocalDataSource.compressPhoto(byteArray = avatar.file.readBytes())
+                    } else {
+                        null
+                    }
+                }
+
+                null -> null
+            }
 
             val savedPhoto = fileLocalDataSource.updateEntityFile(
                 entity = FileEntity.User,

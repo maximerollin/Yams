@@ -3,42 +3,53 @@ agp = "8.13.1"
 android-compileSdk = "36"
 android-minSdk = "24"
 android-targetSdk = "36"
-androidx-activityCompose = "1.11.0"
-androidx-datastore = "1.1.7"
-androidx-lifecycle = "2.9.4"
-androidx-navigation = "2.9.0"
-androidx-room = "2.8.1"
-androidx-room-sqlite = "2.6.1"
+androidx-activityCompose = "1.12.0"
+androidx-datastore = "1.2.0"
+androidx-lifecycle = "2.10.0-alpha05"
+androidx-navigation = "2.9.1"
+androidx-room = "2.8.4"
+androidx-room-sqlite = "2.6.2"
 androidx-startup = "1.2.0"
-buildConfig = "5.6.8"
+buildConfig = "5.7.1"
 coil = "3.3.0"
-compose-multiplatform = "1.9.0"
-compose-hot-reload = "1.0.0-rc01"
+compose-multiplatform = "1.10.0-beta02"
+composeMultiplatformMaterial3 = "1.10.0-alpha05"
+compose-hot-reload = "1.0.0-rc04"
 filekit = "0.12.0"
-firebase-bom = "34.3.0"
-google-services = "4.4.3"
+firebase-bom = "34.6.0"
+google-services = "4.4.4"
 koin = "4.1.1"
 koin-annotations = "4.1.1"
-kotlin = "2.2.20"
+kotlin = "2.2.21"
 kotlinx-coroutines = "1.10.2"
 kotlinx-datetime = "0.7.1"
 kotlinx-serialization = "1.9.0"
-ksp = "2.2.10-2.0.2"
-ktor = "3.3.0"
+ksp = "2.2.21-2.0.4"
+ktor = "3.3.2"
 napier = "2.7.1"
-play-integrity = "1.5.0"
+play-integrity = "1.6.0"
 play-review = "2.0.2"
 reorderable = "3.0.0"
-sqldelight = "2.1.0"
-jetbrainsKotlinJvm = "2.2.20"
-coreKtx = "1.10.1"
+sqldelight = "2.2.1"
+jetbrainsKotlinJvm = "2.2.21"
+coreKtx = "1.17.0"
 junit = "4.13.2"
-junitVersion = "1.1.5"
-espressoCore = "3.5.1"
-appcompat = "1.6.1"
-material = "1.10.0"
+junitVersion = "1.3.0"
+espressoCore = "3.7.0"
+appcompat = "1.7.1"
 
 [libraries]
+
+#Compose
+jetbrains-compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose-multiplatform" }
+jetbrains-compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-multiplatform" }
+jetbrains-compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "composeMultiplatformMaterial3" }
+jetbrains-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-multiplatform" }
+jetbrains-compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose-multiplatform" }
+jetbrains-compose-uiTooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "compose-multiplatform" }
+jetbrains-compose-uiToolingPreview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "compose-multiplatform" }
+
+
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidx-datastore" }
 androidx-navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "androidx-navigation" }
@@ -87,7 +98,6 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

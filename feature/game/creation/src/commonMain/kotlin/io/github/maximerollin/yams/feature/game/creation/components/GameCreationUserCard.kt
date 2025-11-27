@@ -20,9 +20,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import io.github.maximerollin.yams.core.model.User
 
 @Composable
@@ -76,11 +79,14 @@ public fun GameCreationUserCard(
                         .background(MaterialTheme.colorScheme.primaryContainer),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = user.name.firstOrNull()?.uppercase() ?: "?",
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    AsyncImage(
+                        model = user.avatar,
+                        contentDescription = "User avatar",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(2.dp)
+                            .clip(CircleShape)
                     )
                 }
 
@@ -88,7 +94,7 @@ public fun GameCreationUserCard(
 
                 Text(
                     text = user.name,
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Medium,
                     color = if (isSelected) {
                         MaterialTheme.colorScheme.onPrimaryContainer
@@ -96,7 +102,8 @@ public fun GameCreationUserCard(
                         MaterialTheme.colorScheme.onSurface
                     },
                     textAlign = TextAlign.Center,
-                    maxLines = 2
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }

@@ -1,36 +1,58 @@
 package io.github.maximerollin.yams.core.designsystem.component
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import io.github.maximerollin.yams.core.designsystem.icon.RewardedAds
+import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.designsystem.theme.colors
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import io.github.maximerollin.yams.core.designsystem.util.IconInfo
 
 @Composable
 public fun YamsPrimaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    content: @Composable RowScope.() -> Unit
+    text: String?,
+    icon: IconInfo? = null,
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier.height(48.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(48.dp),
         enabled = enabled,
         colors = ButtonDefaults.buttonColors(
             containerColor = YamsTheme.colors.gold,
@@ -40,8 +62,54 @@ public fun YamsPrimaryButton(
         ),
         shape = RoundedCornerShape(12.dp),
         contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
-        content = content
-    )
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (icon != null) {
+                Icon(
+                    imageVector = icon.vector,
+                    contentDescription = icon.contentDescription,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+
+            AnimatedContent(
+                targetState = text,
+                transitionSpec = {
+                    ContentTransform(
+                        targetContentEnter = slideInVertically(
+                            animationSpec = tween(300),
+                            initialOffsetY = { -it }
+                        ) + fadeIn(
+                            animationSpec = tween(120, delayMillis = 120)
+                        ),
+                        initialContentExit = slideOutVertically(
+                            animationSpec = tween(300),
+                            targetOffsetY = { it }
+                        ) + fadeOut(
+                            animationSpec = tween(120)
+                        )
+                    )
+                },
+                modifier = Modifier.fillMaxHeight()
+            ) { text ->
+                Box(
+                    modifier = Modifier.fillMaxHeight(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    text?.let {
+                        Text(
+                            it,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 16.sp,
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -139,26 +207,31 @@ public fun YamsWarningButton(
 @Composable
 private fun YamsButtonsPreview() {
     YamsTheme {
-        androidx.compose.foundation.layout.Column(
+        Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            YamsPrimaryButton(onClick = {}) {
-                Text("Primary Button", fontWeight = FontWeight.SemiBold)
-            }
-            
+            YamsPrimaryButton(
+                onClick = {},
+                icon = IconInfo(
+                    YamsIcons.RewardedAds,
+                    contentDescription = "Rewarded Ads"
+                ),
+                text = "Primary Button"
+            )
+
             YamsSecondaryButton(onClick = {}) {
                 Text("Secondary Button", fontWeight = FontWeight.SemiBold)
             }
-            
+
             YamsTextButton(onClick = {}) {
                 Text("Text Button", fontWeight = FontWeight.Medium)
             }
-            
+
             YamsSuccessButton(onClick = {}) {
                 Text("Success Button", fontWeight = FontWeight.SemiBold)
             }
-            
+
             YamsWarningButton(onClick = {}) {
                 Text("Warning Button", fontWeight = FontWeight.SemiBold)
             }

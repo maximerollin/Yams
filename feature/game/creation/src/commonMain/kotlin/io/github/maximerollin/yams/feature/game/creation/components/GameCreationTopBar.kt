@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import io.github.maximerollin.yams.core.designsystem.component.AppIconButton
 import io.github.maximerollin.yams.core.designsystem.component.AppTopBar
@@ -17,7 +18,6 @@ import io.github.maximerollin.yams.core.designsystem.icon.Home
 import io.github.maximerollin.yams.core.designsystem.icon.PersonAdd
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 public fun GameCreationTopBar(

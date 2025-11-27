@@ -8,6 +8,7 @@ kotlin {
             // Data
             implementation(projects.data.game)
             implementation(projects.data.user)
+            implementation(projects.feature.user.edition)
 
             // Coil
             implementation(libs.coil.compose)

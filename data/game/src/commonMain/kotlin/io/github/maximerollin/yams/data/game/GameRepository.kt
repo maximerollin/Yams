@@ -5,6 +5,8 @@ import io.github.maximerollin.yams.core.database.TransactionRunner
 import io.github.maximerollin.yams.core.file.FileEntity
 import io.github.maximerollin.yams.core.file.FileLocalDataSource
 import io.github.maximerollin.yams.core.model.GameId
+import io.github.maximerollin.yams.core.model.UserId
+import io.github.maximerollin.yams.data.game.model.GamePhoto
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.exists
 import io.github.vinceglb.filekit.readBytes
@@ -17,6 +19,7 @@ public interface GameRepository {
     public fun getNumberOfGames(): Flow<Int>
     public fun getNumberOfFinishedGames(): Flow<Int>
     public fun getGamePhoto(gameId: GameId): Flow<PlatformFile?>
+    public fun getUserPhotos(userUd: UserId): Flow<List<GamePhoto>>
     public suspend fun deleteGame(gameId: GameId)
     public suspend fun updateGamePhoto(gameId: GameId, photo: PlatformFile?)
 }
@@ -63,5 +66,16 @@ internal class DefaultGameRepository(
             // Update the game to associate the photo
             gameLocalDataSource.updateGamePhoto(gameId.value, savedPhoto)
         }.join()
+    }
+
+    override fun getUserPhotos(userUd: UserId): Flow<List<GamePhoto>> {
+        return gameLocalDataSource.getGames().map { games ->
+            games.mapNotNull { game ->
+                when (val photo = game.photo) {
+                    null -> null
+                    else -> GamePhoto(gameId = GameId(game.id), photo = photo)
+                }
+            }
+        }
     }
 }

@@ -2,10 +2,8 @@ import io.github.maximerollin.yams.convention.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
 import org.jetbrains.compose.ComposeExtension
-import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 class ComposeMultiplatformConventionPlugin : Plugin<Project> {
@@ -21,20 +19,20 @@ class ComposeMultiplatformConventionPlugin : Plugin<Project> {
             sourceSets.apply {
                 commonMain {
                     dependencies {
-                        implementation(composeDeps.runtime)
-                        implementation(composeDeps.foundation)
-                        implementation(composeDeps.material3)
-                        implementation(composeDeps.ui)
-                        implementation(composeDeps.components.resources)
-                        implementation(composeDeps.components.uiToolingPreview)
+                        implementation(libs.findLibrary("jetbrains.compose.runtime").get())
+                        implementation(libs.findLibrary("jetbrains.compose.foundation").get())
+                        implementation(libs.findLibrary("jetbrains.compose.material3").get())
+                        implementation(libs.findLibrary("jetbrains.compose.ui").get())
+                        implementation(
+                            libs.findLibrary("jetbrains.compose.components.resources").get()
+                        )
+                        implementation(libs.findLibrary("jetbrains.compose.uiToolingPreview").get())
                     }
                 }
 
-                commonTest {
-                    dependencies {
-                        @OptIn(ExperimentalComposeLibrary::class)
-                        implementation(composeDeps.uiTest)
-                    }
+                androidMain.dependencies {
+                    // @Preview
+                    implementation(libs.findLibrary("jetbrains.compose.uiTooling").get())
                 }
 
                 getByName("jvmTest") {
@@ -43,11 +41,6 @@ class ComposeMultiplatformConventionPlugin : Plugin<Project> {
                     }
                 }
             }
-        }
-
-        // Compose preview
-        dependencies {
-            add("debugImplementation", composeDeps.uiTooling)
         }
     }
 }
