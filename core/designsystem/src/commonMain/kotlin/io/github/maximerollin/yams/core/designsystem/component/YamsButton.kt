@@ -34,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.github.maximerollin.yams.core.designsystem.icon.Delete
 import io.github.maximerollin.yams.core.designsystem.icon.RewardedAds
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
@@ -203,6 +204,78 @@ public fun YamsWarningButton(
     )
 }
 
+@Composable
+public fun YamsDestructiveButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    text: String?,
+    icon: IconInfo? = null,
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier
+            .fillMaxWidth()
+            .height(48.dp),
+        enabled = enabled,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.onErrorContainer,
+            contentColor = MaterialTheme.colorScheme.onError,
+            disabledContainerColor = MaterialTheme.colorScheme.outline,
+            disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+        ),
+        shape = RoundedCornerShape(12.dp),
+        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (icon != null) {
+                Icon(
+                    imageVector = icon.vector,
+                    contentDescription = icon.contentDescription,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+
+            AnimatedContent(
+                targetState = text,
+                transitionSpec = {
+                    ContentTransform(
+                        targetContentEnter = slideInVertically(
+                            animationSpec = tween(300),
+                            initialOffsetY = { -it }
+                        ) + fadeIn(
+                            animationSpec = tween(120, delayMillis = 120)
+                        ),
+                        initialContentExit = slideOutVertically(
+                            animationSpec = tween(300),
+                            targetOffsetY = { it }
+                        ) + fadeOut(
+                            animationSpec = tween(120)
+                        )
+                    )
+                },
+                modifier = Modifier.fillMaxHeight()
+            ) { text ->
+                Box(
+                    modifier = Modifier.fillMaxHeight(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    text?.let {
+                        Text(
+                            it,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 16.sp,
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
 @Preview
 @Composable
 private fun YamsButtonsPreview() {
@@ -215,6 +288,15 @@ private fun YamsButtonsPreview() {
                 onClick = {},
                 icon = IconInfo(
                     YamsIcons.RewardedAds,
+                    contentDescription = "Rewarded Ads"
+                ),
+                text = "Primary Button"
+            )
+
+            YamsDestructiveButton(
+                onClick = {},
+                icon = IconInfo(
+                    YamsIcons.Delete,
                     contentDescription = "Rewarded Ads"
                 ),
                 text = "Primary Button"

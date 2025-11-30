@@ -14,7 +14,7 @@ public data class YamsColor(
     val onGold: Color = Color.Unspecified,
     val brown: Color = Color.Unspecified,
     val onBrown: Color = Color.Unspecified,
-    
+
     // Ranking Colors
     val firstPlace: Color = Color.Unspecified,
     val onFirstPlace: Color = Color.Unspecified,
@@ -22,7 +22,7 @@ public data class YamsColor(
     val onSecondPlace: Color = Color.Unspecified,
     val thirdPlace: Color = Color.Unspecified,
     val onThirdPlace: Color = Color.Unspecified,
-    
+
     // Semantic Colors
     val success: Color = Color.Unspecified,
     val onSuccess: Color = Color.Unspecified,
@@ -30,7 +30,9 @@ public data class YamsColor(
     val onWarning: Color = Color.Unspecified,
     val info: Color = Color.Unspecified,
     val onInfo: Color = Color.Unspecified,
-    
+    val destructive: Color = Color.Unspecified,
+    val onDestructive: Color = Color.Unspecified,
+
     // Dice Colors
     val diceBackground: Color = Color.Unspecified,
     val diceSelected: Color = Color.Unspecified,
@@ -43,7 +45,7 @@ public val YamsCustomColors: YamsColor = YamsColor(
     onGold = Color.White,
     brown = YamsBrown800,
     onBrown = Color.White,
-    
+
     // Ranking Colors
     firstPlace = Color(0xFFFFD700), // Gold
     onFirstPlace = YamsBrown900,
@@ -51,7 +53,7 @@ public val YamsCustomColors: YamsColor = YamsColor(
     onSecondPlace = YamsBrown900,
     thirdPlace = Color(0xFFCD7F32), // Bronze
     onThirdPlace = Color.White,
-    
+
     // Semantic Colors
     success = YamsSuccess,
     onSuccess = Color.White,
@@ -59,7 +61,7 @@ public val YamsCustomColors: YamsColor = YamsColor(
     onWarning = Color.White,
     info = YamsInfo,
     onInfo = Color.White,
-    
+
     // Dice Colors
     diceBackground = PaperWhite,
     diceSelected = YamsGold200,
