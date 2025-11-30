@@ -3,6 +3,7 @@ package io.github.maximerollin.yams.init
 import android.content.Context
 import androidx.startup.Initializer
 import io.github.maximerollin.yams.AppViewModel
+import io.github.vinceglb.filekit.initializer.FileKitInitializer
 import kotlinx.coroutines.runBlocking
 import org.koin.androix.startup.KoinInitializer
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -21,6 +22,7 @@ class AppInitializer : Initializer<Unit>, KoinComponent {
 
     @OptIn(KoinExperimentalAPI::class)
     override fun dependencies(): List<Class<out Initializer<*>?>?> = listOf(
+        FileKitInitializer::class.java,
         KoinInitializer::class.java,
     )
 }
