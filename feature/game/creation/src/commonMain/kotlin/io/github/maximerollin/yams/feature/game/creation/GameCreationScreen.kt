@@ -28,8 +28,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.mocks.UserMocks
+import io.github.maximerollin.yams.core.model.User
 import io.github.maximerollin.yams.core.model.UserId
 import io.github.maximerollin.yams.feature.game.creation.components.GameCreationBottomBar
+import io.github.maximerollin.yams.feature.game.creation.components.GameCreationDeleteUserDialog
 import io.github.maximerollin.yams.feature.game.creation.components.GameCreationEmptyUser
 import io.github.maximerollin.yams.feature.game.creation.components.GameCreationTopBar
 import io.github.maximerollin.yams.feature.game.creation.components.GameCreationUserCard
@@ -104,6 +106,8 @@ internal fun GameCreationScreen(
     }
 
     var showBottomSheet by remember { mutableStateOf(false) }
+    var editUserSelected by remember { mutableStateOf<User?>(null) }
+    var deleteUserSelected by remember { mutableStateOf<User?>(null) }
 
     fun openBottomSheet() {
         onUserEditionAction(UserEditionAction.ResetEdition)
@@ -162,11 +166,20 @@ internal fun GameCreationScreen(
                             modifier = Modifier.fillMaxSize()
                         ) {
                             items(userUiState.users, key = { it.id.value }) { user ->
-                                GameCreationUserCard(
-                                    user = user,
-                                    isSelected = gameCreationUiState.selectedUsersIds.contains(user.id),
-                                    onClick = { onSelectUser(user.id) },
-                                )
+                                Box {
+                                    GameCreationUserCard(
+                                        user = user,
+                                        isSelected = gameCreationUiState.selectedUsersIds.contains(
+                                            user.id
+                                        ),
+                                        onClick = { onSelectUser(user.id) },
+                                        onLongClick = {
+                                            onUserEditionAction(UserEditionAction.StartEdition(it))
+                                            editUserSelected = user
+                                            showBottomSheet = true
+                                        }
+                                    )
+                                }
                             }
                         }
                     }
@@ -177,10 +190,30 @@ internal fun GameCreationScreen(
                 UserEditionBottomSheet(
                     uiState = userEditionUiState,
                     onAction = onUserEditionAction,
-                    onDismissRequest = { showBottomSheet = false }
+                    isEdit = editUserSelected != null,
+                    onDeleteUser = {
+                        deleteUserSelected = editUserSelected
+                        editUserSelected = null
+                        showBottomSheet = false
+                    },
+                    onDismissRequest = {
+                        editUserSelected = null
+                        showBottomSheet = false
+                    }
                 )
             }
 
+            val deleteUser = deleteUserSelected
+            if (deleteUser != null) {
+                GameCreationDeleteUserDialog(
+                    user = deleteUser,
+                    onDismissDialog = { deleteUserSelected = null },
+                    onDelete = {
+                        onDeleteUser(deleteUser.id)
+                        deleteUserSelected = null
+                    },
+                )
+            }
         }
     }
 }

@@ -2,6 +2,7 @@ package io.github.maximerollin.yams.feature.game.creation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,23 +21,31 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
+import io.github.maximerollin.yams.core.mocks.UserMocks
 import io.github.maximerollin.yams.core.model.User
+import io.github.maximerollin.yams.core.model.UserId
 
 @Composable
 public fun GameCreationUserCard(
     user: User,
     isSelected: Boolean,
     onClick: () -> Unit,
+    onLongClick: (UserId) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val haptics = LocalHapticFeedback.current
+
     Card(
-        onClick = onClick,
         colors = CardDefaults.cardColors(
             containerColor = if (isSelected) {
                 MaterialTheme.colorScheme.primaryContainer
@@ -50,6 +59,14 @@ public fun GameCreationUserCard(
         modifier = modifier
             .fillMaxWidth()
             .height(140.dp)
+            .combinedClickable(
+                onClick = onClick,
+                onLongClickLabel = "Ouvrir le menu contextuel",
+                onLongClick = {
+                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                    onLongClick(user.id)
+                },
+            )
             .then(
                 if (isSelected) {
                     Modifier.border(
@@ -107,5 +124,18 @@ public fun GameCreationUserCard(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun GameCreationUserCardPreview() {
+    YamsTheme {
+        GameCreationUserCard(
+            user = UserMocks.users.first(),
+            isSelected = false,
+            onClick = {},
+            onLongClick = {}
+        )
     }
 }
