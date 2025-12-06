@@ -21,14 +21,12 @@ import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 
 @Composable
 public fun GameCreationTopBar(
-    isDividerVisible: Boolean,
     modifier: Modifier = Modifier,
     onNavigateHome: () -> Unit = {},
     onCreateUser: () -> Unit = {},
 ) {
     AppTopBar(
         modifier = modifier.statusBarsPadding(),
-        isDividerVisible = isDividerVisible,
         start = {
             AppIconButton(
                 icon = YamsIcons.Home,
@@ -65,9 +63,7 @@ public fun GameCreationTopBarPreview() {
     YamsTheme {
         Scaffold(
             topBar = {
-                GameCreationTopBar(
-                    isDividerVisible = true,
-                )
+                GameCreationTopBar()
             },
             content = { }
         )

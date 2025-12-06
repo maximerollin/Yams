@@ -118,7 +118,6 @@ internal fun GameCreationScreen(
         modifier = Modifier.background(MaterialTheme.colorScheme.background),
         topBar = {
             GameCreationTopBar(
-                isDividerVisible = true,
                 onNavigateHome = onNavigateHome,
                 onCreateUser = ::openBottomSheet,
             )
