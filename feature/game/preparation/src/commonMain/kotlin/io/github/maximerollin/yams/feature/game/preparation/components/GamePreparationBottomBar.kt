@@ -24,7 +24,10 @@ public fun GamePreparationBottomBar(
         YamsPrimaryButton(
             onClick = onCreateGame,
             loading = createGameLoading,
-            text = "Lancer la partie",
+            text = when (createGameLoading) {
+                false -> "Lancer la partie"
+                true -> "Lancement ..."
+            },
             modifier = Modifier.padding(16.dp)
         )
     }
@@ -42,7 +45,7 @@ private fun GamePreparationBottomBarPreview() {
                     onCreateGame = {}
                 )
             }
-        ) {  }
+        ) { }
 
     }
 }
