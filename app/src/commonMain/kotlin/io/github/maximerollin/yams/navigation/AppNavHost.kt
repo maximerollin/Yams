@@ -101,5 +101,10 @@ private fun NavGraphBuilder.screens(navController: NavHostController) {
     )
 
     gamePreparationScreen(
+        navController = navController,
+        onNavigateBack = navController::navigateUp,
+        onNavigateGame = { gameId ->
+
+        }
     )
 }

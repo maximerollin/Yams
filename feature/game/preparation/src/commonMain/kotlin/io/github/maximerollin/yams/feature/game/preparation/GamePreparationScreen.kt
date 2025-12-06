@@ -1,56 +1,36 @@
 package io.github.maximerollin.yams.feature.game.preparation
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
-import io.github.maximerollin.yams.core.designsystem.theme.colors
+import io.github.maximerollin.yams.core.model.GameId
+import io.github.maximerollin.yams.core.model.UserId
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
-public fun GamePreparationRoute(
-    modifier: Modifier = Modifier,
+internal fun GamePreparationRoute(
+    usersIds: Set<UserId>,
+    onNavigateBack: () -> Unit,
+    onNavigateGame: (GameId) -> Unit,
+    viewModel: GamePreparationViewModel = koinViewModel { parametersOf(usersIds) }
 ) {
     GamePreparationScreen(
-        modifier = modifier,
+
     )
 }
 
 @Composable
-internal fun GamePreparationScreen(
+private fun GamePreparationScreen(
+    uiState: GamePreparationUiState,
+    onNavigateBack: () -> Unit,
+    onCreateGame: (GameId) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Scaffold(modifier = modifier) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            // Title
-            Text(
-                text = "Préparez-vous !",
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
-                color = YamsTheme.colors.brown,
-                textAlign = TextAlign.Center
-            )
+    val listState = rememberLazyListState()
 
-
-        }
-    }
 }
 
 @Preview
@@ -58,6 +38,9 @@ internal fun GamePreparationScreen(
 private fun GamePreparationScreenPreview() {
     YamsTheme {
         GamePreparationScreen(
+            uiState = GamePreparationUiState(),
+            onNavigateBack = {},
+            onCreateGame = {},
         )
     }
 }
