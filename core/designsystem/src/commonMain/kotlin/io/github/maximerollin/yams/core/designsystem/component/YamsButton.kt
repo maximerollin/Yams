@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -46,6 +47,7 @@ public fun YamsPrimaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    loading: Boolean = false,
     text: String?,
     icon: IconInfo? = null,
 ) {
@@ -54,7 +56,7 @@ public fun YamsPrimaryButton(
         modifier = modifier
             .fillMaxWidth()
             .height(48.dp),
-        enabled = enabled,
+        enabled = enabled && !loading,
         colors = ButtonDefaults.buttonColors(
             containerColor = YamsTheme.colors.gold,
             contentColor = YamsTheme.colors.onGold,
@@ -68,13 +70,24 @@ public fun YamsPrimaryButton(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            if (icon != null) {
-                Icon(
-                    imageVector = icon.vector,
-                    contentDescription = icon.contentDescription,
-                    modifier = Modifier.size(24.dp)
-                )
+            when {
+                loading -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                    )
+                }
+
+                icon != null -> {
+                    Icon(
+                        imageVector = icon.vector,
+                        contentDescription = icon.contentDescription,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
             }
+
+
 
             AnimatedContent(
                 targetState = text,
@@ -285,6 +298,16 @@ private fun YamsButtonsPreview() {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             YamsPrimaryButton(
+                onClick = {},
+                icon = IconInfo(
+                    YamsIcons.RewardedAds,
+                    contentDescription = "Rewarded Ads"
+                ),
+                text = "Primary Button"
+            )
+
+            YamsPrimaryButton(
+                loading = true,
                 onClick = {},
                 icon = IconInfo(
                     YamsIcons.RewardedAds,
