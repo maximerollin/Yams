@@ -8,6 +8,9 @@ import kotlin.time.Instant
 public interface PreferenceRepository {
     public fun getInAppReviewShownDate(): Flow<Instant?>
     public suspend fun inAppReviewShown()
+    public fun getIsUserOrderRandomized(): Flow<Boolean>
+    public suspend fun setIsUserOrderRandomized(isUserOrderRandomized: Boolean)
+    // TODO add game settings
 }
 
 internal class DefaultPreferenceRepository(
@@ -19,5 +22,13 @@ internal class DefaultPreferenceRepository(
 
     override suspend fun inAppReviewShown() {
         preferenceLocalDataSource.setLastInAppReviewShownDate(Clock.System.now())
+    }
+
+    override fun getIsUserOrderRandomized(): Flow<Boolean> {
+        return preferenceLocalDataSource.getIsUserOrderRandomized()
+    }
+
+    override suspend fun setIsUserOrderRandomized(isUserOrderRandomized: Boolean) {
+        preferenceLocalDataSource.setIsUserOrderRandomized(isUserOrderRandomized)
     }
 }

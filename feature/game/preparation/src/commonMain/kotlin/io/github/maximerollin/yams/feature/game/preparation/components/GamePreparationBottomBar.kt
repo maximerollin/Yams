@@ -14,7 +14,7 @@ import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 @Composable
 public fun GamePreparationBottomBar(
     createGameLoading: Boolean,
-    isPlayerOrderRandomized: Boolean,
+    isUserOrderRandomized: Boolean,
     onCreateGame: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -41,7 +41,7 @@ private fun GamePreparationBottomBarPreview() {
             bottomBar = {
                 GamePreparationBottomBar(
                     createGameLoading = false,
-                    isPlayerOrderRandomized = false,
+                    isUserOrderRandomized = false,
                     onCreateGame = {}
                 )
             }
