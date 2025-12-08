@@ -1,101 +1,122 @@
-# Yams Game Rules
+# Yams / Yahtzee Rules
 
-Yams (also known as Yahtzee) is a dice game played with 5 dice. The objective is to score points by rolling certain combinations of dice.
+Yams (souvent appelé *Yam's* en France) et Yahtzee partagent la même base : 5 dés, 3 lancers maximum
+et une feuille de score à remplir. Selon la région, certaines catégories, bonus et contraintes
+changent. Ce document décrit les règles communes, puis détaille les variantes anglophones et
+francophones pour mettre rapidement en évidence les différences.
 
-## Equipment
-- 5 standard six-sided dice
-- Score sheet
-- Pencil or pen
+## Matériel et déroulé communs
 
-## Game Overview
-Each player takes turns rolling the dice up to 3 times per turn, trying to achieve specific combinations to score points in different categories on the score sheet.
+### Matériel
 
-## Turn Structure
-1. **First Roll**: Roll all 5 dice
-2. **Second Roll** (optional): Keep any dice you want and re-roll the rest
-3. **Third Roll** (optional): Keep any dice you want and re-roll the rest
-4. **Scoring**: After your final roll, you must choose a category to score in
+- 5 dés à six faces classiques
+- Une feuille de score (papier ou appli)
+- Un crayon ou un stylet
 
-## Scoring Categories
+### Tour de jeu
 
-### Upper Section (Number Categories)
-Score the sum of dice showing the specified number:
+1. **Premier lancer** : lancez les 5 dés.
+2. **Relances** (jusqu’à deux fois) : mettez de côté les dés à conserver, relancez les autres.
+3. **Validation** : après la dernière relance (ou plus tôt si vous le souhaitez), consignez le
+   résultat dans une case libre de la feuille.
 
-- **Ones**: Sum of all dice showing 1
-- **Twos**: Sum of all dice showing 2  
-- **Threes**: Sum of all dice showing 3
-- **Fours**: Sum of all dice showing 4
-- **Fives**: Sum of all dice showing 5
-- **Sixes**: Sum of all dice showing 6
+Les deux variantes décrites ci-dessous partagent aussi les concepts suivants :
 
-**Upper Section Bonus**: If you score 63 or more points in the upper section, you get a bonus of 35 points.
+- 13 manches (ou 12 catégories jouées deux fois pour la version Yam's).
+- Dès qu’une case est remplie (score ou 0), elle ne peut plus être rejouée.
+- Si aucun choix ne vous convient, vous devez barrer/scratcher une case.
 
-### Lower Section (Combination Categories)
+## Variante anglophone officielle (Yahtzee US/UK)
 
-- **Three of a Kind**: At least 3 dice showing the same number
-  - Score: Sum of all 5 dice
-  - Example: 3,3,3,2,5 = 16 points
+### Feuille de score
 
-- **Four of a Kind**: At least 4 dice showing the same number
-  - Score: Sum of all 5 dice
-  - Example: 4,4,4,4,1 = 17 points
+- **Section supérieure** : Ones à Sixes, somme des dés correspondants. Bonus de +35 points si la
+  somme atteint 63 (l’équivalent d’avoir trois occurrences de chaque valeur).
+- **Section inférieure** (7 cases distinctes) :
+    - Three of a Kind → somme totale des dés.
+    - Four of a Kind → somme totale des dés.
+    - Full House → 25 points fixes.
+    - Small Straight (suite de 4) → 30 points.
+    - Large Straight (suite de 5) → 40 points.
+    - Yahtzee (5 identiques) → 50 points.
+    - Chance → somme totale des dés.
 
-- **Full House**: 3 of one number and 2 of another
-  - Score: 25 points
-  - Example: 2,2,2,5,5
+### Bonus et règles spéciales
 
-- **Small Straight**: 4 consecutive numbers
-  - Score: 30 points
-  - Examples: 1,2,3,4 or 2,3,4,5 or 3,4,5,6
+- **Yahtzee Bonus** : chaque Yahtzee supplémentaire après le premier rapporte +100 points.
+- **Règle du Joker** : un Yahtzee obtenu alors que la case Yahtzee est déjà remplie permet
+  d’utiliser le lancer comme combinaison automatique dans la section inférieure (ou dans la section
+  supérieure correspondante si elle est libre).
+- **Catégories uniques** : chaque case n’existe qu’en un seul exemplaire ; il n’y a ni colonne
+  “Libre” ni colonne “Annonce”.
 
-- **Large Straight**: 5 consecutive numbers
-  - Score: 40 points
-  - Examples: 1,2,3,4,5 or 2,3,4,5,6
+## Variante francophone classique (Yam's FR/BE/QC)
 
-- **Yams (Yahtzee)**: All 5 dice showing the same number
-  - Score: 50 points
-  - Example: 3,3,3,3,3
+### Feuille de score
 
-- **Chance**: Any combination
-  - Score: Sum of all 5 dice
-  - Use when you can't score in any other category
+La plupart des feuilles utilisées en France, Belgique ou Québec comportent **deux colonnes** :
 
-## Special Rules
+- **Colonne Libre** : vous choisissez la case après vos lancers, comme en Yahtzee.
+- **Colonne Annonce** : vous devez annoncer la combinaison visée avant de lancer les dés. Si vous
+  échouez, vous barrez la case.
 
-### Yams Bonus
-- If you roll additional Yams after scoring your first one, you get:
-  - 100 bonus points for each additional Yams
-  - You can use the additional Yams as a "joker" to fill any category in the lower section
+Chaque colonne contient généralement les 12 catégories suivantes :
 
-### Joker Rules
-When you roll a Yams and the Yams category is already filled:
-1. If the corresponding upper section category is not filled, you must use it there
-2. If both Yams and the corresponding upper section are filled, you can use it as a joker for any lower section category
-3. The joker Yams counts as the required combination for that category
+- As, Deux, Trois, Quatre, Cinq, Six → somme des dés correspondants (bonus +35 si total ≥ 63 sur la
+  colonne).
+- Chance → somme totale des 5 dés.
 
-### Scratching
-- If you cannot or do not want to score in any category, you must "scratch" (score 0) in one category
-- Once a category is used (scored or scratched), it cannot be used again
+**Choix de scoring (à fixer avant la partie, une seule option par catégorie pour la feuille) :**
 
-## Winning
-- The game consists of 13 rounds (one for each category)
-- After 13 rounds, add up all points including bonuses
-- The player with the highest total score wins
+- Brelan (3 dés identiques) → soit somme des 3 dés identiques, soit somme totale des 5 dés.
+- Carré (4 dés identiques) → soit somme des 4 dés identiques, soit somme totale des 5 dés, soit 40
+  points fixes.
+- Full → 25 points fixes.
+- Petite suite (1-2-3-4-5) → 30 points fixes.
+- Grande suite (2-3-4-5-6) → 40 points fixes.
+- Yam (5 dés identiques) → 50 points fixes (bonus maison possible : +100 pour chaque Yam
+  supplémentaire si la case Yam est déjà prise).
 
-## Strategy Tips
-- Try to get the upper section bonus by scoring at least 63 points
-- Save the Chance category for when you have a bad roll
-- Go for Yams when you have 3 or 4 of a kind early in your turn
-- Consider the probability of completing combinations when deciding which dice to keep
+### Bonus et règles spéciales
 
-## Scoring Summary
-- **Upper Section**: 1s through 6s (sum of matching dice)
-- **Upper Section Bonus**: 35 points (if upper section total ≥ 63)
-- **Three of a Kind**: Sum of all dice
-- **Four of a Kind**: Sum of all dice
-- **Full House**: 25 points
-- **Small Straight**: 30 points
-- **Large Straight**: 40 points
-- **Yams**: 50 points
-- **Chance**: Sum of all dice
-- **Additional Yams**: 100 points each
+- **Pas de Joker officiel** : un Yam obtenu alors que la case est déjà prise ne vaut rien par
+  défaut, sauf si la table décide d’ajouter un bonus maison (souvent +50 ou +100) ou d’autoriser un
+  remplacement d’une autre case.
+- **Ordre conseillé** : beaucoup de tables remplissent toute la colonne Libre avant de passer à la
+  colonne Annonce pour limiter la durée et garder une difficulté croissante.
+- **Terminologie** : Brelan/Carré/Full/Suite/Yam sont les équivalents français de Three/Four of a
+  Kind, Full House, Straight et Yahtzee.
+
+## Différences clés (anglais vs français)
+
+| Sujet                      | Yahtzee (anglophone)                             | Yam's (francophone)                                            |
+|----------------------------|--------------------------------------------------|----------------------------------------------------------------|
+| Colonnes                   | 1 seule colonne                                  | 2 colonnes (Libre + Annonce)                                   |
+| Suites                     | Small (4) + Large (5)                            | Petite suite 30, grande suite 40 (fixes)                       |
+| Bonus de Yahtzee           | +100 par Yahtzee supplémentaire + règle du Joker | Aucun bonus officiel ; règles maison fréquentes                |
+| Nombre de cases à remplir  | 13 cases uniques                                 | 12 cases mais à compléter deux fois (24 entrées)               |
+| Gestion des annonces       | Choix après les lancers                          | Obligation d’annoncer avant les lancers dans la colonne dédiée |
+| Valeur du Full             | Fixe à 25                                        | 25 fixe                                                        |
+| Mode de score Brelan/Carré | Somme des 5 dés                                  | Au choix : somme 3/5 (brelan) ou 4/5/40 pts (carré)            |
+
+## Règles spéciales communes
+
+- **Scratcher** : si vous ne parvenez pas à placer votre score dans une case, vous devez y inscrire
+  0. Pensez à sacrifier en priorité les cases moins rentables.
+- **Fin de partie** : lorsque toutes les cases requises sont remplies (13 en Yahtzee, 24 en Yam's
+  Libre+Annonce), additionnez la section supérieure, appliquez éventuellement le bonus, puis ajoutez
+  la section inférieure.
+
+## Conseils rapides
+
+- **Chasser le bonus supérieur** : viser trois occurrences par valeur (ou mieux) dans chaque section
+  supérieure augmente fortement le total final.
+- **Garder Chance en réserve** : utile lorsque vous devez sauver un lancer médiocre, surtout dans la
+  colonne Annonce.
+- **Gérer les suites** : dans la variante US/UK, gardez un œil sur les séquences 1-2-3-4 et
+  2-3-4-5 ; dans la variante FR, conserver 2-3-4-5-x est souvent suffisant.
+- **Anticiper les annonces** : en Yam's, annoncez des catégories “faciles” (Chance, Brelan) quand
+  les dés sont déjà bien partis et gardez Yam ou Suite pour la Libre.
+
+En appliquant ces repères vous pourrez jouer indifféremment avec une feuille de style anglophone (
+Yahtzee) ou francophone (Yam's) tout en sachant exactement ce qui change d’un format à l’autre.
