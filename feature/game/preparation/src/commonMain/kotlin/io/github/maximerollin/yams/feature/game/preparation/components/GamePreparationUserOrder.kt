@@ -12,6 +12,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -35,12 +38,18 @@ public fun GamePreparationUserOrder(
     onOrderUser: (Int, Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var showUsers by remember { mutableStateOf(true) }
+
     GamePreparationSection(
         title = "Ordre des joueurs",
+        onClose = { showUsers = !showUsers },
+        onCloseEnabled = !isUserOrderRandomized,
+        onCloseState = showUsers,
         icon = YamsIcons.Groups,
         modifier = modifier,
     ) {
         val shape = RoundedCornerShape(32.dp)
+
         Surface(
             shape = shape,
             color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.55f)
@@ -71,7 +80,7 @@ public fun GamePreparationUserOrder(
         }
 
         AnimatedContent(
-            targetState = !isUserOrderRandomized,
+            targetState = !isUserOrderRandomized && showUsers,
         ) { isUserOrderRandomized ->
 
             if (isUserOrderRandomized) {
