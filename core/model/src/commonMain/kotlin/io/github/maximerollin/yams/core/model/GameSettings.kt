@@ -5,9 +5,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 public sealed class GameSettings {
     public abstract val columnCount: Int
-    public abstract val threeOfAKindScoring: ThreeOfAKindScoring?
+    public abstract val chanceValue: SettingsScoring?
+    public abstract val threeOfAKindScoring: SettingsScoring?
     public abstract val threeOfAKindValue: Int?
-    public abstract val fourOfAKindScoring: FourOfAKindScoring?
+    public abstract val fourOfAKindScoring: SettingsScoring?
     public abstract val fourOfAKindValue: Int?
     public abstract val fullHouseValue: Int
     public abstract val smallStraightValue: Int?
@@ -21,8 +22,9 @@ public sealed class GameSettings {
 
     public data class YamsSettings(
         override val columnCount: Int = DEFAULT_COLUMN_COUNT,
-        override val threeOfAKindScoring: ThreeOfAKindScoring = ThreeOfAKindScoring.SUM_MATCHING_THREE,
-        override val fourOfAKindScoring: FourOfAKindScoring = FourOfAKindScoring.SUM_MATCHING_FOUR,
+        override val chanceValue: SettingsScoring? = SettingsScoring.SUM_ALL_FIVE_DICE,
+        override val threeOfAKindScoring: SettingsScoring = SettingsScoring.SUM_MATCHING_THREE,
+        override val fourOfAKindScoring: SettingsScoring = SettingsScoring.SUM_MATCHING_FOUR,
         override val threeOfAKindValue: Int? = null,
         override val fourOfAKindValue: Int? = null,
         override val fullHouseValue: Int = DEFAULT_FULL_HOUSE_VALUE,
@@ -38,8 +40,9 @@ public sealed class GameSettings {
 
     public data class YahtzeeSettings(
         override val columnCount: Int = DEFAULT_COLUMN_COUNT,
-        override val threeOfAKindScoring: ThreeOfAKindScoring = DEFAULT_THREE_OF_A_KIND_SCORING,
-        override val fourOfAKindScoring: FourOfAKindScoring = DEFAULT_FOUR_OF_A_KIND_SCORING,
+        override val chanceValue: SettingsScoring? = SettingsScoring.SUM_ALL_FIVE_DICE,
+        override val threeOfAKindScoring: SettingsScoring = DEFAULT_THREE_OF_A_KIND_SCORING,
+        override val fourOfAKindScoring: SettingsScoring = DEFAULT_FOUR_OF_A_KIND_SCORING,
         override val threeOfAKindValue: Int? = null,
         override val fourOfAKindValue: Int? = null,
         override val fullHouseValue: Int = DEFAULT_FULL_HOUSE_VALUE,
@@ -55,27 +58,46 @@ public sealed class GameSettings {
 
     public data class MomsSettings(
         override val columnCount: Int = DEFAULT_COLUMN_COUNT,
-        override val threeOfAKindScoring: ThreeOfAKindScoring? = null,
-        override val fourOfAKindScoring: FourOfAKindScoring = FourOfAKindScoring.FIXED,
+        override val chanceValue: SettingsScoring? = null,
+        override val threeOfAKindScoring: SettingsScoring? = null,
+        override val fourOfAKindScoring: SettingsScoring = SettingsScoring.FIXED,
         override val threeOfAKindValue: Int? = null,
         override val fourOfAKindValue: Int? = 20,
         override val fullHouseValue: Int = 20,
-        override val smallStraightValue: Int? = DEFAULT_SMALL_STRAIGHT_VALUE,
+        override val smallStraightValue: Int? = null,
         override val largeStraightValue: Int? = null,
         override val fiveOfAKindValue: Int = DEFAULT_FIVE_OF_A_KIND_VALUE,
         override val jokerRule: JokerRule = JokerRule.DISABLED,
         override val extraFiveOfAKindValue: Int? = null,
         override val upperBonusThreshold: Int = 60,
         override val upperBonusValue: Int = 30,
-        override val customGameSettings: List<CustomGameSettings> = emptyList(),
+        override val customGameSettings: List<CustomGameSettings> =
+            listOf(
+                CustomGameSettings(
+                    title = "Suite",
+                    scoring = SettingsScoring.FIXED,
+                    value = 30,
+                ),
+                CustomGameSettings(
+                    title = "+",
+                    scoring = SettingsScoring.SUM_ALL_FIVE_DICE,
+                    value = null,
+                ),
+                CustomGameSettings(
+                    title = "-",
+                    scoring = SettingsScoring.SUM_ALL_FIVE_DICE,
+                    value = null,
+                ),
+            ),
     ) : GameSettings()
 
     public companion object {
         public const val DEFAULT_COLUMN_COUNT: Int = 1
-        public val DEFAULT_THREE_OF_A_KIND_SCORING: ThreeOfAKindScoring =
-            ThreeOfAKindScoring.SUM_ALL_FIVE_DICE
-        public val DEFAULT_FOUR_OF_A_KIND_SCORING: FourOfAKindScoring =
-            FourOfAKindScoring.SUM_ALL_FIVE_DICE
+        public val DEFAULT_CHANCE_VALUE: SettingsScoring = SettingsScoring.SUM_ALL_FIVE_DICE
+        public val DEFAULT_THREE_OF_A_KIND_SCORING: SettingsScoring =
+            SettingsScoring.SUM_ALL_FIVE_DICE
+        public val DEFAULT_FOUR_OF_A_KIND_SCORING: SettingsScoring =
+            SettingsScoring.SUM_ALL_FIVE_DICE
         public val DEFAULT_THREE_OF_A_KIND_VALUE: Int? = null
         public val DEFAULT_FOUR_OF_A_KIND_VALUE: Int? = null
         public const val DEFAULT_FULL_HOUSE_VALUE: Int = 25
@@ -92,30 +114,17 @@ public sealed class GameSettings {
 @Serializable
 public data class CustomGameSettings(
     val title: String,
-    val scoring: CustomGameSettingsScoring,
+    val scoring: SettingsScoring,
     val value: Int?,
 )
 
 @Serializable
-public enum class CustomGameSettingsScoring {
+public enum class SettingsScoring {
     SUM_ALL_FIVE_DICE,
-    FIXED
-}
-
-@Serializable
-public enum class ThreeOfAKindScoring {
     SUM_MATCHING_THREE,
-    SUM_ALL_FIVE_DICE,
-    FIXED,
-    FIXED_CUSTOM,
-}
-
-@Serializable
-public enum class FourOfAKindScoring {
     SUM_MATCHING_FOUR,
-    SUM_ALL_FIVE_DICE,
     FIXED,
-    FIXED_CUSTOM,
+    FIXED_CUSTOM
 }
 
 @Serializable
