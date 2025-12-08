@@ -172,6 +172,89 @@ public fun YamsTextButton(
 }
 
 @Composable
+public fun YamsPrimarySmallButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    loading: Boolean = false,
+    text: String?,
+    icon: IconInfo? = null,
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier
+            .height(36.dp),
+        enabled = enabled && !loading,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = YamsTheme.colors.gold,
+            contentColor = YamsTheme.colors.onGold,
+            disabledContainerColor = MaterialTheme.colorScheme.outline,
+            disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+        ),
+        shape = RoundedCornerShape(24.dp),
+        contentPadding = PaddingValues(horizontal = 12.dp),
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            when {
+                loading -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(14.dp),
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                    )
+                }
+
+                icon != null -> {
+                    Icon(
+                        imageVector = icon.vector,
+                        contentDescription = icon.contentDescription,
+                        modifier = Modifier.size(14.dp)
+                    )
+                }
+            }
+
+
+
+            AnimatedContent(
+                targetState = text,
+                transitionSpec = {
+                    ContentTransform(
+                        targetContentEnter = slideInVertically(
+                            animationSpec = tween(300),
+                            initialOffsetY = { -it }
+                        ) + fadeIn(
+                            animationSpec = tween(120, delayMillis = 120)
+                        ),
+                        initialContentExit = slideOutVertically(
+                            animationSpec = tween(300),
+                            targetOffsetY = { it }
+                        ) + fadeOut(
+                            animationSpec = tween(120)
+                        )
+                    )
+                },
+                modifier = Modifier.fillMaxHeight()
+            ) { text ->
+                Box(
+                    modifier = Modifier.fillMaxHeight(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    text?.let {
+                        Text(
+                            it,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 12.sp,
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
 public fun YamsSuccessButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -298,6 +381,15 @@ private fun YamsButtonsPreview() {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             YamsPrimaryButton(
+                onClick = {},
+                icon = IconInfo(
+                    YamsIcons.RewardedAds,
+                    contentDescription = "Rewarded Ads"
+                ),
+                text = "Primary Button"
+            )
+
+            YamsPrimarySmallButton(
                 onClick = {},
                 icon = IconInfo(
                     YamsIcons.RewardedAds,
