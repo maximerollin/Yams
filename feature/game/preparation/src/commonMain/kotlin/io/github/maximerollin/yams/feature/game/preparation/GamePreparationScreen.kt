@@ -16,9 +16,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.mocks.UserMocks
 import io.github.maximerollin.yams.core.model.GameId
+import io.github.maximerollin.yams.core.model.GameSettings
 import io.github.maximerollin.yams.core.model.User
 import io.github.maximerollin.yams.core.model.UserId
 import io.github.maximerollin.yams.feature.game.preparation.components.GamePreparationBottomBar
+import io.github.maximerollin.yams.feature.game.preparation.components.GamePreparationSettings
 import io.github.maximerollin.yams.feature.game.preparation.components.GamePreparationTopBar
 import io.github.maximerollin.yams.feature.game.preparation.components.GamePreparationUserOrder
 import org.koin.compose.viewmodel.koinViewModel
@@ -40,6 +42,7 @@ internal fun GamePreparationRoute(
         onNavigateBack = onNavigateBack,
         onCreateGame = {},
         onToggleIsUserOrderRandomized = viewModel::onToggleIsUserOrderRandomized,
+        onToggleGameSettings = viewModel::onToggleGameSettings,
         onOrderUser = { from, to -> viewModel.orderUser(from, to) }
     )
 }
@@ -52,6 +55,7 @@ private fun GamePreparationScreen(
     onCreateGame: () -> Unit,
     onToggleIsUserOrderRandomized: (Boolean) -> Unit,
     onOrderUser: (Int, Int) -> Unit,
+    onToggleGameSettings: (GameSettings.RuleSet) -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -83,6 +87,11 @@ private fun GamePreparationScreen(
                 onToggleIsUserOrderRandomized = onToggleIsUserOrderRandomized,
                 onOrderUser = onOrderUser,
             )
+
+            GamePreparationSettings(
+                uiState = gamePreparationUiState.gameSettings,
+                onToggleGameSettings = onToggleGameSettings,
+            )
         }
     }
 }
@@ -97,6 +106,7 @@ private fun GamePreparationScreenRandomPreview() {
             onNavigateBack = {},
             onCreateGame = {},
             onToggleIsUserOrderRandomized = {},
+            onToggleGameSettings = {},
             onOrderUser = { _, _ -> {} }
         )
     }
@@ -112,6 +122,7 @@ private fun GamePreparationScreenManualPreview() {
             onNavigateBack = {},
             onCreateGame = {},
             onToggleIsUserOrderRandomized = {},
+            onToggleGameSettings = {},
             onOrderUser = { _, _ -> {} }
         )
     }

@@ -3,6 +3,7 @@ package io.github.maximerollin.yams.feature.game.preparation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.maximerollin.yams.core.model.GameId
+import io.github.maximerollin.yams.core.model.GameSettings
 import io.github.maximerollin.yams.core.model.User
 import io.github.maximerollin.yams.core.model.UserId
 import io.github.maximerollin.yams.data.game.GameRepository
@@ -68,11 +69,24 @@ internal class GamePreparationViewModel(
             }
         }
     }
+
+    fun onToggleGameSettings(gameSettings: GameSettings.RuleSet) {
+        _gamePreparationUiState.update {
+            it.copy(
+                gameSettings =
+                    when (gameSettings) {
+                        GameSettings.RuleSet.YAHTZEE -> GameSettings.YahtzeeSettings()
+                        GameSettings.RuleSet.YAMS -> GameSettings.YamsSettings()
+                        GameSettings.RuleSet.MOM -> GameSettings.MomsSettings()
+                    }
+            )
+        }
+    }
 }
 
 internal data class GamePreparationUiState(
-    // TODO add game settings
     val navigateToGame: GameId? = null,
     val createGameLoading: Boolean = false,
     val isUserOrderRandomized: Boolean = true,
+    val gameSettings: GameSettings = GameSettings.YamsSettings()
 )

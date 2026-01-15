@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 public sealed class GameSettings {
+    public abstract val ruleSet: RuleSet
     public abstract val columnCount: Int
     public abstract val chanceValue: SettingsScoring?
     public abstract val threeOfAKindScoring: SettingsScoring?
@@ -21,6 +22,7 @@ public sealed class GameSettings {
     public abstract val customGameSettings: List<CustomGameSettings>
 
     public data class YamsSettings(
+        override val ruleSet: RuleSet = DEFAULT_RULE_SET_VALUE,
         override val columnCount: Int = DEFAULT_COLUMN_COUNT,
         override val chanceValue: SettingsScoring? = SettingsScoring.SUM_ALL_FIVE_DICE,
         override val threeOfAKindScoring: SettingsScoring = SettingsScoring.SUM_MATCHING_THREE,
@@ -39,6 +41,7 @@ public sealed class GameSettings {
     ) : GameSettings()
 
     public data class YahtzeeSettings(
+        override val ruleSet: RuleSet = RuleSet.YAHTZEE,
         override val columnCount: Int = DEFAULT_COLUMN_COUNT,
         override val chanceValue: SettingsScoring? = SettingsScoring.SUM_ALL_FIVE_DICE,
         override val threeOfAKindScoring: SettingsScoring = DEFAULT_THREE_OF_A_KIND_SCORING,
@@ -57,6 +60,7 @@ public sealed class GameSettings {
     ) : GameSettings()
 
     public data class MomsSettings(
+        override val ruleSet: RuleSet = RuleSet.MOM,
         override val columnCount: Int = DEFAULT_COLUMN_COUNT,
         override val chanceValue: SettingsScoring? = null,
         override val threeOfAKindScoring: SettingsScoring? = null,
@@ -77,21 +81,25 @@ public sealed class GameSettings {
                     title = "Suite",
                     scoring = SettingsScoring.FIXED,
                     value = 30,
+                    description = "Suite de 5 dés",
                 ),
                 CustomGameSettings(
                     title = "+",
                     scoring = SettingsScoring.SUM_ALL_FIVE_DICE,
                     value = null,
+                    description = "Lorsque rien n'est réussi dans le tour, doit être supérieur au \"+\"",
                 ),
                 CustomGameSettings(
                     title = "-",
                     scoring = SettingsScoring.SUM_ALL_FIVE_DICE,
                     value = null,
+                    description = "Lorsque rien n'est réussi dans le tour, doit être inférieur au \"+\"",
                 ),
             ),
     ) : GameSettings()
 
     public companion object {
+        public val DEFAULT_RULE_SET_VALUE: RuleSet = RuleSet.YAMS
         public const val DEFAULT_COLUMN_COUNT: Int = 1
         public val DEFAULT_CHANCE_VALUE: SettingsScoring = SettingsScoring.SUM_ALL_FIVE_DICE
         public val DEFAULT_THREE_OF_A_KIND_SCORING: SettingsScoring =
@@ -109,26 +117,34 @@ public sealed class GameSettings {
         public const val DEFAULT_UPPER_BONUS_THRESHOLD: Int = 63
         public const val DEFAULT_UPPER_BONUS_VALUE: Int = 35
     }
-}
 
-@Serializable
-public data class CustomGameSettings(
-    val title: String,
-    val scoring: SettingsScoring,
-    val value: Int?,
-)
+    @Serializable
+    public enum class RuleSet {
+        YAMS,
+        YAHTZEE,
+        MOM
+    }
 
-@Serializable
-public enum class SettingsScoring {
-    SUM_ALL_FIVE_DICE,
-    SUM_MATCHING_THREE,
-    SUM_MATCHING_FOUR,
-    FIXED,
-    FIXED_CUSTOM
-}
+    @Serializable
+    public data class CustomGameSettings(
+        val title: String,
+        val scoring: SettingsScoring,
+        val value: Int?,
+        val description: String?,
+    )
 
-@Serializable
-public enum class JokerRule {
-    ENABLED, // Joker Yahtzee autorisé (variante US/UK)
-    DISABLED // Pas de joker officiel (variante Yam's FR)
+    @Serializable
+    public enum class SettingsScoring {
+        SUM_ALL_FIVE_DICE,
+        SUM_MATCHING_THREE,
+        SUM_MATCHING_FOUR,
+        FIXED,
+        FIXED_CUSTOM
+    }
+
+    @Serializable
+    public enum class JokerRule {
+        ENABLED,
+        DISABLED,
+    }
 }
