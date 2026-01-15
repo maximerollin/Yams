@@ -18,7 +18,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import io.github.maximerollin.yams.core.designsystem.icon.Tactic
+import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
+import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 
 @Composable
 public fun UserOrderToggleButton(
@@ -53,9 +58,9 @@ public fun UserOrderToggleButton(
     ) {
         Row(
             modifier = Modifier
-                .padding(horizontal = 18.dp, vertical = 12.dp),
+                .padding(horizontal = 4.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
         ) {
             Icon(
                 imageVector = icon,
@@ -67,7 +72,21 @@ public fun UserOrderToggleButton(
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.SemiBold,
                 color = indicator,
+                fontSize = 12.sp,
             )
         }
+    }
+}
+
+@Preview
+@Composable
+private fun UserOrderToggleButtonPreview() {
+    YamsTheme {
+        UserOrderToggleButton(
+            label = "Aléatoire",
+            icon = YamsIcons.Tactic,
+            selected = true,
+            onClick = {},
+        )
     }
 }

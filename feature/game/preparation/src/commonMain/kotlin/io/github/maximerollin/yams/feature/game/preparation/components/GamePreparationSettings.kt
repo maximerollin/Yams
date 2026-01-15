@@ -1,9 +1,11 @@
 package io.github.maximerollin.yams.feature.game.preparation.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -56,7 +58,7 @@ public fun GamePreparationSettings(
                 )
 
                 GameSettingsToggleButton(
-                    label = "My mom's ❤\uFE0F",
+                    label = "My Mom's ❤\uFE0F",
                     selected = uiState.ruleSet === GameSettings.RuleSet.MOM,
                     onClick = { onToggleGameSettings(GameSettings.RuleSet.MOM) },
                     modifier = Modifier.weight(1f),
@@ -76,5 +78,40 @@ public fun GamePreparationSettingsPreview() {
             uiState = GameSettings.YamsSettings(),
             onToggleGameSettings = {}
         )
+    }
+}
+
+@Preview
+@Composable
+public fun GamePreparationSettingsYahtzeePreview() {
+    YamsTheme {
+        GamePreparationSettings(
+            uiState = GameSettings.YahtzeeSettings(),
+            onToggleGameSettings = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+public fun GamePreparationSettingsMomPreview() {
+    YamsTheme {
+        GamePreparationSettings(
+            uiState = GameSettings.MomsSettings(),
+            onToggleGameSettings = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+public fun GamePreparationSettingsCompactPreview() {
+    YamsTheme {
+        Box(modifier = Modifier.width(320.dp)) {
+            GamePreparationSettings(
+                uiState = GameSettings.YamsSettings(),
+                onToggleGameSettings = {}
+            )
+        }
     }
 }
