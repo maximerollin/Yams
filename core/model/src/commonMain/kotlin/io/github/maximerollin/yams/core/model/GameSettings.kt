@@ -24,7 +24,7 @@ public sealed class GameSettings {
     public data class YamsSettings(
         override val ruleSet: RuleSet = DEFAULT_RULE_SET_VALUE,
         override val columnCount: Int = DEFAULT_COLUMN_COUNT,
-        override val chanceValue: SettingsScoring? = SettingsScoring.SUM_ALL_FIVE_DICE,
+        override val chanceValue: SettingsScoring? = DEFAULT_CHANCE_VALUE,
         override val threeOfAKindScoring: SettingsScoring = SettingsScoring.SUM_MATCHING_THREE,
         override val fourOfAKindScoring: SettingsScoring = SettingsScoring.SUM_MATCHING_FOUR,
         override val threeOfAKindValue: Int? = null,
@@ -43,7 +43,7 @@ public sealed class GameSettings {
     public data class YahtzeeSettings(
         override val ruleSet: RuleSet = RuleSet.YAHTZEE,
         override val columnCount: Int = DEFAULT_COLUMN_COUNT,
-        override val chanceValue: SettingsScoring? = SettingsScoring.SUM_ALL_FIVE_DICE,
+        override val chanceValue: SettingsScoring? = DEFAULT_CHANCE_VALUE,
         override val threeOfAKindScoring: SettingsScoring = DEFAULT_THREE_OF_A_KIND_SCORING,
         override val fourOfAKindScoring: SettingsScoring = DEFAULT_FOUR_OF_A_KIND_SCORING,
         override val threeOfAKindValue: Int? = null,
@@ -57,45 +57,6 @@ public sealed class GameSettings {
         override val upperBonusThreshold: Int = DEFAULT_UPPER_BONUS_THRESHOLD,
         override val upperBonusValue: Int = DEFAULT_UPPER_BONUS_VALUE,
         override val customGameSettings: List<CustomGameSettings> = emptyList(),
-    ) : GameSettings()
-
-    public data class MomsSettings(
-        override val ruleSet: RuleSet = RuleSet.MOM,
-        override val columnCount: Int = DEFAULT_COLUMN_COUNT,
-        override val chanceValue: SettingsScoring? = null,
-        override val threeOfAKindScoring: SettingsScoring? = null,
-        override val fourOfAKindScoring: SettingsScoring = SettingsScoring.FIXED,
-        override val threeOfAKindValue: Int? = null,
-        override val fourOfAKindValue: Int? = 20,
-        override val fullHouseValue: Int = 20,
-        override val smallStraightValue: Int? = null,
-        override val largeStraightValue: Int? = null,
-        override val fiveOfAKindValue: Int = DEFAULT_FIVE_OF_A_KIND_VALUE,
-        override val jokerRule: JokerRule = JokerRule.DISABLED,
-        override val extraFiveOfAKindValue: Int? = null,
-        override val upperBonusThreshold: Int = 60,
-        override val upperBonusValue: Int = 30,
-        override val customGameSettings: List<CustomGameSettings> =
-            listOf(
-                CustomGameSettings(
-                    title = "Suite",
-                    scoring = SettingsScoring.FIXED,
-                    value = 30,
-                    description = "Suite de 5 dés",
-                ),
-                CustomGameSettings(
-                    title = "+",
-                    scoring = SettingsScoring.SUM_ALL_FIVE_DICE,
-                    value = null,
-                    description = "Lorsque rien n'est réussi dans le tour, doit être supérieur au \"+\"",
-                ),
-                CustomGameSettings(
-                    title = "-",
-                    scoring = SettingsScoring.SUM_ALL_FIVE_DICE,
-                    value = null,
-                    description = "Lorsque rien n'est réussi dans le tour, doit être inférieur au \"+\"",
-                ),
-            ),
     ) : GameSettings()
 
     public companion object {
@@ -122,7 +83,7 @@ public sealed class GameSettings {
     public enum class RuleSet {
         YAMS,
         YAHTZEE,
-        MOM
+        CUSTOM
     }
 
     @Serializable
