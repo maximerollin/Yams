@@ -60,7 +60,7 @@ public sealed class GameSettings {
     ) : GameSettings()
 
     public data class CustomSettings(
-        override val ruleSet: RuleSet = DEFAULT_RULE_SET_VALUE,
+        override val ruleSet: RuleSet = RuleSet.CUSTOM,
         override val columnCount: Int = DEFAULT_COLUMN_COUNT,
         override val chanceValue: SettingsScoring? = DEFAULT_CHANCE_VALUE,
         override val threeOfAKindScoring: SettingsScoring = DEFAULT_THREE_OF_A_KIND_SCORING,
