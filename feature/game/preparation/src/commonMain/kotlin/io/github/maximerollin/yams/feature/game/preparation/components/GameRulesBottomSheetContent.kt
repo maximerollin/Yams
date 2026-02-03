@@ -52,55 +52,55 @@ internal fun GameRulesBottomSheetContent(
     var newRuleScoring by remember {
         mutableStateOf(GameSettings.SettingsScoring.FIXED_CUSTOM)
     }
+    val customRulesCount = currentSettings.customGameSettings.size
 
-    Column(
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        Icon(
-            imageVector = YamsIcons.Close,
-            contentDescription = "Fermer",
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier
-                .align(Alignment.End)
-                .padding(horizontal = 16.dp)
-                .size(24.dp)
-                .clickable(onClick = onClose),
-        )
+    Column {
+        Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
+            Surface(
+                shape = RoundedCornerShape(12.dp),
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                modifier = Modifier.align(Alignment.CenterEnd),
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clickable(onClick = onClose),
+                ) {
+                    Icon(
+                        imageVector = YamsIcons.Close,
+                        contentDescription = "Fermer",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(20.dp),
+                    )
+                }
+            }
+        }
         Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = modifier.verticalScroll(scrollState),
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+            modifier = modifier
+                .fillMaxWidth()
+                .verticalScroll(scrollState),
         ) {
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text(
+                    text = "Règles de la partie",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+                Text(
+                    text = "Activez les règles souhaitées et ajustez leurs scores.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                    modifier = Modifier.weight(1f),
-                ) {
-                    Text(
-                        text = "Détails des règles",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onBackground,
-                    )
-                    Text(
-                        text = "Ajustez les scores pour personnaliser votre partie.",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-                Surface(
-                    shape = RoundedCornerShape(999.dp),
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                ) {
-                    Text(
-                        text = settings.ruleSet.getName(),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                    )
-                }
+                RuleMetaChip(text = settings.ruleSet.getName())
+                RuleMetaChip(text = "$customRulesCount règle(s) perso")
             }
 
             SettingsSection(
@@ -115,18 +115,15 @@ internal fun GameRulesBottomSheetContent(
                     },
                 )
                 if (currentSettings.isChanceEnabled) {
-                    Surface(
-                        shape = RoundedCornerShape(999.dp),
-                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
-                    ) {
-                        Text(
-                            text = "Somme des 5 dés",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-                        )
-                    }
+                    RuleMetaChip(
+                        text = "Somme des 5 dés",
+                        modifier = Modifier.align(Alignment.Start),
+                    )
                 }
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.surface,
+                    thickness = 1.dp,
+                )
                 RuleToggleRow(
                     label = "Brelan",
                     checked = currentSettings.isThreeOfAKindEnabled,
@@ -174,6 +171,10 @@ internal fun GameRulesBottomSheetContent(
                         )
                     }
                 }
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.surface,
+                    thickness = 1.dp,
+                )
                 RuleToggleRow(
                     label = "Carré",
                     checked = currentSettings.isFourOfAKindEnabled,
@@ -221,6 +222,10 @@ internal fun GameRulesBottomSheetContent(
                         )
                     }
                 }
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.surface,
+                    thickness = 1.dp,
+                )
                 RuleToggleRow(
                     label = "Full",
                     checked = currentSettings.isFullHouseEnabled,
@@ -239,6 +244,10 @@ internal fun GameRulesBottomSheetContent(
                         },
                     )
                 }
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.surface,
+                    thickness = 1.dp,
+                )
                 RuleToggleRow(
                     label = "Yams",
                     checked = currentSettings.isFiveOfAKindEnabled,
@@ -257,6 +266,10 @@ internal fun GameRulesBottomSheetContent(
                         },
                     )
                 }
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.surface,
+                    thickness = 1.dp,
+                )
                 RuleToggleRow(
                     label = "Yams supplémentaire",
                     checked = currentSettings.isExtraFiveOfAKindEnabled,
@@ -295,6 +308,10 @@ internal fun GameRulesBottomSheetContent(
                         },
                     )
                 }
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.surface,
+                    thickness = 1.dp,
+                )
                 RuleToggleRow(
                     label = "Grande suite (5 dés qui se suivent)",
                     checked = currentSettings.isLargeStraightEnabled,
@@ -323,6 +340,10 @@ internal fun GameRulesBottomSheetContent(
                     onCheckedChange = { enabled ->
                         onUpdateGameSettings(currentSettings.copy(isUpperBonusEnabled = enabled))
                     },
+                )
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.surface,
+                    thickness = 1.dp,
                 )
                 if (currentSettings.isUpperBonusEnabled) {
                     RuleValueInputRow(
@@ -363,106 +384,122 @@ internal fun GameRulesBottomSheetContent(
                 )
 
                 if (currentSettings.areCustomRulesEnabled) {
+                    HorizontalDivider(
+                        color = MaterialTheme.colorScheme.surface,
+                        thickness = 1.dp,
+                    )
                     val canAddRule = newRuleTitle.isNotBlank()
 
                     if (currentSettings.customGameSettings.isNotEmpty()) {
                         currentSettings.customGameSettings.forEachIndexed { index, customRule ->
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                verticalAlignment = Alignment.CenterVertically,
+                            Surface(
+                                shape = RoundedCornerShape(16.dp),
+                                color = MaterialTheme.colorScheme.surface,
                             ) {
-                                RuleToggleRow(
-                                    label = customRule.title,
-                                    checked = customRule.isEnabled,
-                                    onCheckedChange = { enabled ->
-                                        val updatedCustomRules =
-                                            currentSettings.customGameSettings.mapIndexed { currentIndex, rule ->
-                                                if (currentIndex == index) {
-                                                    rule.copy(isEnabled = enabled)
-                                                } else {
-                                                    rule
-                                                }
-                                            }
-                                        onUpdateGameSettings(
-                                            currentSettings.copy(customGameSettings = updatedCustomRules)
-                                        )
-                                    },
-                                    modifier = Modifier.weight(1f),
-                                )
-                                Icon(
-                                    imageVector = YamsIcons.Delete,
-                                    contentDescription = "Supprimer la règle",
-                                    tint = MaterialTheme.colorScheme.error,
+                                Column(
+                                    verticalArrangement = Arrangement.spacedBy(10.dp),
                                     modifier = Modifier
-                                        .size(20.dp)
-                                        .clickable {
-                                            val updatedCustomRules =
-                                                currentSettings.customGameSettings.filterIndexed { currentIndex, _ ->
-                                                    currentIndex != index
-                                                }
-                                            onUpdateGameSettings(
-                                                currentSettings.copy(customGameSettings = updatedCustomRules)
-                                            )
-                                        },
-                                )
-                            }
-                            if (customRule.isEnabled) {
-                                ScoringSelectionRow(
-                                    label = "Mode de score",
-                                    optionOneLabel = "Somme 5",
-                                    optionOne = GameSettings.SettingsScoring.SUM_ALL_FIVE_DICE,
-                                    optionTwoLabel = "Valeur",
-                                    optionTwo = GameSettings.SettingsScoring.FIXED_CUSTOM,
-                                    selected = customRule.scoring,
-                                    onOptionSelected = { scoring ->
-                                        val updatedCustomRules =
-                                            currentSettings.customGameSettings.mapIndexed { currentIndex, rule ->
-                                                if (currentIndex == index) {
-                                                    rule.copy(
-                                                        scoring = scoring,
-                                                        value = if (scoring == GameSettings.SettingsScoring.FIXED_CUSTOM) {
-                                                            rule.value
+                                        .fillMaxWidth()
+                                        .padding(12.dp),
+                                ) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                    ) {
+                                        RuleToggleRow(
+                                            label = customRule.title,
+                                            checked = customRule.isEnabled,
+                                            onCheckedChange = { enabled ->
+                                                val updatedCustomRules =
+                                                    currentSettings.customGameSettings.mapIndexed { currentIndex, rule ->
+                                                        if (currentIndex == index) {
+                                                            rule.copy(isEnabled = enabled)
                                                         } else {
-                                                            null
-                                                        },
-                                                    )
-                                                } else {
-                                                    rule
-                                                }
-                                            }
-                                        onUpdateGameSettings(
-                                            currentSettings.copy(customGameSettings = updatedCustomRules)
-                                        )
-                                    },
-                                )
-                                if (customRule.scoring == GameSettings.SettingsScoring.FIXED_CUSTOM) {
-                                    RuleValueInputRow(
-                                        label = "Valeur",
-                                        value = customRule.value,
-                                        onValueChange = { value ->
-                                            val updatedCustomRules =
-                                                currentSettings.customGameSettings.mapIndexed { currentIndex, rule ->
-                                                    if (currentIndex == index) {
-                                                        rule.copy(value = value)
-                                                    } else {
-                                                        rule
+                                                            rule
+                                                        }
                                                     }
-                                                }
-                                            onUpdateGameSettings(
-                                                currentSettings.copy(customGameSettings = updatedCustomRules)
+                                                onUpdateGameSettings(
+                                                    currentSettings.copy(customGameSettings = updatedCustomRules)
+                                                )
+                                            },
+                                            modifier = Modifier.weight(1f),
+                                        )
+                                        Icon(
+                                            imageVector = YamsIcons.Delete,
+                                            contentDescription = "Supprimer la règle",
+                                            tint = MaterialTheme.colorScheme.error,
+                                            modifier = Modifier
+                                                .size(20.dp)
+                                                .clickable {
+                                                    val updatedCustomRules =
+                                                        currentSettings.customGameSettings.filterIndexed { currentIndex, _ ->
+                                                            currentIndex != index
+                                                        }
+                                                    onUpdateGameSettings(
+                                                        currentSettings.copy(customGameSettings = updatedCustomRules)
+                                                    )
+                                                },
+                                        )
+                                    }
+                                    if (customRule.isEnabled) {
+                                        ScoringSelectionRow(
+                                            label = "Mode de score",
+                                            optionOneLabel = "Somme 5",
+                                            optionOne = GameSettings.SettingsScoring.SUM_ALL_FIVE_DICE,
+                                            optionTwoLabel = "Valeur",
+                                            optionTwo = GameSettings.SettingsScoring.FIXED_CUSTOM,
+                                            selected = customRule.scoring,
+                                            onOptionSelected = { scoring ->
+                                                val updatedCustomRules =
+                                                    currentSettings.customGameSettings.mapIndexed { currentIndex, rule ->
+                                                        if (currentIndex == index) {
+                                                            rule.copy(
+                                                                scoring = scoring,
+                                                                value = if (scoring == GameSettings.SettingsScoring.FIXED_CUSTOM) {
+                                                                    rule.value
+                                                                } else {
+                                                                    null
+                                                                },
+                                                            )
+                                                        } else {
+                                                            rule
+                                                        }
+                                                    }
+                                                onUpdateGameSettings(
+                                                    currentSettings.copy(customGameSettings = updatedCustomRules)
+                                                )
+                                            },
+                                        )
+                                        if (customRule.scoring == GameSettings.SettingsScoring.FIXED_CUSTOM) {
+                                            RuleValueInputRow(
+                                                label = "Valeur",
+                                                value = customRule.value,
+                                                onValueChange = { value ->
+                                                    val updatedCustomRules =
+                                                        currentSettings.customGameSettings.mapIndexed { currentIndex, rule ->
+                                                            if (currentIndex == index) {
+                                                                rule.copy(value = value)
+                                                            } else {
+                                                                rule
+                                                            }
+                                                        }
+                                                    onUpdateGameSettings(
+                                                        currentSettings.copy(customGameSettings = updatedCustomRules)
+                                                    )
+                                                },
                                             )
-                                        },
-                                    )
+                                        }
+                                    }
+                                    val customRuleDescription = customRule.description
+                                    if (!customRuleDescription.isNullOrBlank()) {
+                                        Text(
+                                            text = customRuleDescription,
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        )
+                                    }
                                 }
-                            }
-                            val customRuleDescription = customRule.description
-                            if (!customRuleDescription.isNullOrBlank()) {
-                                Text(
-                                    text = customRuleDescription,
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
                             }
                             if (index != currentSettings.customGameSettings.lastIndex) {
                                 HorizontalDivider(
@@ -473,16 +510,11 @@ internal fun GameRulesBottomSheetContent(
                         }
                     } else {
                         Text(
-                            text = "Aucune règle personnalisée pour le moment.",
+                            text = "Aucune règle personnalisée pour le moment. Ajoutez-en une pour enrichir vos parties.",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onBackground,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
-
-                    HorizontalDivider(
-                        color = MaterialTheme.colorScheme.surface,
-                        thickness = 1.dp,
-                    )
 
                     Surface(
                         shape = RoundedCornerShape(18.dp),
@@ -499,6 +531,11 @@ internal fun GameRulesBottomSheetContent(
                                 style = MaterialTheme.typography.titleSmall,
                                 color = MaterialTheme.colorScheme.onBackground,
                             )
+                            Text(
+                                text = "Nom obligatoire, description facultative.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
                             AppInput(
                                 value = newRuleTitle,
                                 onValueChange = { newRuleTitle = it },
@@ -510,61 +547,6 @@ internal fun GameRulesBottomSheetContent(
                                     )
                                 },
                             )
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                if (newRuleScoring == GameSettings.SettingsScoring.FIXED_CUSTOM) {
-                                    AppInput(
-                                        value = newRuleValue,
-                                        onValueChange = {
-                                            newRuleValue = it.filter { char -> char.isDigit() }
-                                        },
-                                        keyboardOptions = KeyboardOptions(
-                                            keyboardType = KeyboardType.Number
-                                        ),
-                                        modifier = Modifier.weight(1f),
-                                        placeholder = {
-                                            Text(
-                                                text = "Valeur (optionnelle)",
-                                                style = MaterialTheme.typography.bodyMedium,
-                                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                            )
-                                        },
-                                    )
-                                }
-                                YamsPrimarySmallButton(
-                                    onClick = {
-                                        val parsedValue = newRuleValue.toIntOrNull()
-                                        val updatedCustomRules =
-                                            currentSettings.customGameSettings +
-                                                    GameSettings.CustomGameSettings(
-                                                        title = newRuleTitle.trim(),
-                                                        scoring = newRuleScoring,
-                                                        value = if (newRuleScoring ==
-                                                            GameSettings.SettingsScoring.FIXED_CUSTOM
-                                                        ) {
-                                                            parsedValue
-                                                        } else {
-                                                            null
-                                                        },
-                                                        description = newRuleDescription.trim()
-                                                            .ifBlank { null },
-                                                        isEnabled = true,
-                                                    )
-                                        onUpdateGameSettings(
-                                            currentSettings.copy(customGameSettings = updatedCustomRules)
-                                        )
-                                        onAddCustomRule()
-                                        newRuleTitle = ""
-                                        newRuleValue = ""
-                                        newRuleDescription = ""
-                                        newRuleScoring = GameSettings.SettingsScoring.FIXED_CUSTOM
-                                    },
-                                    text = "Ajouter",
-                                    enabled = canAddRule,
-                                )
-                            }
                             ScoringSelectionRow(
                                 label = "Mode de score",
                                 optionOneLabel = "Somme 5",
@@ -579,6 +561,24 @@ internal fun GameRulesBottomSheetContent(
                                     }
                                 },
                             )
+                            if (newRuleScoring == GameSettings.SettingsScoring.FIXED_CUSTOM) {
+                                AppInput(
+                                    value = newRuleValue,
+                                    onValueChange = {
+                                        newRuleValue = it.filter { char -> char.isDigit() }
+                                    },
+                                    keyboardOptions = KeyboardOptions(
+                                        keyboardType = KeyboardType.Number
+                                    ),
+                                    placeholder = {
+                                        Text(
+                                            text = "Valeur (optionnelle)",
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        )
+                                    },
+                                )
+                            }
                             AppInput(
                                 value = newRuleDescription,
                                 onValueChange = { newRuleDescription = it },
@@ -590,11 +590,62 @@ internal fun GameRulesBottomSheetContent(
                                     )
                                 },
                             )
+                            YamsPrimarySmallButton(
+                                onClick = {
+                                    val parsedValue = newRuleValue.toIntOrNull()
+                                    val updatedCustomRules =
+                                        currentSettings.customGameSettings +
+                                                GameSettings.CustomGameSettings(
+                                                    title = newRuleTitle.trim(),
+                                                    scoring = newRuleScoring,
+                                                    value = if (newRuleScoring ==
+                                                        GameSettings.SettingsScoring.FIXED_CUSTOM
+                                                    ) {
+                                                        parsedValue
+                                                    } else {
+                                                        null
+                                                    },
+                                                    description = newRuleDescription.trim()
+                                                        .ifBlank { null },
+                                                    isEnabled = true,
+                                                )
+                                    onUpdateGameSettings(
+                                        currentSettings.copy(customGameSettings = updatedCustomRules)
+                                    )
+                                    onAddCustomRule()
+                                    newRuleTitle = ""
+                                    newRuleValue = ""
+                                    newRuleDescription = ""
+                                    newRuleScoring = GameSettings.SettingsScoring.FIXED_CUSTOM
+                                },
+                                text = "Ajouter la règle",
+                                enabled = canAddRule,
+                                modifier = Modifier.fillMaxWidth(),
+                            )
                         }
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun RuleMetaChip(
+    text: String,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        shape = RoundedCornerShape(999.dp),
+        color = MaterialTheme.colorScheme.primaryContainer,
+        modifier = modifier,
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+        )
     }
 }
 
