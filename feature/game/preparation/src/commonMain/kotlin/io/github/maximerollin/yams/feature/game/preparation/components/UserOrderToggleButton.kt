@@ -54,7 +54,6 @@ public fun UserOrderToggleButton(
             .clickable(onClick = onClick),
         shape = shape,
         color = surfaceColor,
-        tonalElevation = if (selected) 2.dp else 0.dp,
     ) {
         Row(
             modifier = Modifier
