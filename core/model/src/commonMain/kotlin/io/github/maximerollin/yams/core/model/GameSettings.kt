@@ -7,36 +7,56 @@ public sealed class GameSettings {
     public abstract val ruleSet: RuleSet
     public abstract val columnCount: Int
     public abstract val chanceValue: SettingsScoring?
+    public abstract val isChanceEnabled: Boolean
     public abstract val threeOfAKindScoring: SettingsScoring?
     public abstract val threeOfAKindValue: Int?
+    public abstract val isThreeOfAKindEnabled: Boolean
     public abstract val fourOfAKindScoring: SettingsScoring?
     public abstract val fourOfAKindValue: Int?
+    public abstract val isFourOfAKindEnabled: Boolean
     public abstract val fullHouseValue: Int
+    public abstract val isFullHouseEnabled: Boolean
     public abstract val smallStraightValue: Int?
+    public abstract val isSmallStraightEnabled: Boolean
     public abstract val largeStraightValue: Int?
+    public abstract val isLargeStraightEnabled: Boolean
     public abstract val fiveOfAKindValue: Int
+    public abstract val isFiveOfAKindEnabled: Boolean
     public abstract val jokerRule: JokerRule
     public abstract val extraFiveOfAKindValue: Int?
+    public abstract val isExtraFiveOfAKindEnabled: Boolean
     public abstract val upperBonusThreshold: Int
     public abstract val upperBonusValue: Int
+    public abstract val isUpperBonusEnabled: Boolean
+    public abstract val areCustomRulesEnabled: Boolean
     public abstract val customGameSettings: List<CustomGameSettings>
 
     public data class YamsSettings(
         override val ruleSet: RuleSet = DEFAULT_RULE_SET_VALUE,
         override val columnCount: Int = DEFAULT_COLUMN_COUNT,
         override val chanceValue: SettingsScoring? = DEFAULT_CHANCE_VALUE,
+        override val isChanceEnabled: Boolean = true,
         override val threeOfAKindScoring: SettingsScoring = SettingsScoring.SUM_MATCHING_THREE,
         override val fourOfAKindScoring: SettingsScoring = SettingsScoring.SUM_MATCHING_FOUR,
         override val threeOfAKindValue: Int? = null,
         override val fourOfAKindValue: Int? = null,
+        override val isThreeOfAKindEnabled: Boolean = true,
+        override val isFourOfAKindEnabled: Boolean = true,
         override val fullHouseValue: Int = DEFAULT_FULL_HOUSE_VALUE,
+        override val isFullHouseEnabled: Boolean = true,
         override val smallStraightValue: Int? = DEFAULT_SMALL_STRAIGHT_VALUE,
         override val largeStraightValue: Int? = DEFAULT_LARGE_STRAIGHT_VALUE,
+        override val isSmallStraightEnabled: Boolean = true,
+        override val isLargeStraightEnabled: Boolean = true,
         override val fiveOfAKindValue: Int = DEFAULT_FIVE_OF_A_KIND_VALUE,
+        override val isFiveOfAKindEnabled: Boolean = true,
         override val jokerRule: JokerRule = JokerRule.DISABLED,
         override val extraFiveOfAKindValue: Int? = DEFAULT_EXTRA_FIVE_OF_A_KIND_VALUE,
+        override val isExtraFiveOfAKindEnabled: Boolean = true,
         override val upperBonusThreshold: Int = DEFAULT_UPPER_BONUS_THRESHOLD,
         override val upperBonusValue: Int = DEFAULT_UPPER_BONUS_VALUE,
+        override val isUpperBonusEnabled: Boolean = true,
+        override val areCustomRulesEnabled: Boolean = true,
         override val customGameSettings: List<CustomGameSettings> = emptyList(),
     ) : GameSettings()
 
@@ -44,18 +64,28 @@ public sealed class GameSettings {
         override val ruleSet: RuleSet = RuleSet.YAHTZEE,
         override val columnCount: Int = DEFAULT_COLUMN_COUNT,
         override val chanceValue: SettingsScoring? = DEFAULT_CHANCE_VALUE,
+        override val isChanceEnabled: Boolean = true,
         override val threeOfAKindScoring: SettingsScoring = DEFAULT_THREE_OF_A_KIND_SCORING,
         override val fourOfAKindScoring: SettingsScoring = DEFAULT_FOUR_OF_A_KIND_SCORING,
         override val threeOfAKindValue: Int? = null,
         override val fourOfAKindValue: Int? = null,
+        override val isThreeOfAKindEnabled: Boolean = true,
+        override val isFourOfAKindEnabled: Boolean = true,
         override val fullHouseValue: Int = DEFAULT_FULL_HOUSE_VALUE,
+        override val isFullHouseEnabled: Boolean = true,
         override val smallStraightValue: Int? = DEFAULT_SMALL_STRAIGHT_VALUE,
         override val largeStraightValue: Int? = DEFAULT_LARGE_STRAIGHT_VALUE,
+        override val isSmallStraightEnabled: Boolean = true,
+        override val isLargeStraightEnabled: Boolean = true,
         override val fiveOfAKindValue: Int = DEFAULT_FIVE_OF_A_KIND_VALUE,
+        override val isFiveOfAKindEnabled: Boolean = true,
         override val jokerRule: JokerRule = JokerRule.DISABLED,
         override val extraFiveOfAKindValue: Int? = null,
+        override val isExtraFiveOfAKindEnabled: Boolean = true,
         override val upperBonusThreshold: Int = DEFAULT_UPPER_BONUS_THRESHOLD,
         override val upperBonusValue: Int = DEFAULT_UPPER_BONUS_VALUE,
+        override val isUpperBonusEnabled: Boolean = true,
+        override val areCustomRulesEnabled: Boolean = true,
         override val customGameSettings: List<CustomGameSettings> = emptyList(),
     ) : GameSettings()
 
@@ -63,18 +93,28 @@ public sealed class GameSettings {
         override val ruleSet: RuleSet = RuleSet.CUSTOM,
         override val columnCount: Int = DEFAULT_COLUMN_COUNT,
         override val chanceValue: SettingsScoring? = DEFAULT_CHANCE_VALUE,
+        override val isChanceEnabled: Boolean = true,
         override val threeOfAKindScoring: SettingsScoring = DEFAULT_THREE_OF_A_KIND_SCORING,
         override val fourOfAKindScoring: SettingsScoring = DEFAULT_FOUR_OF_A_KIND_SCORING,
         override val threeOfAKindValue: Int? = DEFAULT_THREE_OF_A_KIND_VALUE,
         override val fourOfAKindValue: Int? = DEFAULT_FOUR_OF_A_KIND_VALUE,
+        override val isThreeOfAKindEnabled: Boolean = true,
+        override val isFourOfAKindEnabled: Boolean = true,
         override val fullHouseValue: Int = DEFAULT_FULL_HOUSE_VALUE,
+        override val isFullHouseEnabled: Boolean = true,
         override val smallStraightValue: Int? = DEFAULT_SMALL_STRAIGHT_VALUE,
         override val largeStraightValue: Int? = DEFAULT_LARGE_STRAIGHT_VALUE,
+        override val isSmallStraightEnabled: Boolean = true,
+        override val isLargeStraightEnabled: Boolean = true,
         override val fiveOfAKindValue: Int = DEFAULT_FIVE_OF_A_KIND_VALUE,
+        override val isFiveOfAKindEnabled: Boolean = true,
         override val jokerRule: JokerRule = DEFAULT_JOKER_RULE,
         override val extraFiveOfAKindValue: Int? = DEFAULT_EXTRA_FIVE_OF_A_KIND_VALUE,
+        override val isExtraFiveOfAKindEnabled: Boolean = true,
         override val upperBonusThreshold: Int = DEFAULT_UPPER_BONUS_THRESHOLD,
         override val upperBonusValue: Int = DEFAULT_UPPER_BONUS_VALUE,
+        override val isUpperBonusEnabled: Boolean = true,
+        override val areCustomRulesEnabled: Boolean = true,
         override val customGameSettings: List<CustomGameSettings> = emptyList(),
     ) : GameSettings()
 
@@ -119,6 +159,7 @@ public sealed class GameSettings {
         val scoring: SettingsScoring,
         val value: Int?,
         val description: String?,
+        val isEnabled: Boolean = true,
     )
 
     @Serializable
