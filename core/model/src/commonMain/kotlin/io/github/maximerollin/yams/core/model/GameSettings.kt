@@ -59,6 +59,25 @@ public sealed class GameSettings {
         override val customGameSettings: List<CustomGameSettings> = emptyList(),
     ) : GameSettings()
 
+    public data class CustomSettings(
+        override val ruleSet: RuleSet = DEFAULT_RULE_SET_VALUE,
+        override val columnCount: Int = DEFAULT_COLUMN_COUNT,
+        override val chanceValue: SettingsScoring? = DEFAULT_CHANCE_VALUE,
+        override val threeOfAKindScoring: SettingsScoring = DEFAULT_THREE_OF_A_KIND_SCORING,
+        override val fourOfAKindScoring: SettingsScoring = DEFAULT_FOUR_OF_A_KIND_SCORING,
+        override val threeOfAKindValue: Int? = DEFAULT_THREE_OF_A_KIND_VALUE,
+        override val fourOfAKindValue: Int? = DEFAULT_FOUR_OF_A_KIND_VALUE,
+        override val fullHouseValue: Int = DEFAULT_FULL_HOUSE_VALUE,
+        override val smallStraightValue: Int? = DEFAULT_SMALL_STRAIGHT_VALUE,
+        override val largeStraightValue: Int? = DEFAULT_LARGE_STRAIGHT_VALUE,
+        override val fiveOfAKindValue: Int = DEFAULT_FIVE_OF_A_KIND_VALUE,
+        override val jokerRule: JokerRule = DEFAULT_JOKER_RULE,
+        override val extraFiveOfAKindValue: Int? = DEFAULT_EXTRA_FIVE_OF_A_KIND_VALUE,
+        override val upperBonusThreshold: Int = DEFAULT_UPPER_BONUS_THRESHOLD,
+        override val upperBonusValue: Int = DEFAULT_UPPER_BONUS_VALUE,
+        override val customGameSettings: List<CustomGameSettings> = emptyList(),
+    ) : GameSettings()
+
     public companion object {
         public val DEFAULT_RULE_SET_VALUE: RuleSet = RuleSet.YAMS
         public const val DEFAULT_COLUMN_COUNT: Int = 1
