@@ -1,10 +1,8 @@
 package io.github.maximerollin.yams.feature.game.preparation.components
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,9 +33,11 @@ import io.github.maximerollin.yams.core.designsystem.component.YamsPrimarySmallB
 public fun GamePreparationSection(
     title: String,
     icon: ImageVector,
-    onClose: (() -> Unit)? = null,
-    onCloseEnabled: Boolean = false,
-    onCloseState: Boolean = false,
+    onAction: (() -> Unit)? = null,
+    onActionEnabled: Boolean = false,
+    onActionState: Boolean = false,
+    actionLabelClosed: String = "Détails",
+    actionLabelOpen: String = "Fermer",
     modifier: Modifier = Modifier,
     subtitle: String? = null,
     accentColor: Color = MaterialTheme.colorScheme.primary,
@@ -101,15 +101,15 @@ public fun GamePreparationSection(
                 }
 
                 AnimatedVisibility(
-                    visible = onClose != null && onCloseEnabled,
+                    visible = onAction != null && onActionEnabled,
                     enter = fadeIn(),
                     exit = fadeOut()
                 ) {
                     YamsPrimarySmallButton(
-                        onClick = onClose!!,
-                        text = when (onCloseState) {
-                            false -> "Ouvrir"
-                            true -> "Fermer"
+                        onClick = onAction!!,
+                        text = when (onActionState) {
+                            false -> actionLabelClosed
+                            true -> actionLabelOpen
                         },
                     )
                 }
