@@ -1,7 +1,9 @@
 package io.github.maximerollin.yams.data.preference
 
+import io.github.maximerollin.yams.core.model.GameSettings
 import io.github.maximerollin.yams.data.preference.preferences.PreferenceLocalDataSource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlin.time.Clock
 import kotlin.time.Instant
 
@@ -10,7 +12,8 @@ public interface PreferenceRepository {
     public suspend fun inAppReviewShown()
     public fun getIsUserOrderRandomized(): Flow<Boolean>
     public suspend fun setIsUserOrderRandomized(isUserOrderRandomized: Boolean)
-    // TODO add game settings
+    public fun getGameSettings(): Flow<GameSettings>
+    public suspend fun setGameSettings(settings: GameSettings)
 }
 
 internal class DefaultPreferenceRepository(
@@ -30,5 +33,13 @@ internal class DefaultPreferenceRepository(
 
     override suspend fun setIsUserOrderRandomized(isUserOrderRandomized: Boolean) {
         preferenceLocalDataSource.setIsUserOrderRandomized(isUserOrderRandomized)
+    }
+
+    override fun getGameSettings(): Flow<GameSettings> {
+        return preferenceLocalDataSource.getGameSettings().map { it ?: GameSettings.YamsSettings() }
+    }
+
+    override suspend fun setGameSettings(settings: GameSettings) {
+        preferenceLocalDataSource.setGameSettings(settings)
     }
 }

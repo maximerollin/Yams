@@ -6,8 +6,10 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import io.github.maximerollin.yams.core.model.GameSettings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.json.Json
 import kotlin.time.Instant
 
 internal interface PreferenceLocalDataSource {
@@ -15,7 +17,8 @@ internal interface PreferenceLocalDataSource {
     suspend fun setLastInAppReviewShownDate(date: Instant)
     fun getIsUserOrderRandomized(): Flow<Boolean>
     suspend fun setIsUserOrderRandomized(isUserOrderRandomized: Boolean)
-    // TODO add game settings
+    fun getGameSettings(): Flow<GameSettings?>
+    suspend fun setGameSettings(settings: GameSettings)
 }
 
 internal class PreferencePreferencesDataSource(
@@ -34,13 +37,27 @@ internal class PreferencePreferencesDataSource(
     }
 
     override fun getIsUserOrderRandomized(): Flow<Boolean> =
-         dataStore.data.map { preferences ->
-             preferences[IS_USER_ORDER_RANDOMIZED_KEY] ?: true
-    }
+        dataStore.data.map { preferences ->
+            preferences[IS_USER_ORDER_RANDOMIZED_KEY] ?: true
+        }
 
     override suspend fun setIsUserOrderRandomized(isUserOrderRandomized: Boolean) {
         dataStore.edit { preferences ->
             preferences[IS_USER_ORDER_RANDOMIZED_KEY] = isUserOrderRandomized
+        }
+    }
+
+    override fun getGameSettings(): Flow<GameSettings?> {
+        return dataStore.data.map { preferences ->
+            preferences[GAME_SETTINGS_KEY]?.let {
+                Json.decodeFromString(it)
+            }
+        }
+    }
+
+    override suspend fun setGameSettings(settings: GameSettings) {
+        dataStore.edit { preferences ->
+            preferences[GAME_SETTINGS_KEY] = Json.encodeToString(settings)
         }
     }
 
@@ -51,7 +68,6 @@ internal class PreferencePreferencesDataSource(
     }
 
 }
-
 
 
 
