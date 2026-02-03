@@ -96,6 +96,14 @@ public sealed class GameSettings {
         public const val DEFAULT_EXTRA_FIVE_OF_A_KIND_VALUE: Int = 100
         public const val DEFAULT_UPPER_BONUS_THRESHOLD: Int = 63
         public const val DEFAULT_UPPER_BONUS_VALUE: Int = 35
+
+        public fun RuleSet.getName(): String {
+            return when (this) {
+                RuleSet.YAMS -> "Yams"
+                RuleSet.YAHTZEE -> "Yahtzee"
+                RuleSet.CUSTOM -> "Custom"
+            }
+        }
     }
 
     @Serializable
