@@ -15,6 +15,10 @@ It is the source of truth for edits. I will check this file before making code c
 - `core/designsystem`: reusable UI components, icons, theme primitives.
 - `feature/*`: feature UI + state handling; keep feature logic local to the feature.
 
+## Feature state patterns
+- Game preparation keeps `gameSettings` as the single source of truth for UI.
+- Game settings toggle buttons always include the Custom option; the current selection is driven by `gameSettings.ruleSet`.
+
 ## File and naming conventions
 - Kotlin files use PascalCase and mirror their primary composable/class name.
 - Composable functions are PascalCase, scoped by file (public at top, private below).

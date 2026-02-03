@@ -43,6 +43,7 @@ internal fun GamePreparationRoute(
         onCreateGame = {},
         onToggleIsUserOrderRandomized = viewModel::onToggleIsUserOrderRandomized,
         onToggleGameSettings = viewModel::onToggleGameSettings,
+        onUpdateGameSettings = viewModel::onUpdateGameSettings,
         onOrderUser = { from, to -> viewModel.orderUser(from, to) }
     )
 }
@@ -56,6 +57,7 @@ private fun GamePreparationScreen(
     onToggleIsUserOrderRandomized: (Boolean) -> Unit,
     onOrderUser: (Int, Int) -> Unit,
     onToggleGameSettings: (GameSettings.RuleSet) -> Unit,
+    onUpdateGameSettings: (GameSettings) -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -91,6 +93,7 @@ private fun GamePreparationScreen(
             GamePreparationSettings(
                 uiState = gamePreparationUiState.gameSettings,
                 onToggleGameSettings = onToggleGameSettings,
+                onUpdateGameSettings = onUpdateGameSettings,
             )
         }
     }
@@ -101,12 +104,13 @@ private fun GamePreparationScreen(
 private fun GamePreparationScreenRandomPreview() {
     YamsTheme {
         GamePreparationScreen(
-            gamePreparationUiState = GamePreparationUiState(isUserOrderRandomized = true),
+            gamePreparationUiState = GamePreparationUiState(isUserOrderRandomized = true, gameSettings = GameSettings.YamsSettings()),
             usersState = UserMocks.users.subList(0, 3),
             onNavigateBack = {},
             onCreateGame = {},
             onToggleIsUserOrderRandomized = {},
             onToggleGameSettings = {},
+            onUpdateGameSettings = {},
             onOrderUser = { _, _ -> {} }
         )
     }
@@ -123,9 +127,8 @@ private fun GamePreparationScreenManualPreview() {
             onCreateGame = {},
             onToggleIsUserOrderRandomized = {},
             onToggleGameSettings = {},
+            onUpdateGameSettings = {},
             onOrderUser = { _, _ -> {} }
         )
     }
 }
-
-

@@ -49,12 +49,34 @@ internal class GamePreparationViewModel(
     private fun initStateFromPreferences() {
         viewModelScope.launch {
             val isUserOrderRandomized = preferenceRepository.getIsUserOrderRandomized().first()
+            val gameSettings = preferenceRepository.getGameSettings().first()
             _gamePreparationUiState.update {
-                // TODO add game settings
                 it.copy(
-                    isUserOrderRandomized = isUserOrderRandomized
+                    isUserOrderRandomized = isUserOrderRandomized,
+                    gameSettings = gameSettings,
                 )
             }
+        }
+    }
+
+    fun createGame() {
+        val gameSettings = gamePreparationUiState.value.gameSettings
+
+        if (gamePreparationUiState.value.createGameLoading) {
+            return
+        }
+
+        _gamePreparationUiState.update { it.copy(createGameLoading = true) }
+
+        viewModelScope.launch {
+            // Save game settings preferences
+            preferenceRepository.setGameSettings(gameSettings)
+            preferenceRepository.setIsUserOrderRandomized(gamePreparationUiState.value.isUserOrderRandomized)
+
+            // TODO create game
+
+            // TODO update navigatetogame id
+            // _gamePreparationUiState.update { it.copy(navigateToGame = ) }
         }
     }
 
@@ -71,14 +93,21 @@ internal class GamePreparationViewModel(
     }
 
     fun onToggleGameSettings(gameSettings: GameSettings.RuleSet) {
-        _gamePreparationUiState.update {
-            it.copy(
-                gameSettings =
-                    when (gameSettings) {
-                        GameSettings.RuleSet.YAHTZEE -> GameSettings.YahtzeeSettings()
-                        GameSettings.RuleSet.YAMS -> GameSettings.YamsSettings()
-                        GameSettings.RuleSet.MOM -> GameSettings.MomsSettings()
-                    }
+        val updatedSettings =
+            when (gameSettings) {
+                GameSettings.RuleSet.YAHTZEE -> GameSettings.YahtzeeSettings()
+                GameSettings.RuleSet.YAMS -> GameSettings.YamsSettings()
+                GameSettings.RuleSet.CUSTOM -> GameSettings.CustomSettings()
+            }
+        _gamePreparationUiState.update { state ->
+            state.copy(gameSettings = updatedSettings)
+        }
+    }
+
+    fun onUpdateGameSettings(gameSettings: GameSettings) {
+        _gamePreparationUiState.update { state ->
+            state.copy(
+                gameSettings = gameSettings,
             )
         }
     }
@@ -88,5 +117,5 @@ internal data class GamePreparationUiState(
     val navigateToGame: GameId? = null,
     val createGameLoading: Boolean = false,
     val isUserOrderRandomized: Boolean = true,
-    val gameSettings: GameSettings = GameSettings.YamsSettings()
+    val gameSettings: GameSettings = GameSettings.YamsSettings(),
 )
