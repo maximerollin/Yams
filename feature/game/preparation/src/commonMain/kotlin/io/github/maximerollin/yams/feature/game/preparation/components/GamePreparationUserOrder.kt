@@ -42,9 +42,9 @@ public fun GamePreparationUserOrder(
 
     GamePreparationSection(
         title = "Ordre des joueurs",
-        onClose = { showUsers = !showUsers },
-        onCloseEnabled = !isUserOrderRandomized,
-        onCloseState = showUsers,
+        onAction = { showUsers = !showUsers },
+        onActionEnabled = !isUserOrderRandomized,
+        onActionState = showUsers,
         icon = YamsIcons.Groups,
         modifier = modifier,
     ) {
