@@ -10,14 +10,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,12 +38,17 @@ import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.mocks.UserMocks
 import io.github.maximerollin.yams.core.model.User
 
+private const val MAX_VISIBLE_AVATAR_COUNT = 5
+
 @Composable
 internal fun GameCreationBottomBar(
     selectedUsers: List<User>,
     onCreateGame: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val visibleUsers = selectedUsers.take(MAX_VISIBLE_AVATAR_COUNT)
+    val remainingUsersCount = (selectedUsers.size - visibleUsers.size).coerceAtLeast(0)
+
     Column(modifier = Modifier.navigationBarsPadding()) {
         AnimatedVisibility(
             visible = selectedUsers.isNotEmpty(),
@@ -64,41 +70,38 @@ internal fun GameCreationBottomBar(
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 12.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    LazyRow(
+                    Row(
                         horizontalArrangement = Arrangement.spacedBy((-12).dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        itemsIndexed(
-                            items = selectedUsers,
-                            key = { _, user -> user.id.value }
-                        ) { _, user ->
-                            Box(
-                                modifier = Modifier
-                                    .size(48.dp)
-                                    .clip(CircleShape)
-                                    .background(MaterialTheme.colorScheme.primary)
-                            ) {
-                                AsyncImage(
-                                    model = user.avatar,
-                                    contentDescription = "User avatar",
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(2.dp)
-                                        .clip(CircleShape)
-                                )
-                            }
+                        visibleUsers.forEach { user ->
+                            SelectedUserAvatar(user = user)
+                        }
+
+                        if (remainingUsersCount > 0) {
+                            RemainingSelectedUsersBadge(remainingUsersCount = remainingUsersCount)
                         }
                     }
+
+                    Spacer(modifier = Modifier.weight(1f))
 
                     Text(
                         text = "${selectedUsers.size} joueur${if (selectedUsers.size > 1) "s" else ""}",
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.SemiBold,
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                        fontSize = 14.sp,
+                        maxLines = 1,
+                        softWrap = false,
+                        overflow = TextOverflow.Ellipsis,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier
+                            .background(
+                                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.12f),
+                                shape = RoundedCornerShape(999.dp),
+                            )
+                            .padding(horizontal = 12.dp, vertical = 6.dp)
                     )
                 }
             }
@@ -114,6 +117,50 @@ internal fun GameCreationBottomBar(
     }
 }
 
+@Composable
+private fun SelectedUserAvatar(
+    user: User,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier
+            .size(40.dp)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.primary)
+    ) {
+        AsyncImage(
+            model = user.avatar,
+            contentDescription = "User avatar",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(2.dp)
+                .clip(CircleShape)
+        )
+    }
+}
+
+@Composable
+private fun RemainingSelectedUsersBadge(
+    remainingUsersCount: Int,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .size(40.dp)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.secondaryContainer)
+    ) {
+        Text(
+            text = "+$remainingUsersCount",
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSecondaryContainer
+        )
+    }
+}
+
 @Preview
 @Composable
 private fun GameCreationBottomBarPreview() {
@@ -121,6 +168,17 @@ private fun GameCreationBottomBarPreview() {
         GameCreationBottomBar(
             selectedUsers = UserMocks.users.subList(0, 3),
             onCreateGame = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun GameCreationBottomBarPreviewManyPlayers() {
+    YamsTheme {
+        GameCreationBottomBar(
+            selectedUsers = UserMocks.users.take(7),
+            onCreateGame = {}
         )
     }
 }
