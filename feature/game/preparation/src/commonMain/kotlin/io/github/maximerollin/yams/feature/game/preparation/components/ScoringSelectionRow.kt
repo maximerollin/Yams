@@ -2,7 +2,6 @@ package io.github.maximerollin.yams.feature.game.preparation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,6 +23,16 @@ internal fun ScoringSelectionRow(
     onOptionSelected: (GameSettings.SettingsScoring) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val scoringOptions = buildList {
+        add(optionOneLabel to optionOne)
+        add(optionTwoLabel to optionTwo)
+        if (optionThreeLabel != null && optionThree != null) {
+            add(optionThreeLabel to optionThree)
+        }
+    }
+    val selectedIndex = scoringOptions.indexOfFirst { (_, scoring) -> scoring == selected }
+        .let { index -> if (index >= 0) index else 0 }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = modifier.fillMaxWidth(),
@@ -33,30 +42,17 @@ internal fun ScoringSelectionRow(
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        AnimatedSegmentedControl(
+            items = scoringOptions.map { (label, _) ->
+                SegmentedControlItem(label = label)
+            },
+            selectedIndex = selectedIndex,
+            onSelectedIndexChange = { index ->
+                onOptionSelected(scoringOptions[index].second)
+            },
             modifier = Modifier.fillMaxWidth(),
-        ) {
-            GameSettingsToggleButton(
-                label = optionOneLabel,
-                selected = selected == optionOne,
-                onClick = { onOptionSelected(optionOne) },
-                modifier = Modifier.weight(1f),
-            )
-            GameSettingsToggleButton(
-                label = optionTwoLabel,
-                selected = selected == optionTwo,
-                onClick = { onOptionSelected(optionTwo) },
-                modifier = Modifier.weight(1f),
-            )
-            if (optionThreeLabel != null && optionThree != null) {
-                GameSettingsToggleButton(
-                    label = optionThreeLabel,
-                    selected = selected == optionThree,
-                    onClick = { onOptionSelected(optionThree) },
-                    modifier = Modifier.weight(1f),
-                )
-            }
-        }
+            height = 38.dp,
+            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f),
+        )
     }
 }

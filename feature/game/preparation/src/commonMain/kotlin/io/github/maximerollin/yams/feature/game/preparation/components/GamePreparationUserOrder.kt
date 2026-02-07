@@ -3,12 +3,8 @@ package io.github.maximerollin.yams.feature.game.preparation.components
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -48,36 +44,18 @@ public fun GamePreparationUserOrder(
         icon = YamsIcons.Groups,
         modifier = modifier,
     ) {
-        val shape = RoundedCornerShape(32.dp)
-
-        Surface(
-            shape = shape,
-            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.55f)
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 6.dp, horizontal = 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                UserOrderToggleButton(
-                    label = "Aléatoire",
-                    icon = YamsIcons.Tactic,
-                    selected = isUserOrderRandomized,
-                    onClick = { onToggleIsUserOrderRandomized(true) },
-                    modifier = Modifier.weight(1f),
-                )
-
-                UserOrderToggleButton(
-                    label = "Choisir",
-                    icon = YamsIcons.DragHandle,
-                    selected = !isUserOrderRandomized,
-                    onClick = { onToggleIsUserOrderRandomized(false) },
-                    modifier = Modifier.weight(1f),
-                )
-            }
-        }
+        AnimatedSegmentedControl(
+            items = listOf(
+                SegmentedControlItem(label = "Aléatoire", icon = YamsIcons.Tactic),
+                SegmentedControlItem(label = "Choisir", icon = YamsIcons.DragHandle),
+            ),
+            selectedIndex = if (isUserOrderRandomized) 0 else 1,
+            onSelectedIndexChange = { index ->
+                onToggleIsUserOrderRandomized(index == 0)
+            },
+            modifier = Modifier.fillMaxWidth(),
+            height = 44.dp,
+        )
 
         AnimatedContent(
             targetState = !isUserOrderRandomized && showUsers,
