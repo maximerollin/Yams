@@ -22,7 +22,7 @@ public sealed class GameSettings {
     public abstract val isLargeStraightEnabled: Boolean
     public abstract val fiveOfAKindValue: Int
     public abstract val isFiveOfAKindEnabled: Boolean
-    public abstract val jokerRule: JokerRule
+    public abstract val jokerRule: Boolean
     public abstract val extraFiveOfAKindValue: Int?
     public abstract val isExtraFiveOfAKindEnabled: Boolean
     public abstract val upperBonusThreshold: Int
@@ -50,7 +50,7 @@ public sealed class GameSettings {
         override val isLargeStraightEnabled: Boolean = true,
         override val fiveOfAKindValue: Int = DEFAULT_FIVE_OF_A_KIND_VALUE,
         override val isFiveOfAKindEnabled: Boolean = true,
-        override val jokerRule: JokerRule = JokerRule.DISABLED,
+        override val jokerRule: Boolean = false,
         override val extraFiveOfAKindValue: Int? = DEFAULT_EXTRA_FIVE_OF_A_KIND_VALUE,
         override val isExtraFiveOfAKindEnabled: Boolean = true,
         override val upperBonusThreshold: Int = DEFAULT_UPPER_BONUS_THRESHOLD,
@@ -79,7 +79,7 @@ public sealed class GameSettings {
         override val isLargeStraightEnabled: Boolean = true,
         override val fiveOfAKindValue: Int = DEFAULT_FIVE_OF_A_KIND_VALUE,
         override val isFiveOfAKindEnabled: Boolean = true,
-        override val jokerRule: JokerRule = JokerRule.DISABLED,
+        override val jokerRule: Boolean = false,
         override val extraFiveOfAKindValue: Int? = null,
         override val isExtraFiveOfAKindEnabled: Boolean = true,
         override val upperBonusThreshold: Int = DEFAULT_UPPER_BONUS_THRESHOLD,
@@ -108,7 +108,7 @@ public sealed class GameSettings {
         override val isLargeStraightEnabled: Boolean = true,
         override val fiveOfAKindValue: Int = DEFAULT_FIVE_OF_A_KIND_VALUE,
         override val isFiveOfAKindEnabled: Boolean = true,
-        override val jokerRule: JokerRule = DEFAULT_JOKER_RULE,
+        override val jokerRule: Boolean = false,
         override val extraFiveOfAKindValue: Int? = DEFAULT_EXTRA_FIVE_OF_A_KIND_VALUE,
         override val isExtraFiveOfAKindEnabled: Boolean = true,
         override val upperBonusThreshold: Int = DEFAULT_UPPER_BONUS_THRESHOLD,
@@ -132,7 +132,7 @@ public sealed class GameSettings {
         public const val DEFAULT_SMALL_STRAIGHT_VALUE: Int = 30
         public const val DEFAULT_LARGE_STRAIGHT_VALUE: Int = 40
         public const val DEFAULT_FIVE_OF_A_KIND_VALUE: Int = 50
-        public val DEFAULT_JOKER_RULE: JokerRule = JokerRule.ENABLED
+        public const val DEFAULT_JOKER_RULE: Boolean = true
         public const val DEFAULT_EXTRA_FIVE_OF_A_KIND_VALUE: Int = 100
         public const val DEFAULT_UPPER_BONUS_THRESHOLD: Int = 63
         public const val DEFAULT_UPPER_BONUS_VALUE: Int = 35
@@ -169,11 +169,5 @@ public sealed class GameSettings {
         SUM_MATCHING_FOUR,
         FIXED,
         FIXED_CUSTOM
-    }
-
-    @Serializable
-    public enum class JokerRule {
-        ENABLED,
-        DISABLED,
     }
 }

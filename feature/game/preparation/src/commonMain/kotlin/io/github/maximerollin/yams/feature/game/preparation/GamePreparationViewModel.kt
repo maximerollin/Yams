@@ -7,6 +7,7 @@ import io.github.maximerollin.yams.core.model.GameSettings
 import io.github.maximerollin.yams.core.model.User
 import io.github.maximerollin.yams.core.model.UserId
 import io.github.maximerollin.yams.data.game.GameRepository
+import io.github.maximerollin.yams.data.game.model.CreateGame
 import io.github.maximerollin.yams.data.preference.PreferenceRepository
 import io.github.maximerollin.yams.data.user.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -73,10 +74,18 @@ internal class GamePreparationViewModel(
             preferenceRepository.setGameSettings(gameSettings)
             preferenceRepository.setIsUserOrderRandomized(gamePreparationUiState.value.isUserOrderRandomized)
 
-            // TODO create game
+            val gameId = gameRepository.createGame(
+                isShuffled = gamePreparationUiState.value.isUserOrderRandomized,
+                value = CreateGame(
+                    gameSettings = gameSettings,
+                    userIds = when (gamePreparationUiState.value.isUserOrderRandomized) {
+                        true -> orderedUsers.value.shuffled()
+                        false -> orderedUsers.value
+                    },
+                ),
+            )
 
-            // TODO update navigatetogame id
-            // _gamePreparationUiState.update { it.copy(navigateToGame = ) }
+            _gamePreparationUiState.update { it.copy(navigateToGame = gameId) }
         }
     }
 
