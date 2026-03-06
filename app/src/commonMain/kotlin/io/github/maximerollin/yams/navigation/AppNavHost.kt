@@ -104,7 +104,10 @@ private fun NavGraphBuilder.screens(navController: NavHostController) {
         navController = navController,
         onNavigateBack = navController::navigateUp,
         onNavigateGame = { gameId ->
-
+            navController.navigateToGamePlay(gameId) {
+                launchSingleTop = true
+                popUpTo(GameCreationRoute) { inclusive = true }
+            }
         }
     )
 }

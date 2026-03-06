@@ -16,6 +16,7 @@ val appModule = module {
     includes(
         featureGameCreationModule,
         featureGamePreparationModule,
+        featureGamePlayModule,
     )
 
     single(named("IO")) { Dispatchers.IO }
