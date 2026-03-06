@@ -9,7 +9,6 @@ import io.github.maximerollin.yams.core.model.GameId
 import io.github.maximerollin.yams.feature.game.play.GamePlayRoute
 import kotlinx.serialization.Serializable
 
-
 @Serializable
 public data class GamePlayRoute(val gameId: String)
 

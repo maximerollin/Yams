@@ -7,7 +7,6 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -27,6 +27,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -64,11 +65,17 @@ internal fun GamePreparationRoute(
     val gamePreparationUiState by viewModel.gamePreparationUiState.collectAsStateWithLifecycle()
     val usersState by viewModel.usersState.collectAsStateWithLifecycle()
 
+    LaunchedEffect(gamePreparationUiState.navigateToGame) {
+        gamePreparationUiState.navigateToGame?.let { gameId ->
+            onNavigateGame(gameId)
+        }
+    }
+
     GamePreparationScreen(
         gamePreparationUiState = gamePreparationUiState,
         usersState = usersState,
         onNavigateBack = onNavigateBack,
-        onCreateGame = {},
+        onCreateGame = viewModel::createGame,
         onToggleIsUserOrderRandomized = viewModel::onToggleIsUserOrderRandomized,
         onToggleGameSettings = viewModel::onToggleGameSettings,
         onUpdateGameSettings = viewModel::onUpdateGameSettings,
@@ -213,10 +220,10 @@ private fun GamePreparationStrategyTips(
             transitionSpec = {
                 when (tipsDirection) {
                     1 -> (slideInHorizontally { it / 2 } + fadeIn()) togetherWith
-                        (slideOutHorizontally { -it / 2 } + fadeOut())
+                            (slideOutHorizontally { -it / 2 } + fadeOut())
 
                     else -> (slideInHorizontally { -it / 2 } + fadeIn()) togetherWith
-                        (slideOutHorizontally { it / 2 } + fadeOut())
+                            (slideOutHorizontally { it / 2 } + fadeOut())
                 }
             },
             label = "tips_carousel"
@@ -297,7 +304,10 @@ private fun PreparationTipItem(
 private fun GamePreparationScreenRandomPreview() {
     YamsTheme {
         GamePreparationScreen(
-            gamePreparationUiState = GamePreparationUiState(isUserOrderRandomized = true, gameSettings = GameSettings.YamsSettings()),
+            gamePreparationUiState = GamePreparationUiState(
+                isUserOrderRandomized = true,
+                gameSettings = GameSettings.YamsSettings()
+            ),
             usersState = UserMocks.users.subList(0, 3),
             onNavigateBack = {},
             onCreateGame = {},

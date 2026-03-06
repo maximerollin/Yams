@@ -31,6 +31,7 @@ public sealed class GameSettings {
     public abstract val areCustomRulesEnabled: Boolean
     public abstract val customGameSettings: List<CustomGameSettings>
 
+    @Serializable
     public data class YamsSettings(
         override val ruleSet: RuleSet = DEFAULT_RULE_SET_VALUE,
         override val columnCount: Int = DEFAULT_COLUMN_COUNT,
@@ -60,6 +61,7 @@ public sealed class GameSettings {
         override val customGameSettings: List<CustomGameSettings> = emptyList(),
     ) : GameSettings()
 
+    @Serializable
     public data class YahtzeeSettings(
         override val ruleSet: RuleSet = RuleSet.YAHTZEE,
         override val columnCount: Int = DEFAULT_COLUMN_COUNT,
@@ -89,6 +91,7 @@ public sealed class GameSettings {
         override val customGameSettings: List<CustomGameSettings> = emptyList(),
     ) : GameSettings()
 
+    @Serializable
     public data class CustomSettings(
         override val ruleSet: RuleSet = RuleSet.CUSTOM,
         override val columnCount: Int = DEFAULT_COLUMN_COUNT,

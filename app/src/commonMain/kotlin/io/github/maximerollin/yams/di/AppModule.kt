@@ -2,6 +2,7 @@ package io.github.maximerollin.yams.di
 
 import io.github.maximerollin.yams.AppViewModel
 import io.github.maximerollin.yams.feature.game.creation.di.featureGameCreationModule
+import io.github.maximerollin.yams.feature.game.play.di.featureGamePlayModule
 import io.github.maximerollin.yams.feature.game.preparation.di.featureGamePreparationModule
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope

@@ -14,6 +14,8 @@ import io.github.maximerollin.yams.AppViewModel
 import io.github.maximerollin.yams.feature.game.creation.navigation.GameCreationRoute
 import io.github.maximerollin.yams.feature.game.creation.navigation.gameCreationScreen
 import io.github.maximerollin.yams.feature.game.creation.navigation.navigateToGameCreation
+import io.github.maximerollin.yams.feature.game.play.navigation.gamePlayScreen
+import io.github.maximerollin.yams.feature.game.play.navigation.navigateToGamePlay
 import io.github.maximerollin.yams.feature.game.preparation.navigation.gamePreparationScreen
 import io.github.maximerollin.yams.feature.game.preparation.navigation.navigateToGamePreparation
 import io.github.maximerollin.yams.feature.home.navigation.HomeRoute
@@ -109,5 +111,16 @@ private fun NavGraphBuilder.screens(navController: NavHostController) {
                 popUpTo(GameCreationRoute) { inclusive = true }
             }
         }
+    )
+
+    gamePlayScreen(
+        onNavigateHome = {
+            navController.navigateToHome {
+                launchSingleTop = true
+                popUpTo(navController.graph.id) { inclusive = true }
+                navController.graph.setStartDestination(HomeRoute)
+            }
+        },
+        onNavigateToResults = { _ -> },
     )
 }

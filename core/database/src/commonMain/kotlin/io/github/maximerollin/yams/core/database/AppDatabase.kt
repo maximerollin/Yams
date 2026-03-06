@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import androidx.room.TypeConverters
+import io.github.maximerollin.yams.core.database.converter.CustomGameSettingsConverter
 import io.github.maximerollin.yams.core.database.converter.InstantConverter
 import io.github.maximerollin.yams.core.database.converter.PlatformFileConverter
 import io.github.maximerollin.yams.core.database.dao.GameDao
@@ -28,6 +29,7 @@ import io.github.maximerollin.yams.core.database.entity.UserEntity
 @TypeConverters(
     PlatformFileConverter::class,
     InstantConverter::class,
+    CustomGameSettingsConverter::class,
 )
 @ConstructedBy(AppDatabaseConstructor::class)
 internal abstract class AppDatabase : RoomDatabase() {
