@@ -15,6 +15,7 @@ internal class CustomGameSettingsConverter {
 
             value.forEach { setting ->
                 appendSegment(setting.title)
+                appendSegment(setting.id)
                 appendSegment(setting.scoring.name)
                 appendSegment(setting.value?.toString())
                 appendSegment(setting.description)
@@ -34,6 +35,7 @@ internal class CustomGameSettingsConverter {
             buildList(count) {
                 repeat(count) {
                     val title = requireNotNull(reader.readSegment())
+                    val id = requireNotNull(reader.readSegment())
                     val scoringName = requireNotNull(reader.readSegment())
                     val rawValue = reader.readSegment()
                     val description = reader.readSegment()
@@ -56,6 +58,7 @@ internal class CustomGameSettingsConverter {
                     add(
                         CustomGameSettingsEntity(
                             title = title,
+                            id = id,
                             scoring = scoring,
                             value = parsedValue,
                             description = description,

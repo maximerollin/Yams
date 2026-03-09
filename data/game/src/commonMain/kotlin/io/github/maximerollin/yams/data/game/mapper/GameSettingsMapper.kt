@@ -62,6 +62,7 @@ internal fun GameSettings.asEntity() = GameSettingsEntity(
 
 internal fun GameSettings.CustomGameSettings.asEntity() = CustomGameSettingsEntity(
     title = title,
+    id = id,
     scoring = when (scoring) {
         GameSettings.SettingsScoring.SUM_ALL_FIVE_DICE -> SettingsScoringEntity.SUM_ALL_FIVE_DICE
         GameSettings.SettingsScoring.SUM_MATCHING_THREE -> SettingsScoringEntity.SUM_MATCHING_THREE
@@ -73,4 +74,3 @@ internal fun GameSettings.CustomGameSettings.asEntity() = CustomGameSettingsEnti
     description = description,
     isEnabled = isEnabled
 )
-

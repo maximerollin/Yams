@@ -159,6 +159,7 @@ public sealed class GameSettings {
     @Serializable
     public data class CustomGameSettings(
         val title: String,
+        val id: String = title.lowercase().replace(" ", "_"),
         val scoring: SettingsScoring,
         val value: Int?,
         val description: String?,

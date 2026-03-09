@@ -10,9 +10,9 @@ import io.github.maximerollin.yams.core.database.PlayerResultLocalDataSource
 import io.github.maximerollin.yams.core.database.RoomGameLocalDataSource
 import io.github.maximerollin.yams.core.database.RoomPlayerLocalDataSource
 import io.github.maximerollin.yams.core.database.RoomPlayerResultLocalDataSource
-import io.github.maximerollin.yams.core.database.RoomThrowLocalDataSource
+import io.github.maximerollin.yams.core.database.RoomScoreEntryLocalDataSource
 import io.github.maximerollin.yams.core.database.RoomUserLocalDataSource
-import io.github.maximerollin.yams.core.database.ThrowLocalDataSource
+import io.github.maximerollin.yams.core.database.ScoreEntryLocalDataSource
 import io.github.maximerollin.yams.core.database.TransactionRunner
 import io.github.maximerollin.yams.core.database.UserLocalDataSource
 import kotlinx.coroutines.Dispatchers
@@ -35,18 +35,17 @@ public val databaseModule: Module = module {
     factory { get<AppDatabase>().gameDao() }
     factory { get<AppDatabase>().playerDao() }
     factory { get<AppDatabase>().playerResultDao() }
-    factory { get<AppDatabase>().throwDao() }
+    factory { get<AppDatabase>().scoreEntryDao() }
 
     // DataSources
     factory<UserLocalDataSource> { RoomUserLocalDataSource(get()) }
     factory<GameLocalDataSource> { RoomGameLocalDataSource(get()) }
     factory<PlayerLocalDataSource> { RoomPlayerLocalDataSource(get()) }
     factory<PlayerResultLocalDataSource> { RoomPlayerResultLocalDataSource(get()) }
-    factory<ThrowLocalDataSource> { RoomThrowLocalDataSource(get()) }
+    factory<ScoreEntryLocalDataSource> { RoomScoreEntryLocalDataSource(get()) }
 
     // Transaction
     factory<TransactionRunner> { DefaultTransactionRunner(get()) }
 }
 
 internal expect val databaseNativeModule: Module
-

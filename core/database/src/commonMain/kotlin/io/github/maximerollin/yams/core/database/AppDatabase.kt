@@ -11,11 +11,12 @@ import io.github.maximerollin.yams.core.database.converter.PlatformFileConverter
 import io.github.maximerollin.yams.core.database.dao.GameDao
 import io.github.maximerollin.yams.core.database.dao.PlayerDao
 import io.github.maximerollin.yams.core.database.dao.PlayerResultDao
-import io.github.maximerollin.yams.core.database.dao.ThrowDao
+import io.github.maximerollin.yams.core.database.dao.ScoreEntryDao
 import io.github.maximerollin.yams.core.database.dao.UserDao
 import io.github.maximerollin.yams.core.database.entity.GameEntity
 import io.github.maximerollin.yams.core.database.entity.PlayerEntity
 import io.github.maximerollin.yams.core.database.entity.PlayerResultEntity
+import io.github.maximerollin.yams.core.database.entity.ScoreEntryEntity
 import io.github.maximerollin.yams.core.database.entity.UserEntity
 
 @Database(
@@ -24,6 +25,7 @@ import io.github.maximerollin.yams.core.database.entity.UserEntity
         GameEntity::class,
         PlayerEntity::class,
         PlayerResultEntity::class,
+        ScoreEntryEntity::class,
     ],
     version = 1,
 )
@@ -38,7 +40,7 @@ internal abstract class AppDatabase : RoomDatabase() {
     abstract fun gameDao(): GameDao
     abstract fun playerDao(): PlayerDao
     abstract fun playerResultDao(): PlayerResultDao
-    abstract fun throwDao(): ThrowDao
+    abstract fun scoreEntryDao(): ScoreEntryDao
 }
 
 @Suppress("NO_ACTUAL_FOR_EXPECT", "KotlinNoActualForExpect")

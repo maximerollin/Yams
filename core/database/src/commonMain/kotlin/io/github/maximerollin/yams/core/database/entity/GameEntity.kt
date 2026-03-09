@@ -71,6 +71,7 @@ public enum class GameStatusEntity {
 
 public data class CustomGameSettingsEntity(
     val title: String,
+    val id: String,
     val scoring: SettingsScoringEntity,
     val value: Int?,
     val description: String?,

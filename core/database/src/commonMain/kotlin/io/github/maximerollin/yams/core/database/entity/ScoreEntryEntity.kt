@@ -7,28 +7,30 @@ import androidx.room.PrimaryKey
 import kotlin.time.Instant
 
 @Entity(
-    tableName = "Throw",
-    indices = [Index("gameId"), Index("userId")],
+    tableName = "ScoreEntry",
+    indices = [Index("gameId"), Index("userId"), Index("scoreKey")],
     foreignKeys = [
         ForeignKey(
             entity = GameEntity::class,
             parentColumns = ["id"],
             childColumns = ["gameId"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = UserEntity::class,
             parentColumns = ["id"],
             childColumns = ["userId"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
-    ]
+    ],
 )
-public data class ThrowEntity(
+public data class ScoreEntryEntity(
     @PrimaryKey
     val id: String,
     val gameId: String,
     val userId: String,
+    val scoreKey: String,
+    val columnIndex: Int,
     val score: Int,
     val timestamp: Instant,
 )
