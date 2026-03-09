@@ -2,6 +2,7 @@ package io.github.maximerollin.yams.data.game
 
 import io.github.maximerollin.yams.core.database.GameLocalDataSource
 import io.github.maximerollin.yams.core.database.PlayerLocalDataSource
+import io.github.maximerollin.yams.core.database.PlayerResultLocalDataSource
 import io.github.maximerollin.yams.core.database.TransactionRunner
 import io.github.maximerollin.yams.core.database.entity.GameEntity
 import io.github.maximerollin.yams.core.database.entity.GameStatusEntity
@@ -29,7 +30,8 @@ public interface GameRepository {
     public fun getNumberOfGames(): Flow<Int>
     public fun getNumberOfFinishedGames(): Flow<Int>
     public fun getGamePhoto(gameId: GameId): Flow<PlatformFile?>
-    public fun getUserPhotos(userUd: UserId): Flow<List<GamePhoto>>
+    public fun getUserPhotos(): Flow<List<GamePhoto>>
+    public fun getUserVictoryCount(userId: UserId): Flow<Int>
     public suspend fun createGame(value: CreateGame, isShuffled: Boolean): GameId
     public suspend fun deleteGame(gameId: GameId)
     public suspend fun updateGamePhoto(gameId: GameId, photo: PlatformFile?)
@@ -39,6 +41,7 @@ internal class DefaultGameRepository(
     private val transactionRunner: TransactionRunner,
     private val gameLocalDataSource: GameLocalDataSource,
     private val playerLocalDataSource: PlayerLocalDataSource,
+    private val playerResultLocalDataSource: PlayerResultLocalDataSource,
     private val fileLocalDataSource: FileLocalDataSource,
     private val coroutineScope: CoroutineScope,
 ) : GameRepository {
@@ -53,6 +56,10 @@ internal class DefaultGameRepository(
         return gameLocalDataSource.getGameById(gameId.value).map { game ->
             game?.photo
         }
+    }
+
+    override fun getUserVictoryCount(userId: UserId): Flow<Int> {
+        return playerResultLocalDataSource.getVictoryCountByUser(userId.value)
     }
 
     @OptIn(ExperimentalUuidApi::class)
@@ -113,7 +120,7 @@ internal class DefaultGameRepository(
         }.join()
     }
 
-    override fun getUserPhotos(userUd: UserId): Flow<List<GamePhoto>> {
+    override fun getUserPhotos(): Flow<List<GamePhoto>> {
         return gameLocalDataSource.getGames().map { games ->
             games.mapNotNull { game ->
                 when (val photo = game.photo) {
