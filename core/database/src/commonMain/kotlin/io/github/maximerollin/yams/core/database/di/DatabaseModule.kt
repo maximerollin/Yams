@@ -6,10 +6,12 @@ import io.github.maximerollin.yams.core.database.AppDatabaseBuilderFactory
 import io.github.maximerollin.yams.core.database.DefaultTransactionRunner
 import io.github.maximerollin.yams.core.database.GameLocalDataSource
 import io.github.maximerollin.yams.core.database.GamePlayStateLocalDataSource
+import io.github.maximerollin.yams.core.database.GameResultLocalDataSource
 import io.github.maximerollin.yams.core.database.PlayerLocalDataSource
 import io.github.maximerollin.yams.core.database.PlayerResultLocalDataSource
 import io.github.maximerollin.yams.core.database.RoomGameLocalDataSource
 import io.github.maximerollin.yams.core.database.RoomGamePlayStateLocalDataSource
+import io.github.maximerollin.yams.core.database.RoomGameResultLocalDataSource
 import io.github.maximerollin.yams.core.database.RoomPlayerLocalDataSource
 import io.github.maximerollin.yams.core.database.RoomPlayerResultLocalDataSource
 import io.github.maximerollin.yams.core.database.RoomScoreEntryLocalDataSource
@@ -35,6 +37,7 @@ public val databaseModule: Module = module {
     // Dao
     factory { get<AppDatabase>().userDao() }
     factory { get<AppDatabase>().gameDao() }
+    factory { get<AppDatabase>().gameResultDao() }
     factory { get<AppDatabase>().playerDao() }
     factory { get<AppDatabase>().playerResultDao() }
     factory { get<AppDatabase>().scoreEntryDao() }
@@ -42,6 +45,7 @@ public val databaseModule: Module = module {
     // DataSources
     factory<UserLocalDataSource> { RoomUserLocalDataSource(get()) }
     factory<GameLocalDataSource> { RoomGameLocalDataSource(get()) }
+    factory<GameResultLocalDataSource> { RoomGameResultLocalDataSource(get()) }
     factory<PlayerLocalDataSource> { RoomPlayerLocalDataSource(get()) }
     factory<PlayerResultLocalDataSource> { RoomPlayerResultLocalDataSource(get()) }
     factory<ScoreEntryLocalDataSource> { RoomScoreEntryLocalDataSource(get()) }

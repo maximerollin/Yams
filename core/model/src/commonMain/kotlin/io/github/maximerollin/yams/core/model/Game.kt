@@ -16,7 +16,7 @@ public sealed class Game {
         override val id: GameId,
         override val settings: GameSettings,
         override val startedAt: Instant,
-    ): Game()
+    ) : Game()
 
     public data class GameFinished(
         override val id: GameId,
@@ -26,6 +26,5 @@ public sealed class Game {
         val photo: PlatformFile?,
         val gameNumber: Int,
         val yamCount: Int,
-        // TODO : maybe add count of failed close yams
-    ): Game()
+    ) : Game()
 }
