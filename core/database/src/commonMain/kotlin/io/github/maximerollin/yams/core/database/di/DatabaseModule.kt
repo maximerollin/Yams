@@ -5,9 +5,11 @@ import io.github.maximerollin.yams.core.database.AppDatabase
 import io.github.maximerollin.yams.core.database.AppDatabaseBuilderFactory
 import io.github.maximerollin.yams.core.database.DefaultTransactionRunner
 import io.github.maximerollin.yams.core.database.GameLocalDataSource
+import io.github.maximerollin.yams.core.database.GamePlayStateLocalDataSource
 import io.github.maximerollin.yams.core.database.PlayerLocalDataSource
 import io.github.maximerollin.yams.core.database.PlayerResultLocalDataSource
 import io.github.maximerollin.yams.core.database.RoomGameLocalDataSource
+import io.github.maximerollin.yams.core.database.RoomGamePlayStateLocalDataSource
 import io.github.maximerollin.yams.core.database.RoomPlayerLocalDataSource
 import io.github.maximerollin.yams.core.database.RoomPlayerResultLocalDataSource
 import io.github.maximerollin.yams.core.database.RoomScoreEntryLocalDataSource
@@ -43,6 +45,8 @@ public val databaseModule: Module = module {
     factory<PlayerLocalDataSource> { RoomPlayerLocalDataSource(get()) }
     factory<PlayerResultLocalDataSource> { RoomPlayerResultLocalDataSource(get()) }
     factory<ScoreEntryLocalDataSource> { RoomScoreEntryLocalDataSource(get()) }
+    factory<GamePlayStateLocalDataSource> { RoomGamePlayStateLocalDataSource(get()) }
+
 
     // Transaction
     factory<TransactionRunner> { DefaultTransactionRunner(get()) }

@@ -1,8 +1,10 @@
 package io.github.maximerollin.yams.data.game
 
 import io.github.maximerollin.yams.core.database.GameLocalDataSource
+import io.github.maximerollin.yams.core.database.GamePlayStateLocalDataSource
 import io.github.maximerollin.yams.core.database.PlayerLocalDataSource
 import io.github.maximerollin.yams.core.database.PlayerResultLocalDataSource
+import io.github.maximerollin.yams.core.database.ScoreEntryLocalDataSource
 import io.github.maximerollin.yams.core.database.TransactionRunner
 import io.github.maximerollin.yams.core.database.entity.GameEntity
 import io.github.maximerollin.yams.core.database.entity.GameStatusEntity
@@ -12,8 +14,10 @@ import io.github.maximerollin.yams.core.file.FileLocalDataSource
 import io.github.maximerollin.yams.core.model.GameId
 import io.github.maximerollin.yams.core.model.UserId
 import io.github.maximerollin.yams.data.game.mapper.asEntity
+import io.github.maximerollin.yams.data.game.mapper.asExternalModel
 import io.github.maximerollin.yams.data.game.model.CreateGame
 import io.github.maximerollin.yams.data.game.model.GamePhoto
+import io.github.maximerollin.yams.data.game.model.GamePlayState
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.exists
 import io.github.vinceglb.filekit.readBytes
@@ -29,17 +33,22 @@ import kotlin.uuid.Uuid
 public interface GameRepository {
     public fun getNumberOfGames(): Flow<Int>
     public fun getNumberOfFinishedGames(): Flow<Int>
+    public fun getGamePlayState(gameId: GameId): Flow<GamePlayState?>
+    public fun getInProgressGamesPlayState(): Flow<List<GamePlayState>>
     public fun getGamePhoto(gameId: GameId): Flow<PlatformFile?>
     public fun getUserPhotos(): Flow<List<GamePhoto>>
     public fun getUserVictoryCount(userId: UserId): Flow<Int>
     public suspend fun createGame(value: CreateGame, isShuffled: Boolean): GameId
     public suspend fun deleteGame(gameId: GameId)
     public suspend fun updateGamePhoto(gameId: GameId, photo: PlatformFile?)
+    public suspend fun undoLastMove(gameId: GameId)
 }
 
 internal class DefaultGameRepository(
     private val transactionRunner: TransactionRunner,
+    private val scoreEntryLocalDataSource: ScoreEntryLocalDataSource,
     private val gameLocalDataSource: GameLocalDataSource,
+    private val gamePlayStateLocalDataSource: GamePlayStateLocalDataSource,
     private val playerLocalDataSource: PlayerLocalDataSource,
     private val playerResultLocalDataSource: PlayerResultLocalDataSource,
     private val fileLocalDataSource: FileLocalDataSource,
@@ -51,6 +60,16 @@ internal class DefaultGameRepository(
 
     override fun getNumberOfFinishedGames(): Flow<Int> = gameLocalDataSource
         .getNumberOfFinishedGames()
+
+    override fun getGamePlayState(gameId: GameId): Flow<GamePlayState?> =
+        gamePlayStateLocalDataSource
+            .getGamePlayState(gameId.value)
+            .map { it?.asExternalModel() }
+
+    override fun getInProgressGamesPlayState(): Flow<List<GamePlayState>> =
+        gamePlayStateLocalDataSource
+            .getInProgressGamesPlayStates()
+            .map { states -> states.map { it.asExternalModel() } }
 
     override fun getGamePhoto(gameId: GameId): Flow<PlatformFile?> {
         return gameLocalDataSource.getGameById(gameId.value).map { game ->
@@ -127,6 +146,30 @@ internal class DefaultGameRepository(
                     null -> null
                     else -> GamePhoto(gameId = GameId(game.id), photo = photo)
                 }
+            }
+        }
+    }
+
+    override suspend fun undoLastMove(gameId: GameId) {
+        transactionRunner {
+            scoreEntryLocalDataSource.deleteLastScoreEntryOfGame(gameId.value)
+
+            val gameEntity = gameLocalDataSource.getGameById(gameId.value).first()
+                ?: throw IllegalStateException("Game not found")
+
+            if (gameEntity.status != GameStatusEntity.IN_PROGRESS) {
+                gameLocalDataSource.updateGame(
+                    game = GameEntity(
+                        id = gameEntity.id,
+                        settings = gameEntity.settings,
+                        status = GameStatusEntity.IN_PROGRESS,
+                        createdAt = gameEntity.createdAt,
+                        updatedAt = Clock.System.now(),
+                        finishedAt = null,
+                        photo = gameEntity.photo,
+                        gameNumber = gameEntity.gameNumber,
+                    )
+                )
             }
         }
     }
