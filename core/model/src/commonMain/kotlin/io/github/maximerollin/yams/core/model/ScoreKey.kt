@@ -3,7 +3,7 @@ package io.github.maximerollin.yams.core.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-public class ScoreKey(public val value: String) {
+public data class ScoreKey(public val value: String) {
     init {
         require(value.isNotBlank()) { "Score key must not be blank" }
     }
