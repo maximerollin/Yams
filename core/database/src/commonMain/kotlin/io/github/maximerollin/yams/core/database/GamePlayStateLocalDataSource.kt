@@ -18,5 +18,5 @@ internal class RoomGamePlayStateLocalDataSource(
 
     override fun getInProgressGamesPlayStates(): Flow<List<GamePlayStateEntity>> =
         gamePlayStateDao.getGamesPlayStates(status = GameStatusEntity.IN_PROGRESS)
-    }
+    
 }

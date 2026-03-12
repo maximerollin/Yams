@@ -18,7 +18,7 @@ internal interface GameResultDao {
     fun getGamesResults(status: GameStatusEntity): Flow<List<GameResultEntity>>
 
     @Transaction
-    @Query("SELECT * FROM Game WHERE status = :status AND IN (SELECT gameId FROM Player WHERE userId = :userId) ORDER BY createdAt DESC")
+    @Query("SELECT * FROM Game WHERE status = :status AND id IN (SELECT gameId FROM Player WHERE userId = :userId) ORDER BY createdAt DESC")
     fun getGamesResultsByUser(
         status: GameStatusEntity,
         userId: String

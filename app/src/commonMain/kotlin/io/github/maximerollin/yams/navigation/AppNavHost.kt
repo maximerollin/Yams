@@ -121,6 +121,8 @@ private fun NavGraphBuilder.screens(navController: NavHostController) {
                 navController.graph.setStartDestination(HomeRoute)
             }
         },
-        onNavigateToResults = { _ -> },
+        onNavigateToResults = { gameId ->
+            
+        },
     )
 }

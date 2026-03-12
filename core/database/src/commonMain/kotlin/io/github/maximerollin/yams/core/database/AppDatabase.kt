@@ -9,6 +9,7 @@ import io.github.maximerollin.yams.core.database.converter.CustomGameSettingsCon
 import io.github.maximerollin.yams.core.database.converter.InstantConverter
 import io.github.maximerollin.yams.core.database.converter.PlatformFileConverter
 import io.github.maximerollin.yams.core.database.dao.GameDao
+import io.github.maximerollin.yams.core.database.dao.GamePlayStateDao
 import io.github.maximerollin.yams.core.database.dao.GameResultDao
 import io.github.maximerollin.yams.core.database.dao.PlayerDao
 import io.github.maximerollin.yams.core.database.dao.PlayerResultDao
@@ -40,6 +41,7 @@ internal abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun gameDao(): GameDao
     abstract fun gameResultDao(): GameResultDao
+    abstract fun gamePlayStateDao(): GamePlayStateDao
     abstract fun playerDao(): PlayerDao
     abstract fun playerResultDao(): PlayerResultDao
     abstract fun scoreEntryDao(): ScoreEntryDao

@@ -2,11 +2,11 @@ package io.github.maximerollin.yams.feature.game.preparation.components
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -94,7 +94,7 @@ public fun GamePreparationUserOrder(
                                         if (index == users.lastIndex) {
                                             it.padding(bottom = 4.dp)
                                         } else {
-                                            it
+                                            it.padding(top = 4.dp)
                                         }
                                     }
                                     .draggableHandle(

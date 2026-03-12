@@ -41,6 +41,7 @@ public val databaseModule: Module = module {
     factory { get<AppDatabase>().playerDao() }
     factory { get<AppDatabase>().playerResultDao() }
     factory { get<AppDatabase>().scoreEntryDao() }
+    factory { get<AppDatabase>().gamePlayStateDao() }
 
     // DataSources
     factory<UserLocalDataSource> { RoomUserLocalDataSource(get()) }
