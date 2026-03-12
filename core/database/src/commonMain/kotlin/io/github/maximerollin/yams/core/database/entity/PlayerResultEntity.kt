@@ -31,7 +31,7 @@ public data class PlayerResultEntity(
     val rank: Int,
     val finalScore: Int,
     val numberOfTurn: Int,
-    val rawScorePerTurn: Int,
+    val rawScore: Int,
     val isWinner: Boolean,
     val numberOfFiveOfAKind: Int,
 )

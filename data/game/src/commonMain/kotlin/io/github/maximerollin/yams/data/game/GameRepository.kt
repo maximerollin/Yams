@@ -2,6 +2,7 @@ package io.github.maximerollin.yams.data.game
 
 import io.github.maximerollin.yams.core.database.GameLocalDataSource
 import io.github.maximerollin.yams.core.database.GamePlayStateLocalDataSource
+import io.github.maximerollin.yams.core.database.GameResultLocalDataSource
 import io.github.maximerollin.yams.core.database.PlayerLocalDataSource
 import io.github.maximerollin.yams.core.database.PlayerResultLocalDataSource
 import io.github.maximerollin.yams.core.database.ScoreEntryLocalDataSource
@@ -16,8 +17,11 @@ import io.github.maximerollin.yams.core.model.UserId
 import io.github.maximerollin.yams.data.game.mapper.asEntity
 import io.github.maximerollin.yams.data.game.mapper.asExternalModel
 import io.github.maximerollin.yams.data.game.model.CreateGame
+import io.github.maximerollin.yams.data.game.model.CreateGameResult
+import io.github.maximerollin.yams.data.game.model.CreatePlayerResult
 import io.github.maximerollin.yams.data.game.model.GamePhoto
 import io.github.maximerollin.yams.data.game.model.GamePlayState
+import io.github.maximerollin.yams.data.game.model.GameResult
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.exists
 import io.github.vinceglb.filekit.readBytes
@@ -34,11 +38,15 @@ public interface GameRepository {
     public fun getNumberOfGames(): Flow<Int>
     public fun getNumberOfFinishedGames(): Flow<Int>
     public fun getGamePlayState(gameId: GameId): Flow<GamePlayState?>
+    public fun getGameResult(gameId: GameId): Flow<GameResult?>
+    public fun getGameResultsByPlayer(userId: UserId): Flow<List<GameResult>>
+    public fun getFinishedGamesResults(): Flow<List<GameResult>>
     public fun getInProgressGamesPlayState(): Flow<List<GamePlayState>>
     public fun getGamePhoto(gameId: GameId): Flow<PlatformFile?>
     public fun getUserPhotos(): Flow<List<GamePhoto>>
     public fun getUserVictoryCount(userId: UserId): Flow<Int>
     public suspend fun createGame(value: CreateGame, isShuffled: Boolean): GameId
+    public suspend fun finishGame(createGameResult: CreateGameResult)
     public suspend fun deleteGame(gameId: GameId)
     public suspend fun updateGamePhoto(gameId: GameId, photo: PlatformFile?)
     public suspend fun undoLastMove(gameId: GameId)
@@ -49,6 +57,7 @@ internal class DefaultGameRepository(
     private val scoreEntryLocalDataSource: ScoreEntryLocalDataSource,
     private val gameLocalDataSource: GameLocalDataSource,
     private val gamePlayStateLocalDataSource: GamePlayStateLocalDataSource,
+    private val gameResultLocalDataSource: GameResultLocalDataSource,
     private val playerLocalDataSource: PlayerLocalDataSource,
     private val playerResultLocalDataSource: PlayerResultLocalDataSource,
     private val fileLocalDataSource: FileLocalDataSource,
@@ -66,6 +75,21 @@ internal class DefaultGameRepository(
             .getGamePlayState(gameId.value)
             .map { it?.asExternalModel() }
 
+    override fun getGameResult(gameId: GameId): Flow<GameResult?> =
+        gameResultLocalDataSource
+            .getGameResult(gameId.value)
+            .map { it?.asExternalModel() }
+
+    override fun getGameResultsByPlayer(userId: UserId): Flow<List<GameResult>> =
+        gameResultLocalDataSource
+            .getFinishedGamesResultsByUser(userId.value)
+            .map { results -> results.map { it.asExternalModel() } }
+
+    override fun getFinishedGamesResults(): Flow<List<GameResult>> =
+        gameResultLocalDataSource
+            .getFinishedGamesResults()
+            .map { results -> results.map { it.asExternalModel() } }
+
     override fun getInProgressGamesPlayState(): Flow<List<GamePlayState>> =
         gamePlayStateLocalDataSource
             .getInProgressGamesPlayStates()
@@ -79,6 +103,17 @@ internal class DefaultGameRepository(
 
     override fun getUserVictoryCount(userId: UserId): Flow<Int> {
         return playerResultLocalDataSource.getVictoryCountByUser(userId.value)
+    }
+
+    override fun getUserPhotos(): Flow<List<GamePhoto>> {
+        return gameLocalDataSource.getGames().map { games ->
+            games.mapNotNull { game ->
+                when (val photo = game.photo) {
+                    null -> null
+                    else -> GamePhoto(gameId = GameId(game.id), photo = photo)
+                }
+            }
+        }
     }
 
     @OptIn(ExperimentalUuidApi::class)
@@ -139,17 +174,6 @@ internal class DefaultGameRepository(
         }.join()
     }
 
-    override fun getUserPhotos(): Flow<List<GamePhoto>> {
-        return gameLocalDataSource.getGames().map { games ->
-            games.mapNotNull { game ->
-                when (val photo = game.photo) {
-                    null -> null
-                    else -> GamePhoto(gameId = GameId(game.id), photo = photo)
-                }
-            }
-        }
-    }
-
     override suspend fun undoLastMove(gameId: GameId) {
         transactionRunner {
             scoreEntryLocalDataSource.deleteLastScoreEntryOfGame(gameId.value)
@@ -171,6 +195,30 @@ internal class DefaultGameRepository(
                     )
                 )
             }
+        }
+    }
+
+    override suspend fun finishGame(createGameResult: CreateGameResult) {
+        val gameEntity = gameLocalDataSource.getGameById(createGameResult.gameId.value).first()
+            ?: throw IllegalStateException("Game not found")
+
+        val playerResults = createGameResult.playersResults.map(CreatePlayerResult::asEntity)
+
+        transactionRunner {
+            playerResultLocalDataSource.upsertAll(playerResults)
+
+            gameLocalDataSource.updateGame(
+                game = GameEntity(
+                    id = createGameResult.gameId.value,
+                    settings = gameEntity.settings,
+                    status = GameStatusEntity.FINISHED,
+                    createdAt = gameEntity.createdAt,
+                    updatedAt = Clock.System.now(),
+                    finishedAt = createGameResult.finishedAt,
+                    photo = gameEntity.photo,
+                    gameNumber = gameEntity.gameNumber,
+                )
+            )
         }
     }
 }

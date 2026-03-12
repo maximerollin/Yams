@@ -13,7 +13,7 @@ internal fun CreatePlayerResult.asEntity() = PlayerResultEntity(
     finalScore = finalScore,
     numberOfTurn = numberOfTurn,
     isWinner = isWinner,
-    rawScorePerTurn = rawScorePerTurn,
+    rawScore = rawScore,
     numberOfFiveOfAKind = numberOfFiveOfAKind
 )
 
@@ -25,7 +25,7 @@ internal fun PlayerResultWithPlayerEntity.asExternalModel() = PlayerResult(
     player = player.asExternalModel(),
     rank = result.rank,
     finalScore = result.finalScore,
-    rawScorePerTurn = result.rawScorePerTurn,
+    rawScore = result.rawScore,
     isWinner = result.isWinner,
     numberOfTurn = result.numberOfTurn,
     numberOfFiveOfAKind = result.numberOfFiveOfAKind
