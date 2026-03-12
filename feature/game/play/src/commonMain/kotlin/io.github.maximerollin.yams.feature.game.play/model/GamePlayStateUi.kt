@@ -11,7 +11,7 @@ internal data class GamePlayStateUi(
     val currentPlayer: Player,
 ) {
     val currentPlayerState: PlayerState =
-        playerStates.find { it.player.userId === currentPlayer.userId }
+        playerStates.find { it.player.userId == currentPlayer.userId }
             ?: throw IllegalStateException("Current player state not found")
 }
 
