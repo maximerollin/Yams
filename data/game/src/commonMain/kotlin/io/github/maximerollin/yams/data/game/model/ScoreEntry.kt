@@ -22,6 +22,7 @@ public data class ScoreEntry(
     val userId: UserId,
     val cell: ScoreCellRef,
     val score: Int,
+    val awardsExtraFiveOfAKindBonus: Boolean,
     val timestamp: Instant,
 )
 
@@ -30,4 +31,5 @@ public data class CreateScoreEntry(
     val userId: UserId,
     val cell: ScoreCellRef,
     val score: Int,
+    val awardsExtraFiveOfAKindBonus: Boolean = false,
 )

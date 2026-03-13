@@ -17,5 +17,6 @@ internal fun ScoreEntryEntity.asExternalModel(): ScoreEntry = ScoreEntry(
         columnIndex = columnIndex,
     ),
     score = score,
+    awardsExtraFiveOfAKindBonus = awardsExtraFiveOfAKindBonus,
     timestamp = timestamp,
 )

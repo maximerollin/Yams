@@ -40,8 +40,13 @@ internal class GetGamePlayStateUseCase(
                 scoreEntries = playerScoreEntries.toScoreEntriesByKey(
                     columnCount = game.settings.columnCount,
                 ),
+                extraFiveOfAKindScores = playerScoreEntries.toExtraFiveOfAKindScores(
+                    columnCount = game.settings.columnCount,
+                    extraFiveOfAKindValue = game.settings.extraFiveOfAKindValue,
+                ),
                 score = scoreByPlayer.getValue(player.userId),
                 rank = ranksByPlayer.getValue(player.userId),
+                fiveOfAKindCount = GamePlayStateLogic.getFiveOfAKindCount(playerScoreEntries),
             )
         }
 
@@ -65,6 +70,21 @@ private fun List<ScoreEntry>.toScoreEntriesByKey(
         }
     }
 
+private fun List<ScoreEntry>.toExtraFiveOfAKindScores(
+    columnCount: Int,
+    extraFiveOfAKindValue: Int?,
+): List<Int> {
+    val bonusScoresByColumnIndex = filter { it.awardsExtraFiveOfAKindBonus }
+        .groupBy { it.cell.columnIndex }
+        .mapValues { (_, entries) ->
+            entries.size * (extraFiveOfAKindValue ?: 0)
+        }
+
+    return List(columnCount) { columnIndex ->
+        bonusScoresByColumnIndex[columnIndex] ?: 0
+    }
+}
+
 private fun String.asScoreKey(): ScoreKey = when (this) {
     ScoreKey.ONES.value -> ScoreKey.ONES
     ScoreKey.TWOS.value -> ScoreKey.TWOS
@@ -78,7 +98,6 @@ private fun String.asScoreKey(): ScoreKey = when (this) {
     ScoreKey.SMALL_STRAIGHT.value -> ScoreKey.SMALL_STRAIGHT
     ScoreKey.LARGE_STRAIGHT.value -> ScoreKey.LARGE_STRAIGHT
     ScoreKey.FIVE_OF_A_KIND.value -> ScoreKey.FIVE_OF_A_KIND
-    ScoreKey.EXTRA_FIVE_OF_A_KIND.value -> ScoreKey.EXTRA_FIVE_OF_A_KIND
     ScoreKey.CHANCE.value -> ScoreKey.CHANCE
     else -> ScoreKey(this)
 }

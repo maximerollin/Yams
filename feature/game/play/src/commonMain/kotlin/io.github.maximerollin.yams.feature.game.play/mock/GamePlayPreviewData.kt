@@ -57,7 +57,6 @@ internal fun gamePlayPreviewUiState(columnCount: Int = 1): GamePlayStateUi {
                 ScoreKey.SMALL_STRAIGHT to columnValues(normalizedColumnCount, 30, null, null),
                 ScoreKey.LARGE_STRAIGHT to columnValues(normalizedColumnCount, null, null, null),
                 ScoreKey.FIVE_OF_A_KIND to columnValues(normalizedColumnCount, null, null, null),
-                ScoreKey.EXTRA_FIVE_OF_A_KIND to columnValues(normalizedColumnCount, null, null, null),
                 ScoreKey.CHANCE to columnValues(normalizedColumnCount, 21, 19, null),
                 ScoreKey.custom(settings.customGameSettings[0].id) to columnValues(
                     normalizedColumnCount,
@@ -91,7 +90,6 @@ internal fun gamePlayPreviewUiState(columnCount: Int = 1): GamePlayStateUi {
                 ScoreKey.SMALL_STRAIGHT to columnValues(normalizedColumnCount, 30, null, 30, null),
                 ScoreKey.LARGE_STRAIGHT to columnValues(normalizedColumnCount, 40, null, null, null),
                 ScoreKey.FIVE_OF_A_KIND to columnValues(normalizedColumnCount, 50, null, null, null),
-                ScoreKey.EXTRA_FIVE_OF_A_KIND to columnValues(normalizedColumnCount, null, null, null, null),
                 ScoreKey.CHANCE to columnValues(normalizedColumnCount, null, 21, 18, null),
                 ScoreKey.custom(settings.customGameSettings[0].id) to columnValues(
                     normalizedColumnCount,
@@ -127,7 +125,6 @@ internal fun gamePlayPreviewUiState(columnCount: Int = 1): GamePlayStateUi {
                 ScoreKey.SMALL_STRAIGHT to columnValues(normalizedColumnCount, null, 30, null),
                 ScoreKey.LARGE_STRAIGHT to columnValues(normalizedColumnCount, null, null, null),
                 ScoreKey.FIVE_OF_A_KIND to columnValues(normalizedColumnCount, null, null, null),
-                ScoreKey.EXTRA_FIVE_OF_A_KIND to columnValues(normalizedColumnCount, null, null, null),
                 ScoreKey.CHANCE to columnValues(normalizedColumnCount, 23, 17, null),
                 ScoreKey.custom(settings.customGameSettings[0].id) to columnValues(
                     normalizedColumnCount,
@@ -176,8 +173,20 @@ private fun previewPlayerState(
     name: String,
     scoreEntries: Map<ScoreKey, List<Int?>>,
     settings: GameSettings,
+    extraFiveOfAKindScores: List<Int> = List(settings.columnCount) { 0 },
 ): PlayerState {
     val user = UserMocks.generate(name)
+    val extraFiveOfAKindValue = settings.extraFiveOfAKindValue
+    val extraFiveOfAKindCount = if (
+        settings.isExtraFiveOfAKindEnabled &&
+        extraFiveOfAKindValue != null &&
+        extraFiveOfAKindValue > 0
+    ) {
+        extraFiveOfAKindScores.sumOf { score -> score / extraFiveOfAKindValue }
+    } else {
+        0
+    }
+
     return PlayerState(
         player = Player(
             userId = user.id,
@@ -187,18 +196,23 @@ private fun previewPlayerState(
             userIndex = userIndex,
         ),
         scoreEntries = scoreEntries,
-        score = previewScore(scoreEntries, settings),
+        extraFiveOfAKindScores = extraFiveOfAKindScores,
+        score = previewScore(scoreEntries, extraFiveOfAKindScores, settings),
         rank = 0,
+        fiveOfAKindCount = scoreEntries[ScoreKey.FIVE_OF_A_KIND]
+            .orEmpty()
+            .count { score -> (score ?: 0) > 0 } + extraFiveOfAKindCount,
     )
 }
 
 private fun previewScore(
     scoreEntries: Map<ScoreKey, List<Int?>>,
+    extraFiveOfAKindScores: List<Int>,
     settings: GameSettings,
 ): Int {
     val baseScore = scoreEntries.values.sumOf { scores ->
         scores.sumOf { it ?: 0 }
-    }
+    } + extraFiveOfAKindScores.sum()
     if (!settings.isUpperBonusEnabled) {
         return baseScore
     }

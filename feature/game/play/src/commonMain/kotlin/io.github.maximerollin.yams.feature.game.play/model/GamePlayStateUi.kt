@@ -18,8 +18,10 @@ internal data class GamePlayStateUi(
 internal data class PlayerState(
     val player: Player,
     val scoreEntries: Map<ScoreKey, List<Int?>>,
+    val extraFiveOfAKindScores: List<Int>,
     val score: Int,
     val rank: Int,
+    val fiveOfAKindCount: Int,
 )
 
 internal data class GamePlayColumnSummary(

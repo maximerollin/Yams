@@ -3,6 +3,7 @@ package io.github.maximerollin.yams.feature.game.play
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.maximerollin.yams.core.model.GameId
+import io.github.maximerollin.yams.data.game.GameRepository
 import io.github.maximerollin.yams.data.game.ScoreEntryRepository
 import io.github.maximerollin.yams.data.game.model.CreateScoreEntry
 import io.github.maximerollin.yams.data.game.model.ScoreCellRef
@@ -19,6 +20,7 @@ import org.koin.core.annotation.InjectedParam
 
 internal class GamePlayViewModel(
     @InjectedParam private val gameId: GameId,
+    private val gameRepository: GameRepository,
     private val scoreEntryRepository: ScoreEntryRepository,
     private val finishGameUseCase: FinishGameUseCase,
     private val getGetGamePlayStateUseCase: GetGamePlayStateUseCase,
@@ -35,17 +37,22 @@ internal class GamePlayViewModel(
     private val _navigateToGameResult: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val navigateToGameResult: StateFlow<Boolean> = _navigateToGameResult
 
-    fun onScore(score: Int, cell: ScoreCellRef) {
+    fun onScore(
+        score: Int,
+        cell: ScoreCellRef,
+        awardExtraFiveOfAKindBonus: Boolean,
+    ) {
         if (gamePlayStateUi.value?.status != GameStatus.ONGOING) return
 
         viewModelScope.launch {
             gamePlayStateUi.value?.let { state ->
                 scoreEntryRepository.createScoreEntry(
-                    value = CreateScoreEntry(
+                    CreateScoreEntry(
                         gameId = gameId,
                         userId = state.currentPlayer.userId,
                         cell = cell,
                         score = score,
+                        awardsExtraFiveOfAKindBonus = awardExtraFiveOfAKindBonus,
                     )
                 )
             }
@@ -54,7 +61,7 @@ internal class GamePlayViewModel(
 
     fun onUndo() {
         viewModelScope.launch {
-            scoreEntryRepository.deleteLastScoreEntryOfGame(gameId)
+            gameRepository.undoLastMove(gameId)
         }
     }
 

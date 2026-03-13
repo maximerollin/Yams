@@ -1,5 +1,6 @@
 package io.github.maximerollin.yams.core.database.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -32,5 +33,7 @@ public data class ScoreEntryEntity(
     val scoreKey: String,
     val columnIndex: Int,
     val score: Int,
+    @ColumnInfo(defaultValue = "0")
+    val awardsExtraFiveOfAKindBonus: Boolean = false,
     val timestamp: Instant,
 )

@@ -26,9 +26,20 @@ internal class GamePlayStateLogic {
             scoreEntries: List<ScoreEntry>,
             gameSettings: GameSettings,
         ): Int {
+            val extraFiveOfAKindValue = gameSettings.extraFiveOfAKindValue
             val baseScore = scoreEntries.sumOf(ScoreEntry::score)
+            val derivedExtraFiveOfAKindBonus = if (
+                gameSettings.isExtraFiveOfAKindEnabled &&
+                extraFiveOfAKindValue != null
+            ) {
+                scoreEntries.count { scoreEntry ->
+                    scoreEntry.awardsExtraFiveOfAKindBonus
+                } * extraFiveOfAKindValue
+            } else {
+                0
+            }
             if (!gameSettings.isUpperBonusEnabled) {
-                return baseScore
+                return baseScore + derivedExtraFiveOfAKindBonus
             }
 
             val upperBonus = scoreEntries
@@ -44,7 +55,7 @@ internal class GamePlayStateLogic {
                     }
                 }
 
-            return baseScore + upperBonus
+            return baseScore + derivedExtraFiveOfAKindBonus + upperBonus
         }
 
         fun getRanks(scoreByPlayer: Map<UserId, Int>): Map<UserId, Int> {
@@ -68,7 +79,7 @@ internal class GamePlayStateLogic {
             scoreEntriesByUser: Map<UserId, List<ScoreEntry>>,
         ): Player {
             return players
-                .minByOrNull { scoreEntriesByUser[it.userId]?.size ?: 0 }
+                .minByOrNull { player -> scoreEntriesByUser[player.userId]?.size ?: 0 }
                 ?: error("No players")
         }
 
@@ -96,7 +107,6 @@ internal class GamePlayStateLogic {
                 gameSettings.isSmallStraightEnabled,
                 gameSettings.isLargeStraightEnabled,
                 gameSettings.isFiveOfAKindEnabled,
-                gameSettings.isExtraFiveOfAKindEnabled && gameSettings.extraFiveOfAKindValue != null,
                 gameSettings.isChanceEnabled,
             ).count { it }
 
@@ -111,5 +121,12 @@ internal class GamePlayStateLogic {
 
             return scoreEntriesPerColumn * gameSettings.columnCount
         }
+
+        fun getFiveOfAKindCount(scoreEntries: List<ScoreEntry>): Int =
+            scoreEntries.count { scoreEntry ->
+                scoreEntry.cell.key == ScoreKey.FIVE_OF_A_KIND && scoreEntry.score > 0
+            } + scoreEntries.count { scoreEntry ->
+                scoreEntry.awardsExtraFiveOfAKindBonus
+            }
     }
 }
