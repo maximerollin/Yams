@@ -555,17 +555,6 @@ private fun buildMainScoreRows(settings: GameSettings): List<ScoreRowUi> = build
             ),
         )
     }
-    if (settings.isExtraFiveOfAKindEnabled && settings.extraFiveOfAKindValue != null) {
-        add(
-            ScoreRowUi(
-                key = ScoreKey.EXTRA_FIVE_OF_A_KIND,
-                label = "Yams bonus",
-                supportingText = "Automatique: +${settings.extraFiveOfAKindValue} par Yam supplementaire",
-                isInteractive = false,
-                countsAsTurn = false,
-            ),
-        )
-    }
     if (settings.isChanceEnabled) {
         add(
             ScoreRowUi(
@@ -584,6 +573,17 @@ private fun buildMainScoreRows(settings: GameSettings): List<ScoreRowUi> = build
                     fixedValue = null,
                     allFiveDiceOptions = AllFiveDiceScoreOptions,
                 ),
+            ),
+        )
+    }
+    if (settings.isExtraFiveOfAKindEnabled && settings.extraFiveOfAKindValue != null) {
+        add(
+            ScoreRowUi(
+                key = ScoreKey.EXTRA_FIVE_OF_A_KIND,
+                label = "Yams bonus",
+                supportingText = "Automatique: +${settings.extraFiveOfAKindValue} par Yam supplementaire",
+                isInteractive = false,
+                countsAsTurn = false,
             ),
         )
     }
