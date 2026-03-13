@@ -1,60 +1,57 @@
 package io.github.maximerollin.yams.feature.game.play
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.FilledTonalIconButton
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import io.github.maximerollin.yams.core.designsystem.component.AppTopBar
-import io.github.maximerollin.yams.core.designsystem.icon.ChevronLeft
-import io.github.maximerollin.yams.core.designsystem.icon.ChevronRight
-import io.github.maximerollin.yams.core.designsystem.icon.Crown
-import io.github.maximerollin.yams.core.designsystem.icon.PersonRaisedHand
-import io.github.maximerollin.yams.core.designsystem.icon.Target
-import io.github.maximerollin.yams.core.designsystem.icon.Timeline
-import io.github.maximerollin.yams.core.designsystem.icon.Tune
-import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
-import io.github.maximerollin.yams.core.designsystem.theme.colors
-import io.github.maximerollin.yams.core.mocks.UserMocks
+import io.github.maximerollin.yams.core.model.Game
 import io.github.maximerollin.yams.core.model.GameId
 import io.github.maximerollin.yams.core.model.GameSettings
-import io.github.maximerollin.yams.core.model.User
+import io.github.maximerollin.yams.core.model.ScoreKey
+import io.github.maximerollin.yams.core.designsystem.icon.Undo
+import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
+import io.github.maximerollin.yams.data.game.model.ScoreCellRef
+import io.github.maximerollin.yams.feature.game.play.components.GamePlayCombinationSection
+import io.github.maximerollin.yams.feature.game.play.components.GamePlayCustomRulesSection
+import io.github.maximerollin.yams.feature.game.play.components.GamePlayFinishedDialog
+import io.github.maximerollin.yams.feature.game.play.components.GamePlayInformationBottomSheet
+import io.github.maximerollin.yams.feature.game.play.components.GamePlayScoreSheetOverviewCard
+import io.github.maximerollin.yams.feature.game.play.components.GamePlayTopBar
+import io.github.maximerollin.yams.feature.game.play.components.GamePlayUpperScoreSection
+import io.github.maximerollin.yams.feature.game.play.mock.gamePlayPreviewUiState
+import io.github.maximerollin.yams.feature.game.play.model.GamePlayColumnSummary
+import io.github.maximerollin.yams.feature.game.play.model.GamePlayStateUi
+import io.github.maximerollin.yams.feature.game.play.model.GameStatus
+import io.github.maximerollin.yams.feature.game.play.model.PlayerState
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -63,656 +60,412 @@ internal fun GamePlayRoute(
     gameId: GameId,
     onNavigateHome: () -> Unit,
     onNavigateToResults: (gameId: GameId) -> Unit,
-    viewModel: GamePlayViewModel = koinViewModel { parametersOf(gameId) }
+    viewModel: GamePlayViewModel = koinViewModel { parametersOf(gameId) },
 ) {
-    GamePlayScreen()
+    val uiState by viewModel.gamePlayStateUi.collectAsStateWithLifecycle()
+    val navigateToGameResult by viewModel.navigateToGameResult.collectAsStateWithLifecycle()
+
+    LaunchedEffect(navigateToGameResult) {
+        if (navigateToGameResult) {
+            onNavigateToResults(gameId)
+        }
+    }
+
+    GamePlayScreen(
+        uiState = uiState,
+        onNavigateHome = onNavigateHome,
+        onScore = viewModel::onScore,
+        onUndo = viewModel::onUndo,
+        onFinishGame = viewModel::onFinishGame,
+    )
 }
 
 @Composable
 private fun GamePlayScreen(
-    uiState: GamePlayMockUiState = gamePlayMockUiState(),
-    initialSelectedPlayerIndex: Int = uiState.currentTurnPlayerIndex,
+    uiState: GamePlayStateUi?,
+    onNavigateHome: () -> Unit = {},
+    onScore: (Int, ScoreCellRef, Boolean) -> Unit = { _, _, _ -> },
+    onUndo: () -> Unit = {},
+    onFinishGame: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
-    var selectedPlayerIndex by rememberSaveable(
-        uiState.players.size,
-        initialSelectedPlayerIndex,
-    ) {
-        mutableStateOf(initialSelectedPlayerIndex.coerceIn(0, uiState.players.lastIndex))
+    var isInfoSheetVisible by rememberSaveable { mutableStateOf(false) }
+    var scoreSelectionRequest by remember { mutableStateOf<ScoreSelectionRequest?>(null) }
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    if (uiState == null) {
+        GamePlayMessageState(
+            message = "Chargement de la feuille de score...",
+            onNavigateHome = onNavigateHome,
+            modifier = modifier,
+        )
+        return
     }
 
-    val selectedPlayer = uiState.players[selectedPlayerIndex]
-    val currentTurnPlayer = uiState.players[uiState.currentTurnPlayerIndex]
-    val isEditable = selectedPlayerIndex == uiState.currentTurnPlayerIndex
-    val upperRows = buildUpperScoreRows()
-    val lowerRows = buildMainScoreRows(uiState.settings)
-    val customRows = buildCustomScoreRows(uiState.settings)
-    val upperSubtotal = selectedPlayer.sumOf(upperRows)
-    val upperTotal = upperSubtotal + upperBonus(upperSubtotal, uiState.settings)
-    val lowerTotal = selectedPlayer.sumOf(lowerRows)
-    val customTotal = selectedPlayer.sumOf(customRows)
-    val overallTotal = upperTotal + lowerTotal + customTotal
+    val settings = uiState.game.settings
+    if (uiState.playerStates.isEmpty()) {
+        GamePlayMessageState(
+            message = "Aucune feuille de score disponible pour le moment.",
+            onNavigateHome = onNavigateHome,
+            onShowInformation = { isInfoSheetVisible = true },
+            modifier = modifier,
+        )
 
+        if (isInfoSheetVisible) {
+            GamePlayInformationBottomSheet(
+                settings = settings,
+                onDismiss = { isInfoSheetVisible = false },
+            )
+        }
+        return
+    }
+
+    val currentTurnPlayer = uiState.currentPlayerState
+    val currentTurnPlayerIndex = uiState.playerStates.indexOfFirst { playerState ->
+        playerState.player.userId == uiState.currentPlayer.userId
+    }.coerceAtLeast(0)
+
+    var selectedPlayerIndex by rememberSaveable(
+        uiState.playerStates.size,
+        currentTurnPlayerIndex,
+    ) {
+        mutableStateOf(currentTurnPlayerIndex.coerceIn(0, uiState.playerStates.lastIndex))
+    }
+
+    val selectedPlayer = uiState.playerStates[selectedPlayerIndex]
+    val columnCount = settings.columnCount.coerceAtLeast(1)
+    val isMultiColumn = columnCount > 1
+    val shouldShowFinishDialog =
+        uiState.status == GameStatus.ENDED && uiState.game is Game.GameInProgress
+    val isActivePlayerSheet = uiState.status == GameStatus.ONGOING &&
+            selectedPlayer.player.userId == currentTurnPlayer.player.userId
+    val isEditable = isActivePlayerSheet
+    val hasUndoableMove = uiState.playerStates.any { playerState ->
+        playerState.scoreEntries.values.any { columnScores ->
+            columnScores.any { it != null }
+        }
+    }
+
+    val upperRows = buildUpperScoreRows()
+    val lowerRows = buildMainScoreRows(settings)
+    val customRows = buildCustomScoreRows(settings)
+    val allPlayableRows = (upperRows + lowerRows + customRows).filter(ScoreRowUi::countsAsTurn)
+
+    val screenScrollState = rememberScrollState()
+    val upperScrollState = rememberScrollState()
+    val lowerScrollState = rememberScrollState()
+    val customScrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
+
+    val upperSubtotals = List(columnCount) { columnIndex ->
+        selectedPlayer.sumOf(upperRows, columnIndex)
+    }
+    val upperBonuses = List(columnCount) { columnIndex ->
+        upperBonus(upperSubtotals[columnIndex], settings)
+    }
+    val upperTotals = List(columnCount) { columnIndex ->
+        upperSubtotals[columnIndex] + upperBonuses[columnIndex]
+    }
+    val lowerTotals = List(columnCount) { columnIndex ->
+        selectedPlayer.sumOf(lowerRows, columnIndex)
+    }
+    val customTotals = List(columnCount) { columnIndex ->
+        selectedPlayer.sumOf(customRows, columnIndex)
+    }
+    val columnSummaries = List(columnCount) { columnIndex ->
+        GamePlayColumnSummary(
+            columnIndex = columnIndex,
+            filledCells = selectedPlayer.filledCount(allPlayableRows, columnIndex),
+            totalCells = allPlayableRows.size,
+            totalScore = upperTotals[columnIndex] + lowerTotals[columnIndex] + customTotals[columnIndex],
+        )
+    }
+    val overallTotal = columnSummaries.sumOf(GamePlayColumnSummary::totalScore)
+
+    LaunchedEffect(selectedPlayer.player.userId) {
+        scoreSelectionRequest = null
+    }
+
+    fun submitScore(option: ScoreSelectionOption, cell: ScoreCellRef) {
+        if (!isEditable) return
+        scoreSelectionRequest = null
+        coroutineScope.launch {
+            onScore(
+                option.score,
+                cell,
+                option.awardsExtraFiveOfAKindBonus,
+            )
+            if (option.awardsExtraFiveOfAKindBonus) {
+                snackbarHostState.showSnackbar(
+                    "Yam bonus : ${settings.extraFiveOfAKindValue ?: 0} points supplementaires !"
+                )
+            }
+            screenScrollState.animateScrollTo(0)
+        }
+    }
+
+    fun onScoreCellClick(row: ScoreRowUi, columnIndex: Int) {
+        if (!isEditable || !row.isInteractive) return
+        if (selectedPlayer.valuesFor(row.key, columnCount).getOrNull(columnIndex) != null) return
+
+        val cell = ScoreCellRef(
+            key = row.key,
+            columnIndex = columnIndex,
+        )
+
+        if (row.scoreOptions.isEmpty()) {
+            row.fixedScore?.let { fixedScore ->
+                submitScore(
+                    option = ScoreSelectionOption(score = fixedScore),
+                    cell = cell,
+                )
+            }
+            return
+        }
+
+        scoreSelectionRequest = ScoreSelectionRequest(
+            cell = cell,
+            options = scoreSelectionOptions(
+                row = row,
+                columnIndex = columnIndex,
+                selectedPlayer = selectedPlayer,
+                settings = settings,
+            ),
+        )
+    }
+
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+    ) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = {
+                GamePlayTopBar(
+                    onNavigateHome = onNavigateHome,
+                    onShowInformation = { isInfoSheetVisible = true },
+                )
+            },
+            snackbarHost = {
+                SnackbarHost(hostState = snackbarHostState)
+            }
+        ) { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .verticalScroll(screenScrollState)
+                    .padding(horizontal = 20.dp, vertical = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                GamePlayScoreSheetOverviewCard(
+                    selectedPlayer = selectedPlayer,
+                    currentTurnPlayer = currentTurnPlayer,
+                    columnSummaries = columnSummaries,
+                    showColumnSummaries = isMultiColumn,
+                    isEditable = isActivePlayerSheet,
+                    overallTotal = overallTotal,
+                    selectedIndex = selectedPlayerIndex,
+                    playerCount = uiState.playerStates.size,
+                    onPreviousPlayer = {
+                        selectedPlayerIndex = if (selectedPlayerIndex == 0) {
+                            uiState.playerStates.lastIndex
+                        } else {
+                            selectedPlayerIndex - 1
+                        }
+                    },
+                    onNextPlayer = {
+                        selectedPlayerIndex = (selectedPlayerIndex + 1) % uiState.playerStates.size
+                    },
+                )
+
+                GamePlayUpperScoreSection(
+                    settings = settings,
+                    rows = upperRows,
+                    selectedPlayer = selectedPlayer,
+                    columnCount = columnCount,
+                    isMultiColumn = isMultiColumn,
+                    isEditable = isEditable,
+                    scrollState = upperScrollState,
+                    upperSubtotals = upperSubtotals,
+                    upperBonuses = upperBonuses,
+                    upperTotals = upperTotals,
+                    onScoreCellClick = ::onScoreCellClick,
+                    scoreSelectionRequest = scoreSelectionRequest,
+                    onDismissScoreSelection = { scoreSelectionRequest = null },
+                    onSelectScore = ::submitScore,
+                )
+
+                GamePlayCombinationSection(
+                    rows = lowerRows,
+                    selectedPlayer = selectedPlayer,
+                    columnCount = columnCount,
+                    isMultiColumn = isMultiColumn,
+                    isEditable = isEditable,
+                    lowerTotals = lowerTotals,
+                    scrollState = lowerScrollState,
+                    onScoreCellClick = ::onScoreCellClick,
+                    scoreSelectionRequest = scoreSelectionRequest,
+                    onDismissScoreSelection = { scoreSelectionRequest = null },
+                    onSelectScore = ::submitScore,
+                )
+
+                GamePlayCustomRulesSection(
+                    rows = customRows,
+                    selectedPlayer = selectedPlayer,
+                    columnCount = columnCount,
+                    isMultiColumn = isMultiColumn,
+                    isEditable = isEditable,
+                    customTotals = customTotals,
+                    scrollState = customScrollState,
+                    onScoreCellClick = ::onScoreCellClick,
+                    scoreSelectionRequest = scoreSelectionRequest,
+                    onDismissScoreSelection = { scoreSelectionRequest = null },
+                    onSelectScore = ::submitScore,
+                )
+            }
+        }
+
+        if (hasUndoableMove) {
+            FloatingActionButton(
+                onClick = onUndo,
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .navigationBarsPadding()
+                    .padding(start = 20.dp, bottom = 24.dp),
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                elevation = FloatingActionButtonDefaults.elevation(),
+            ) {
+                Icon(
+                    imageVector = YamsIcons.Undo,
+                    contentDescription = "Annuler le dernier coup",
+                )
+            }
+        }
+    }
+
+    if (isInfoSheetVisible) {
+        GamePlayInformationBottomSheet(
+            settings = settings,
+            onDismiss = { isInfoSheetVisible = false },
+        )
+    }
+
+    if (shouldShowFinishDialog) {
+        GamePlayFinishedDialog(
+            onGoToResults = onFinishGame,
+            onUndoLastMove = {
+                scoreSelectionRequest = null
+                onUndo()
+            },
+        )
+    }
+}
+
+@Composable
+private fun GamePlayMessageState(
+    message: String,
+    onNavigateHome: () -> Unit,
+    modifier: Modifier = Modifier,
+    onShowInformation: (() -> Unit)? = null,
+) {
     Scaffold(
         modifier = modifier.background(MaterialTheme.colorScheme.background),
         topBar = {
-            AppTopBar(
-                isDividerVisible = false,
-                center = {
-                    Text(
-                        text = "Feuille de score",
-                        modifier = Modifier.fillMaxWidth(),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = YamsTheme.colors.brown,
-                        textAlign = TextAlign.Center,
-                    )
-                }
+            GamePlayTopBar(
+                onNavigateHome = onNavigateHome,
+                onShowInformation = onShowInformation ?: {},
             )
-        }
+        },
     ) { innerPadding ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp, vertical = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+                .padding(horizontal = 20.dp),
+            contentAlignment = Alignment.Center,
         ) {
-            ScoreSheetOverviewCard(
-                selectedPlayer = selectedPlayer,
-                currentTurnPlayer = currentTurnPlayer,
-                isEditable = isEditable,
-                overallTotal = overallTotal,
-                selectedIndex = selectedPlayerIndex,
-                playerCount = uiState.players.size,
-                onPreviousPlayer = {
-                    selectedPlayerIndex =
-                        if (selectedPlayerIndex == 0) uiState.players.lastIndex else selectedPlayerIndex - 1
-                },
-                onNextPlayer = {
-                    selectedPlayerIndex = (selectedPlayerIndex + 1) % uiState.players.size
-                },
-            )
-
-            ScoreSection(
-                title = "Table mineure",
-                subtitle = "De 1 à 6, avec le récapitulatif du bonus du haut.",
-                icon = YamsIcons.Target,
-                accentColor = YamsTheme.colors.gold,
-                trailingValue = upperTotal.toString(),
-            ) {
-                upperRows.forEachIndexed { index, row ->
-                    ScoreRow(
-                        row = row,
-                        value = selectedPlayer.scores[row.key],
-                        isEditable = isEditable,
-                    )
-                    if (index < upperRows.lastIndex) {
-                        HorizontalDivider(color = MaterialTheme.colorScheme.surface)
-                    }
-                }
-
-                HorizontalDivider(color = MaterialTheme.colorScheme.surface)
-
-                SummaryRow(
-                    label = "Sous-total",
-                    value = upperSubtotal.toString(),
-                    supportingText = "Somme actuelle de la section du haut",
-                )
-                SummaryRow(
-                    label = "Seuil bonus",
-                    value = uiState.settings.upperBonusThreshold.toString(),
-                    supportingText = "Le bonus démarre à partir de ce total",
-                )
-                SummaryRow(
-                    label = "Valeur bonus",
-                    value = uiState.settings.upperBonusValue.toString(),
-                    supportingText = if (uiState.settings.isUpperBonusEnabled) {
-                        "Valeur ajoutée une fois le seuil atteint"
-                    } else {
-                        "Bonus désactivé dans cette partie"
-                    },
-                )
-                SummaryRow(
-                    label = "Total table mineure",
-                    value = upperTotal.toString(),
-                    supportingText = if (uiState.settings.isUpperBonusEnabled) {
-                        bonusStatusText(
-                            subtotal = upperSubtotal,
-                            settings = uiState.settings,
-                        )
-                    } else {
-                        "Calcul sans bonus"
-                    },
-                    emphasize = true,
-                )
-            }
-
-            ScoreSection(
-                title = "Combinaisons",
-                subtitle = "Brelan, carré, full, suites, Yams et variantes fixes.",
-                icon = YamsIcons.Timeline,
-                accentColor = YamsTheme.colors.brown,
-                trailingValue = lowerTotal.toString(),
-            ) {
-                lowerRows.forEachIndexed { index, row ->
-                    ScoreRow(
-                        row = row,
-                        value = selectedPlayer.scores[row.key],
-                        isEditable = isEditable,
-                    )
-                    if (index < lowerRows.lastIndex) {
-                        HorizontalDivider(color = MaterialTheme.colorScheme.surface)
-                    }
-                }
-            }
-
-            if (customRows.isNotEmpty()) {
-                ScoreSection(
-                    title = "Règles custom",
-                    subtitle = "Affichées seulement si la partie utilise des variantes maison.",
-                    icon = YamsIcons.Tune,
-                    accentColor = MaterialTheme.colorScheme.tertiary,
-                    trailingValue = customTotal.toString(),
-                ) {
-                    customRows.forEachIndexed { index, row ->
-                        ScoreRow(
-                            row = row,
-                            value = selectedPlayer.scores[row.key],
-                            isEditable = isEditable,
-                        )
-                        if (index < customRows.lastIndex) {
-                            HorizontalDivider(color = MaterialTheme.colorScheme.surface)
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun ScoreSheetOverviewCard(
-    selectedPlayer: GamePlayPlayerSheet,
-    currentTurnPlayer: GamePlayPlayerSheet,
-    isEditable: Boolean,
-    overallTotal: Int,
-    selectedIndex: Int,
-    playerCount: Int,
-    onPreviousPlayer: () -> Unit,
-    onNextPlayer: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Card(
-        shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        modifier = modifier.fillMaxWidth(),
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                TurnStatusPill(
-                    icon = YamsIcons.PersonRaisedHand,
-                    label = "Tour en cours",
-                    value = currentTurnPlayer.user.name,
-                    modifier = Modifier.weight(1f),
-                )
-                ScorePill(
-                    value = "$overallTotal",
-                    suffix = "pts",
-                    emphasize = true,
-                )
-            }
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                PlayerPagerButton(
-                    onClick = onPreviousPlayer,
-                    icon = YamsIcons.ChevronLeft,
-                    contentDescription = "Voir la feuille précédente",
-                )
-
-                Surface(
-                    shape = RoundedCornerShape(20.dp),
-                    color = if (isEditable) {
-                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.8f)
-                    } else {
-                        MaterialTheme.colorScheme.surface
-                    },
-                    border = BorderStroke(
-                        width = 1.dp,
-                        color = if (isEditable) {
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.25f)
-                        } else {
-                            MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
-                        }
-                    ),
-                    modifier = Modifier.weight(1f),
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 14.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(6.dp),
-                    ) {
-                        PlayerInitialBadge(
-                            user = selectedPlayer.user,
-                            highlight = isEditable,
-                        )
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(6.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Text(
-                                text = selectedPlayer.user.name,
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                            if (isEditable) {
-                                Icon(
-                                    imageVector = YamsIcons.Crown,
-                                    contentDescription = "Joueur actif",
-                                    tint = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.size(18.dp),
-                                )
-                            }
-                        }
-                        Text(
-                            text = if (isEditable) {
-                                "Feuille active"
-                            } else {
-                                "Lecture seule"
-                            },
-                            style = MaterialTheme.typography.labelLarge,
-                            color = if (isEditable) {
-                                MaterialTheme.colorScheme.onPrimaryContainer
-                            } else {
-                                MaterialTheme.colorScheme.onSurfaceVariant
-                            },
-                        )
-                        Text(
-                            text = "Joueur ${selectedIndex + 1}/$playerCount",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                }
-
-                PlayerPagerButton(
-                    onClick = onNextPlayer,
-                    icon = YamsIcons.ChevronRight,
-                    contentDescription = "Voir la feuille suivante",
-                )
-            }
-
             Text(
-                text = if (isEditable) {
-                    "Tu peux utiliser cette feuille pour saisir les points du joueur en cours."
-                } else {
-                    "La feuille de ${selectedPlayer.user.name} reste visible, mais elle n'est pas modifiable pendant le tour de ${currentTurnPlayer.user.name}."
-                },
-                style = MaterialTheme.typography.bodySmall,
+                text = message,
+                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
             )
         }
     }
 }
 
-@Composable
-private fun TurnStatusPill(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    label: String,
-    value: String,
-    modifier: Modifier = Modifier,
-) {
-    Surface(
-        shape = RoundedCornerShape(18.dp),
-        color = YamsTheme.colors.gold.copy(alpha = 0.18f),
-        modifier = modifier,
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(18.dp),
-            )
-            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text(
-                text = label,
-                style = MaterialTheme.typography.labelMedium,
-                color = YamsTheme.colors.brown,
-            )
-            Text(
-                text = value,
-                style = MaterialTheme.typography.bodyMedium,
-                color = YamsTheme.colors.brown,
-                fontWeight = FontWeight.SemiBold,
-            )
-        }
-        }
-    }
-}
+private val AllFiveDiceScoreOptions: List<Int> = listOf(0) + (5..30).toList()
+private val MatchingThreeDiceScoreOptions: List<Int> = listOf(0) + (1..6).map { it * 3 }
+private val MatchingFourDiceScoreOptions: List<Int> = listOf(0) + (1..6).map { it * 4 }
+private val ThreeOfAKindAllDiceScoreOptions: List<Int> =
+    possibleAllDiceScoreOptions(minMatchingDiceCount = 3)
+private val FourOfAKindAllDiceScoreOptions: List<Int> =
+    possibleAllDiceScoreOptions(minMatchingDiceCount = 4)
 
-@Composable
-private fun PlayerPagerButton(
-    onClick: () -> Unit,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    contentDescription: String,
-    modifier: Modifier = Modifier,
-) {
-    FilledTonalIconButton(
-        onClick = onClick,
-        modifier = modifier.size(44.dp),
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = contentDescription,
-        )
-    }
-}
-
-@Composable
-private fun PlayerInitialBadge(
-    user: User,
-    highlight: Boolean,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier
-            .size(48.dp)
-            .clip(CircleShape)
-            .background(
-                if (highlight) {
-                    YamsTheme.colors.gold.copy(alpha = 0.22f)
-                } else {
-                    MaterialTheme.colorScheme.surfaceVariant
-                }
-            ),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = user.name.take(1).uppercase(),
-            style = MaterialTheme.typography.titleMedium,
-            color = if (highlight) {
-                YamsTheme.colors.brown
-            } else {
-                MaterialTheme.colorScheme.onSurfaceVariant
-            },
-            fontWeight = FontWeight.Bold,
-        )
-    }
-}
-
-@Composable
-private fun ScoreSection(
-    title: String,
-    subtitle: String,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    accentColor: Color,
-    trailingValue: String,
-    modifier: Modifier = Modifier,
-    content: @Composable ColumnScope.() -> Unit,
-) {
-    Card(
-        shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        modifier = modifier.fillMaxWidth(),
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp),
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.Top,
-            ) {
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(6.dp),
-                ) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        SectionAccentIcon(
-                            icon = icon,
-                            accentColor = accentColor,
-                        )
-                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                            Text(
-                                text = title,
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                            Text(
-                                text = subtitle,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
+private fun possibleAllDiceScoreOptions(minMatchingDiceCount: Int): List<Int> = buildSet {
+    add(0)
+    for (firstDie in 1..6) {
+        for (secondDie in 1..6) {
+            for (thirdDie in 1..6) {
+                for (fourthDie in 1..6) {
+                    for (fifthDie in 1..6) {
+                        val dice = listOf(firstDie, secondDie, thirdDie, fourthDie, fifthDie)
+                        if (dice.groupingBy { it }.eachCount().values.any { it >= minMatchingDiceCount }) {
+                            add(dice.sum())
                         }
                     }
                 }
-                ScorePill(
-                    value = trailingValue,
-                    suffix = "pts",
-                )
-            }
-
-            Column(
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-                content = content,
-            )
-        }
-    }
-}
-
-@Composable
-private fun SectionAccentIcon(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    accentColor: Color,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier
-            .size(40.dp)
-            .background(
-                brush = Brush.linearGradient(
-                    listOf(accentColor, accentColor.copy(alpha = 0.7f))
-                ),
-                shape = RoundedCornerShape(14.dp),
-            ),
-        contentAlignment = Alignment.Center,
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = Color.White,
-            modifier = Modifier.size(20.dp),
-        )
-    }
-}
-
-@Composable
-private fun ScoreRow(
-    row: ScoreRowUi,
-    value: Int?,
-    isEditable: Boolean,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Row(
-            modifier = Modifier.weight(1f),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            row.badge?.let {
-                Surface(
-                    shape = RoundedCornerShape(12.dp),
-                    color = MaterialTheme.colorScheme.surface,
-                    modifier = Modifier.width(40.dp),
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text(
-                            text = it,
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                    }
-                }
-            }
-
-            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text(
-                    text = row.label,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-                Text(
-                    text = row.supportingText,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
-
-        ScorePill(
-            value = value?.toString() ?: if (isEditable) "..." else "--",
-            suffix = null,
-            emphasize = isEditable && value != null,
-            muted = !isEditable && value == null,
-        )
-    }
-}
-
-@Composable
-private fun SummaryRow(
-    label: String,
-    value: String,
-    supportingText: String,
-    emphasize: Boolean = false,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(2.dp),
-        ) {
-            Text(
-                text = label,
-                style = if (emphasize) {
-                    MaterialTheme.typography.titleSmall
-                } else {
-                    MaterialTheme.typography.bodyMedium
-                },
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-            Text(
-                text = supportingText,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-
-        ScorePill(
-            value = value,
-            suffix = null,
-            emphasize = emphasize,
-        )
-    }
-}
-
-@Composable
-private fun ScorePill(
-    value: String,
-    suffix: String?,
-    emphasize: Boolean = false,
-    muted: Boolean = false,
-    modifier: Modifier = Modifier,
-) {
-    Surface(
-        shape = RoundedCornerShape(16.dp),
-        color = when {
-            emphasize -> YamsTheme.colors.gold.copy(alpha = 0.2f)
-            muted -> MaterialTheme.colorScheme.surface
-            else -> MaterialTheme.colorScheme.background
-        },
-        border = BorderStroke(
-            width = 1.dp,
-            color = when {
-                emphasize -> YamsTheme.colors.gold.copy(alpha = 0.35f)
-                muted -> MaterialTheme.colorScheme.outline.copy(alpha = 0.18f)
-                else -> MaterialTheme.colorScheme.outline.copy(alpha = 0.12f)
-            }
-        ),
-        modifier = modifier.widthIn(min = 68.dp),
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text = value,
-                style = MaterialTheme.typography.titleSmall,
-                color = when {
-                    emphasize -> YamsTheme.colors.brown
-                    muted -> MaterialTheme.colorScheme.onSurfaceVariant
-                    else -> MaterialTheme.colorScheme.onSurface
-                },
-            )
-            if (suffix != null) {
-                Text(
-                    text = suffix,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = when {
-                        emphasize -> YamsTheme.colors.brown
-                        muted -> MaterialTheme.colorScheme.onSurfaceVariant
-                        else -> MaterialTheme.colorScheme.onSurfaceVariant
-                    },
-                )
             }
         }
     }
-}
+}.toList().sorted()
 
 private fun buildUpperScoreRows(): List<ScoreRowUi> = listOf(
-    ScoreRowUi(key = ScoreKey.ONES, badge = "1", label = "As", supportingText = "Somme des 1"),
-    ScoreRowUi(key = ScoreKey.TWOS, badge = "2", label = "Deux", supportingText = "Somme des 2"),
-    ScoreRowUi(key = ScoreKey.THREES, badge = "3", label = "Trois", supportingText = "Somme des 3"),
-    ScoreRowUi(key = ScoreKey.FOURS, badge = "4", label = "Quatre", supportingText = "Somme des 4"),
-    ScoreRowUi(key = ScoreKey.FIVES, badge = "5", label = "Cinq", supportingText = "Somme des 5"),
-    ScoreRowUi(key = ScoreKey.SIXES, badge = "6", label = "Six", supportingText = "Somme des 6"),
+    ScoreRowUi(
+        key = ScoreKey.ONES,
+        badge = "1",
+        label = "As",
+        supportingText = "Somme des 1",
+        scoreOptions = upperScoreOptions(1),
+    ),
+    ScoreRowUi(
+        key = ScoreKey.TWOS,
+        badge = "2",
+        label = "Deux",
+        supportingText = "Somme des 2",
+        scoreOptions = upperScoreOptions(2),
+    ),
+    ScoreRowUi(
+        key = ScoreKey.THREES,
+        badge = "3",
+        label = "Trois",
+        supportingText = "Somme des 3",
+        scoreOptions = upperScoreOptions(3),
+    ),
+    ScoreRowUi(
+        key = ScoreKey.FOURS,
+        badge = "4",
+        label = "Quatre",
+        supportingText = "Somme des 4",
+        scoreOptions = upperScoreOptions(4),
+    ),
+    ScoreRowUi(
+        key = ScoreKey.FIVES,
+        badge = "5",
+        label = "Cinq",
+        supportingText = "Somme des 5",
+        scoreOptions = upperScoreOptions(5),
+    ),
+    ScoreRowUi(
+        key = ScoreKey.SIXES,
+        badge = "6",
+        label = "Six",
+        supportingText = "Somme des 6",
+        scoreOptions = upperScoreOptions(6),
+    ),
 )
 
 private fun buildMainScoreRows(settings: GameSettings): List<ScoreRowUi> = buildList {
@@ -725,7 +478,16 @@ private fun buildMainScoreRows(settings: GameSettings): List<ScoreRowUi> = build
                     scoring = settings.threeOfAKindScoring,
                     fixedValue = settings.threeOfAKindValue,
                 ),
-            )
+                fixedScore = fixedScore(
+                    scoring = settings.threeOfAKindScoring,
+                    fixedValue = settings.threeOfAKindValue,
+                ),
+                scoreOptions = selectableScoreOptions(
+                    scoring = settings.threeOfAKindScoring,
+                    fixedValue = settings.threeOfAKindValue,
+                    allFiveDiceOptions = ThreeOfAKindAllDiceScoreOptions,
+                ),
+            ),
         )
     }
     if (settings.isFourOfAKindEnabled) {
@@ -737,7 +499,16 @@ private fun buildMainScoreRows(settings: GameSettings): List<ScoreRowUi> = build
                     scoring = settings.fourOfAKindScoring,
                     fixedValue = settings.fourOfAKindValue,
                 ),
-            )
+                fixedScore = fixedScore(
+                    scoring = settings.fourOfAKindScoring,
+                    fixedValue = settings.fourOfAKindValue,
+                ),
+                scoreOptions = selectableScoreOptions(
+                    scoring = settings.fourOfAKindScoring,
+                    fixedValue = settings.fourOfAKindValue,
+                    allFiveDiceOptions = FourOfAKindAllDiceScoreOptions,
+                ),
+            ),
         )
     }
     if (settings.isFullHouseEnabled) {
@@ -746,7 +517,9 @@ private fun buildMainScoreRows(settings: GameSettings): List<ScoreRowUi> = build
                 key = ScoreKey.FULL_HOUSE,
                 label = "Full",
                 supportingText = "${settings.fullHouseValue} pts fixes",
-            )
+                fixedScore = settings.fullHouseValue,
+                scoreOptions = listOf(0, settings.fullHouseValue).distinct().sorted(),
+            ),
         )
     }
     if (settings.isSmallStraightEnabled) {
@@ -755,7 +528,9 @@ private fun buildMainScoreRows(settings: GameSettings): List<ScoreRowUi> = build
                 key = ScoreKey.SMALL_STRAIGHT,
                 label = "Petite suite",
                 supportingText = "${settings.smallStraightValue ?: 0} pts fixes",
-            )
+                fixedScore = settings.smallStraightValue ?: 0,
+                scoreOptions = listOf(0, settings.smallStraightValue ?: 0).distinct().sorted(),
+            ),
         )
     }
     if (settings.isLargeStraightEnabled) {
@@ -764,7 +539,9 @@ private fun buildMainScoreRows(settings: GameSettings): List<ScoreRowUi> = build
                 key = ScoreKey.LARGE_STRAIGHT,
                 label = "Grande suite",
                 supportingText = "${settings.largeStraightValue ?: 0} pts fixes",
-            )
+                fixedScore = settings.largeStraightValue ?: 0,
+                scoreOptions = listOf(0, settings.largeStraightValue ?: 0).distinct().sorted(),
+            ),
         )
     }
     if (settings.isFiveOfAKindEnabled) {
@@ -773,7 +550,9 @@ private fun buildMainScoreRows(settings: GameSettings): List<ScoreRowUi> = build
                 key = ScoreKey.FIVE_OF_A_KIND,
                 label = "Yams",
                 supportingText = "${settings.fiveOfAKindValue} pts fixes",
-            )
+                fixedScore = settings.fiveOfAKindValue,
+                scoreOptions = listOf(0, settings.fiveOfAKindValue).distinct().sorted(),
+            ),
         )
     }
     if (settings.isExtraFiveOfAKindEnabled && settings.extraFiveOfAKindValue != null) {
@@ -781,8 +560,10 @@ private fun buildMainScoreRows(settings: GameSettings): List<ScoreRowUi> = build
             ScoreRowUi(
                 key = ScoreKey.EXTRA_FIVE_OF_A_KIND,
                 label = "Yams bonus",
-                supportingText = "${settings.extraFiveOfAKindValue} pts supplémentaires",
-            )
+                supportingText = "Automatique: +${settings.extraFiveOfAKindValue} par Yam supplementaire",
+                isInteractive = false,
+                countsAsTurn = false,
+            ),
         )
     }
     if (settings.isChanceEnabled) {
@@ -794,7 +575,16 @@ private fun buildMainScoreRows(settings: GameSettings): List<ScoreRowUi> = build
                     scoring = settings.chanceValue,
                     fixedValue = null,
                 ),
-            )
+                fixedScore = fixedScore(
+                    scoring = settings.chanceValue,
+                    fixedValue = null,
+                ),
+                scoreOptions = selectableScoreOptions(
+                    scoring = settings.chanceValue,
+                    fixedValue = null,
+                    allFiveDiceOptions = AllFiveDiceScoreOptions,
+                ),
+            ),
         )
     }
 }
@@ -805,11 +595,20 @@ private fun buildCustomScoreRows(settings: GameSettings): List<ScoreRowUi> {
         .filter { it.isEnabled }
         .map { rule ->
             ScoreRowUi(
-                key = ScoreKey.custom(rule.title),
+                key = ScoreKey.custom(rule.id),
                 label = rule.title,
                 supportingText = rule.description ?: scoringDescription(
                     scoring = rule.scoring,
                     fixedValue = rule.value,
+                ),
+                fixedScore = fixedScore(
+                    scoring = rule.scoring,
+                    fixedValue = rule.value,
+                ),
+                scoreOptions = selectableScoreOptions(
+                    scoring = rule.scoring,
+                    fixedValue = rule.value,
+                    allFiveDiceOptions = AllFiveDiceScoreOptions,
                 ),
             )
         }
@@ -824,7 +623,209 @@ private fun scoringDescription(
     GameSettings.SettingsScoring.SUM_MATCHING_FOUR -> "Somme des 4 dés identiques"
     GameSettings.SettingsScoring.FIXED,
     GameSettings.SettingsScoring.FIXED_CUSTOM -> "${fixedValue ?: 0} pts fixes"
+
     null -> "Score défini par la règle"
+}
+
+private fun fixedScore(
+    scoring: GameSettings.SettingsScoring?,
+    fixedValue: Int?,
+): Int? = when (scoring) {
+    GameSettings.SettingsScoring.FIXED,
+    GameSettings.SettingsScoring.FIXED_CUSTOM -> fixedValue ?: 0
+
+    else -> null
+}
+
+private fun upperScoreOptions(dieValue: Int): List<Int> =
+    (0..5).map { count -> count * dieValue }
+
+private fun selectableScoreOptions(
+    scoring: GameSettings.SettingsScoring?,
+    fixedValue: Int?,
+    allFiveDiceOptions: List<Int>,
+): List<Int> = when (scoring) {
+    GameSettings.SettingsScoring.SUM_ALL_FIVE_DICE -> allFiveDiceOptions
+    GameSettings.SettingsScoring.SUM_MATCHING_THREE -> MatchingThreeDiceScoreOptions
+    GameSettings.SettingsScoring.SUM_MATCHING_FOUR -> MatchingFourDiceScoreOptions
+    GameSettings.SettingsScoring.FIXED,
+    GameSettings.SettingsScoring.FIXED_CUSTOM -> listOf(0, fixedValue ?: 0).distinct().sorted()
+
+    null -> emptyList()
+}
+
+private fun scoreSelectionOptions(
+    row: ScoreRowUi,
+    columnIndex: Int,
+    selectedPlayer: PlayerState,
+    settings: GameSettings,
+): List<ScoreSelectionOption> {
+    val isExtraFiveOfAKindBonusAvailable =
+        settings.isExtraFiveOfAKindEnabled &&
+            settings.extraFiveOfAKindValue != null &&
+            row.key != ScoreKey.EXTRA_FIVE_OF_A_KIND &&
+            row.key != ScoreKey.FIVE_OF_A_KIND &&
+            (selectedPlayer.valuesFor(ScoreKey.FIVE_OF_A_KIND, settings.columnCount.coerceAtLeast(1))
+                .getOrNull(columnIndex) ?: 0) > 0
+
+    return row.scoreOptions.flatMap { score ->
+        when {
+            !isExtraFiveOfAKindBonusAvailable -> {
+                listOf(ScoreSelectionOption(score = score))
+            }
+
+            fiveOfAKindDetection(row, score, settings) == FiveOfAKindDetection.CERTAIN -> {
+                listOf(
+                    ScoreSelectionOption(
+                        score = score,
+                        label = "$score pts + Yam bonus",
+                        awardsExtraFiveOfAKindBonus = true,
+                    )
+                )
+            }
+
+            fiveOfAKindDetection(row, score, settings) == FiveOfAKindDetection.POSSIBLE -> {
+                listOf(
+                    ScoreSelectionOption(score = score),
+                    ScoreSelectionOption(
+                        score = score,
+                        label = "$score pts + Yam bonus",
+                        awardsExtraFiveOfAKindBonus = true,
+                    ),
+                )
+            }
+
+            else -> {
+                listOf(ScoreSelectionOption(score = score))
+            }
+        }
+    }
+}
+
+private fun fiveOfAKindDetection(
+    row: ScoreRowUi,
+    score: Int,
+    settings: GameSettings,
+): FiveOfAKindDetection {
+    if (score <= 0) return FiveOfAKindDetection.NONE
+
+    return when (row.key) {
+        ScoreKey.ONES,
+        ScoreKey.TWOS,
+        ScoreKey.THREES,
+        ScoreKey.FOURS,
+        ScoreKey.FIVES,
+        ScoreKey.SIXES -> {
+            val dieValue = upperRowDieValue(row.key) ?: return FiveOfAKindDetection.NONE
+            if (score == dieValue * 5) {
+                FiveOfAKindDetection.CERTAIN
+            } else {
+                FiveOfAKindDetection.NONE
+            }
+        }
+
+        ScoreKey.THREE_OF_A_KIND -> scoringFiveOfAKindDetection(
+            scoring = settings.threeOfAKindScoring,
+            fixedValue = settings.threeOfAKindValue,
+            score = score,
+            allowFixedScore = settings.jokerRule,
+        )
+
+        ScoreKey.FOUR_OF_A_KIND -> scoringFiveOfAKindDetection(
+            scoring = settings.fourOfAKindScoring,
+            fixedValue = settings.fourOfAKindValue,
+            score = score,
+            allowFixedScore = settings.jokerRule,
+        )
+
+        ScoreKey.FULL_HOUSE ->
+            if (settings.jokerRule && score == settings.fullHouseValue) {
+                FiveOfAKindDetection.POSSIBLE
+            } else {
+                FiveOfAKindDetection.NONE
+            }
+
+        ScoreKey.SMALL_STRAIGHT ->
+            if (settings.jokerRule && score == settings.smallStraightValue) {
+                FiveOfAKindDetection.POSSIBLE
+            } else {
+                FiveOfAKindDetection.NONE
+            }
+
+        ScoreKey.LARGE_STRAIGHT ->
+            if (settings.jokerRule && score == settings.largeStraightValue) {
+                FiveOfAKindDetection.POSSIBLE
+            } else {
+                FiveOfAKindDetection.NONE
+            }
+
+        ScoreKey.CHANCE -> scoringFiveOfAKindDetection(
+            scoring = settings.chanceValue,
+            fixedValue = null,
+            score = score,
+            allowFixedScore = false,
+        )
+
+        else -> settings.customGameSettings
+            .firstOrNull { ScoreKey.custom(it.id) == row.key }
+            ?.let { rule ->
+                scoringFiveOfAKindDetection(
+                    scoring = rule.scoring,
+                    fixedValue = rule.value,
+                    score = score,
+                    allowFixedScore = true,
+                )
+            }
+            ?: FiveOfAKindDetection.NONE
+    }
+}
+
+private fun scoringFiveOfAKindDetection(
+    scoring: GameSettings.SettingsScoring?,
+    fixedValue: Int?,
+    score: Int,
+    allowFixedScore: Boolean,
+): FiveOfAKindDetection = when (scoring) {
+    GameSettings.SettingsScoring.SUM_ALL_FIVE_DICE ->
+        if (score in AllFiveDiceScoreOptions && score % 5 == 0) {
+            FiveOfAKindDetection.POSSIBLE
+        } else {
+            FiveOfAKindDetection.NONE
+        }
+
+    GameSettings.SettingsScoring.SUM_MATCHING_THREE ->
+        if (score in MatchingThreeDiceScoreOptions) {
+            FiveOfAKindDetection.POSSIBLE
+        } else {
+            FiveOfAKindDetection.NONE
+        }
+
+    GameSettings.SettingsScoring.SUM_MATCHING_FOUR ->
+        if (score in MatchingFourDiceScoreOptions) {
+            FiveOfAKindDetection.POSSIBLE
+        } else {
+            FiveOfAKindDetection.NONE
+        }
+
+    GameSettings.SettingsScoring.FIXED,
+    GameSettings.SettingsScoring.FIXED_CUSTOM ->
+        if (allowFixedScore && score == fixedValue) {
+            FiveOfAKindDetection.POSSIBLE
+        } else {
+            FiveOfAKindDetection.NONE
+        }
+
+    null -> FiveOfAKindDetection.NONE
+}
+
+private fun upperRowDieValue(key: ScoreKey): Int? = when (key) {
+    ScoreKey.ONES -> 1
+    ScoreKey.TWOS -> 2
+    ScoreKey.THREES -> 3
+    ScoreKey.FOURS -> 4
+    ScoreKey.FIVES -> 5
+    ScoreKey.SIXES -> 6
+    else -> null
 }
 
 private fun upperBonus(subtotal: Int, settings: GameSettings): Int {
@@ -832,7 +833,7 @@ private fun upperBonus(subtotal: Int, settings: GameSettings): Int {
     return if (subtotal >= settings.upperBonusThreshold) settings.upperBonusValue else 0
 }
 
-private fun bonusStatusText(
+internal fun bonusStatusText(
     subtotal: Int,
     settings: GameSettings,
 ): String {
@@ -842,147 +843,92 @@ private fun bonusStatusText(
     return "Encore $remaining pts pour débloquer le bonus"
 }
 
-private fun GamePlayPlayerSheet.sumOf(rows: List<ScoreRowUi>): Int =
-    rows.sumOf { scores[it.key] ?: 0 }
+internal fun PlayerState.valueFor(key: ScoreKey): Int? =
+    valueAt(key = key, columnIndex = 0)
 
-private fun gamePlayMockUiState(): GamePlayMockUiState {
-    val settings = GameSettings.CustomSettings(
-        customGameSettings = listOf(
-            GameSettings.CustomGameSettings(
-                title = "Double paire",
-                scoring = GameSettings.SettingsScoring.FIXED_CUSTOM,
-                value = 15,
-                description = "Deux paires différentes rapportent 15 pts",
-            ),
-            GameSettings.CustomGameSettings(
-                title = "Tour du roi",
-                scoring = GameSettings.SettingsScoring.FIXED_CUSTOM,
-                value = 35,
-                description = "Cinq dés supérieurs ou égaux à 3 rapportent 35 pts",
-            ),
-        ),
-    )
-
-    return GamePlayMockUiState(
-        settings = settings,
-        currentTurnPlayerIndex = 1,
-        players = listOf(
-            GamePlayPlayerSheet(
-                user = UserMocks.generate("Maxime"),
-                scores = mapOf(
-                    ScoreKey.ONES to 2,
-                    ScoreKey.TWOS to 6,
-                    ScoreKey.THREES to 9,
-                    ScoreKey.FOURS to null,
-                    ScoreKey.FIVES to 10,
-                    ScoreKey.SIXES to 12,
-                    ScoreKey.THREE_OF_A_KIND to 18,
-                    ScoreKey.FOUR_OF_A_KIND to null,
-                    ScoreKey.FULL_HOUSE to 25,
-                    ScoreKey.SMALL_STRAIGHT to 30,
-                    ScoreKey.LARGE_STRAIGHT to null,
-                    ScoreKey.FIVE_OF_A_KIND to null,
-                    ScoreKey.EXTRA_FIVE_OF_A_KIND to null,
-                    ScoreKey.CHANCE to 21,
-                    ScoreKey.custom("Double paire") to 15,
-                    ScoreKey.custom("Tour du roi") to null,
-                ),
-            ),
-            GamePlayPlayerSheet(
-                user = UserMocks.generate("Lina"),
-                scores = mapOf(
-                    ScoreKey.ONES to 3,
-                    ScoreKey.TWOS to 6,
-                    ScoreKey.THREES to 9,
-                    ScoreKey.FOURS to 16,
-                    ScoreKey.FIVES to 20,
-                    ScoreKey.SIXES to 24,
-                    ScoreKey.THREE_OF_A_KIND to 19,
-                    ScoreKey.FOUR_OF_A_KIND to 24,
-                    ScoreKey.FULL_HOUSE to null,
-                    ScoreKey.SMALL_STRAIGHT to 30,
-                    ScoreKey.LARGE_STRAIGHT to 40,
-                    ScoreKey.FIVE_OF_A_KIND to 50,
-                    ScoreKey.EXTRA_FIVE_OF_A_KIND to null,
-                    ScoreKey.CHANCE to null,
-                    ScoreKey.custom("Double paire") to null,
-                    ScoreKey.custom("Tour du roi") to 35,
-                ),
-            ),
-            GamePlayPlayerSheet(
-                user = UserMocks.generate("Noa"),
-                scores = mapOf(
-                    ScoreKey.ONES to null,
-                    ScoreKey.TWOS to 2,
-                    ScoreKey.THREES to 9,
-                    ScoreKey.FOURS to 8,
-                    ScoreKey.FIVES to 15,
-                    ScoreKey.SIXES to null,
-                    ScoreKey.THREE_OF_A_KIND to null,
-                    ScoreKey.FOUR_OF_A_KIND to null,
-                    ScoreKey.FULL_HOUSE to 25,
-                    ScoreKey.SMALL_STRAIGHT to null,
-                    ScoreKey.LARGE_STRAIGHT to null,
-                    ScoreKey.FIVE_OF_A_KIND to null,
-                    ScoreKey.EXTRA_FIVE_OF_A_KIND to null,
-                    ScoreKey.CHANCE to 23,
-                    ScoreKey.custom("Double paire") to 15,
-                    ScoreKey.custom("Tour du roi") to null,
-                ),
-            ),
-        ),
-    )
+internal fun PlayerState.valuesFor(
+    key: ScoreKey,
+    columnCount: Int,
+): List<Int?> = List(columnCount) { columnIndex ->
+    valueAt(key = key, columnIndex = columnIndex)
 }
 
-private data class GamePlayMockUiState(
-    val settings: GameSettings,
-    val players: List<GamePlayPlayerSheet>,
-    val currentTurnPlayerIndex: Int,
-)
+private fun PlayerState.sumOf(
+    rows: List<ScoreRowUi>,
+    columnIndex: Int,
+): Int = rows.sumOf { row ->
+    valueAt(key = row.key, columnIndex = columnIndex) ?: 0
+}
 
-private data class GamePlayPlayerSheet(
-    val user: User,
-    val scores: Map<String, Int?>,
-)
+private fun PlayerState.filledCount(
+    rows: List<ScoreRowUi>,
+    columnIndex: Int,
+): Int = rows.count { row ->
+    valueAt(key = row.key, columnIndex = columnIndex) != null
+}
 
-private data class ScoreRowUi(
-    val key: String,
+private fun PlayerState.valueAt(
+    key: ScoreKey,
+    columnIndex: Int,
+): Int? = when (key) {
+    ScoreKey.EXTRA_FIVE_OF_A_KIND -> extraFiveOfAKindScores.getOrElse(columnIndex) { 0 }
+    else -> scoreEntries[key]?.getOrNull(columnIndex)
+}
+
+internal data class ScoreRowUi(
+    val key: ScoreKey,
     val label: String,
     val supportingText: String,
     val badge: String? = null,
+    val fixedScore: Int? = null,
+    val scoreOptions: List<Int> = emptyList(),
+    val isInteractive: Boolean = true,
+    val countsAsTurn: Boolean = true,
 )
 
-private object ScoreKey {
-    const val ONES: String = "ones"
-    const val TWOS: String = "twos"
-    const val THREES: String = "threes"
-    const val FOURS: String = "fours"
-    const val FIVES: String = "fives"
-    const val SIXES: String = "sixes"
-    const val THREE_OF_A_KIND: String = "three_of_a_kind"
-    const val FOUR_OF_A_KIND: String = "four_of_a_kind"
-    const val FULL_HOUSE: String = "full_house"
-    const val SMALL_STRAIGHT: String = "small_straight"
-    const val LARGE_STRAIGHT: String = "large_straight"
-    const val FIVE_OF_A_KIND: String = "five_of_a_kind"
-    const val EXTRA_FIVE_OF_A_KIND: String = "extra_five_of_a_kind"
-    const val CHANCE: String = "chance"
+internal data class ScoreSelectionRequest(
+    val cell: ScoreCellRef,
+    val options: List<ScoreSelectionOption>,
+)
 
-    fun custom(title: String): String = "custom_${title.lowercase().replace(" ", "_")}"
+internal data class ScoreSelectionOption(
+    val score: Int,
+    val label: String = "$score pts",
+    val awardsExtraFiveOfAKindBonus: Boolean = false,
+)
+
+private enum class FiveOfAKindDetection {
+    NONE,
+    POSSIBLE,
+    CERTAIN,
 }
 
-@Preview
+@Preview(name = "2 columns")
 @Composable
 private fun GamePlayScreenPreview() {
     YamsTheme {
-        GamePlayScreen()
+        GamePlayScreen(
+            uiState = gamePlayPreviewUiState(columnCount = 2),
+        )
     }
 }
 
-@Preview
+@Preview(name = "1 column")
 @Composable
-private fun GamePlayScreenReadOnlyPreview() {
+private fun GamePlayScreenSingleColumnPreview() {
     YamsTheme {
-        GamePlayScreen(initialSelectedPlayerIndex = 0)
+        GamePlayScreen(
+            uiState = gamePlayPreviewUiState(columnCount = 1),
+        )
+    }
+}
+
+@Preview(name = "4 columns")
+@Composable
+private fun GamePlayScreenFourColumnsPreview() {
+    YamsTheme {
+        GamePlayScreen(
+            uiState = gamePlayPreviewUiState(columnCount = 4),
+        )
     }
 }
