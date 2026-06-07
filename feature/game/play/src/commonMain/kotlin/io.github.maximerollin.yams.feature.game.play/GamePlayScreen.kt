@@ -68,6 +68,7 @@ internal fun GamePlayRoute(
     LaunchedEffect(navigateToGameResult) {
         if (navigateToGameResult) {
             onNavigateToResults(gameId)
+            viewModel.onGameResultNavigationHandled()
         }
     }
 
@@ -76,7 +77,7 @@ internal fun GamePlayRoute(
         onNavigateHome = onNavigateHome,
         onScore = viewModel::onScore,
         onUndo = viewModel::onUndo,
-        onFinishGame = viewModel::onFinishGame,
+        onGoToResults = viewModel::onGoToResults,
     )
 }
 
@@ -86,7 +87,7 @@ private fun GamePlayScreen(
     onNavigateHome: () -> Unit = {},
     onScore: (Int, ScoreCellRef, Boolean) -> Unit = { _, _, _ -> },
     onUndo: () -> Unit = {},
-    onFinishGame: () -> Unit = {},
+    onGoToResults: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     var isInfoSheetVisible by rememberSaveable { mutableStateOf(false) }
@@ -355,7 +356,7 @@ private fun GamePlayScreen(
 
     if (shouldShowFinishDialog) {
         GamePlayFinishedDialog(
-            onGoToResults = onFinishGame,
+            onGoToResults = onGoToResults,
             onUndoLastMove = {
                 scoreSelectionRequest = null
                 onUndo()

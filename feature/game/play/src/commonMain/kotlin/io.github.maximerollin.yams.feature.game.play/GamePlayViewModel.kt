@@ -7,7 +7,6 @@ import io.github.maximerollin.yams.data.game.GameRepository
 import io.github.maximerollin.yams.data.game.ScoreEntryRepository
 import io.github.maximerollin.yams.data.game.model.CreateScoreEntry
 import io.github.maximerollin.yams.data.game.model.ScoreCellRef
-import io.github.maximerollin.yams.feature.game.play.domain.FinishGameUseCase
 import io.github.maximerollin.yams.feature.game.play.domain.GetGamePlayStateUseCase
 import io.github.maximerollin.yams.feature.game.play.model.GamePlayStateUi
 import io.github.maximerollin.yams.feature.game.play.model.GameStatus
@@ -22,7 +21,6 @@ internal class GamePlayViewModel(
     @InjectedParam private val gameId: GameId,
     private val gameRepository: GameRepository,
     private val scoreEntryRepository: ScoreEntryRepository,
-    private val finishGameUseCase: FinishGameUseCase,
     private val getGetGamePlayStateUseCase: GetGamePlayStateUseCase,
 ) : ViewModel() {
 
@@ -65,12 +63,12 @@ internal class GamePlayViewModel(
         }
     }
 
-    fun onFinishGame() {
-        viewModelScope.launch {
-            gamePlayStateUi.value?.let { state ->
-                finishGameUseCase(gameId, state)
-                _navigateToGameResult.value = true
-            }
-        }
+    fun onGoToResults() {
+        if (gamePlayStateUi.value?.status != GameStatus.ENDED) return
+        _navigateToGameResult.value = true
+    }
+
+    fun onGameResultNavigationHandled() {
+        _navigateToGameResult.value = false
     }
 }

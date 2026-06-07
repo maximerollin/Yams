@@ -122,7 +122,34 @@ private fun NavGraphBuilder.screens(navController: NavHostController) {
             }
         },
         onNavigateToResults = { gameId ->
-            
+//            navController.navigateToGameResult(gameId) {
+//                launchSingleTop = true
+//            }
         },
     )
+
+//    gameResultScreen(
+//        onNavigateBack = {
+//            if (!navController.popBackStack()) {
+//                navController.navigateToHome {
+//                    popUpTo(navController.graph.id) { inclusive = true }
+//                }
+//            }
+//        },
+//        onNavigateHome = {
+//            navController.navigateToHome {
+//                launchSingleTop = true
+//                popUpTo(navController.graph.id) { inclusive = true }
+//                navController.graph.setStartDestination(HomeRoute())
+//            }
+//        },
+//        onNavigateToGame = { gameId ->
+//            navController.navigateToGamePlay(gameId) {
+//                navController.currentDestination?.id?.let {
+//                    popUpTo(it) { inclusive = true }
+//                }
+//                launchSingleTop = true
+//            }
+//        },
+//    )
 }

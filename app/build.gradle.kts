@@ -55,6 +55,7 @@ kotlin {
             implementation(projects.feature.game.creation)
             implementation(projects.feature.game.preparation)
             implementation(projects.feature.game.play)
+            implementation(projects.feature.game.result)
             implementation(projects.feature.user.edition)
 
             implementation(libs.androidx.navigation)
