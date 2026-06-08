@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -41,9 +40,23 @@ import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.designsystem.theme.colors
 import io.github.maximerollin.yams.core.model.User
 import io.github.vinceglb.filekit.PlatformFile
-import kotlin.time.Instant
 import org.jetbrains.compose.resources.stringResource
-import yams.feature.user.common.generated.resources.*
+import yams.feature.user.common.generated.resources.Res
+import yams.feature.user.common.generated.resources.common_avatar_cd
+import yams.feature.user.common.generated.resources.common_average_score
+import yams.feature.user.common.generated.resources.common_game_players_many
+import yams.feature.user.common.generated.resources.common_game_players_one
+import yams.feature.user.common.generated.resources.common_games
+import yams.feature.user.common.generated.resources.common_record
+import yams.feature.user.common.generated.resources.common_record_score
+import yams.feature.user.common.generated.resources.common_score_points
+import yams.feature.user.common.generated.resources.common_stats_subtitle
+import yams.feature.user.common.generated.resources.common_stats_title
+import yams.feature.user.common.generated.resources.common_victories
+import yams.feature.user.common.generated.resources.common_winner_score
+import yams.feature.user.common.generated.resources.common_yams
+import yams.feature.user.common.generated.resources.common_yams_per_game
+import kotlin.time.Instant
 
 @Composable
 public fun LoadingState(

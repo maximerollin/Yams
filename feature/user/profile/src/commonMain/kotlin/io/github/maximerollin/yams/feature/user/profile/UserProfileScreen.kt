@@ -3,7 +3,6 @@ package io.github.maximerollin.yams.feature.user.profile
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -62,7 +61,25 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-import yams.feature.user.profile.generated.resources.*
+import yams.feature.user.profile.generated.resources.Res
+import yams.feature.user.profile.generated.resources.profile_back_cd
+import yams.feature.user.profile.generated.resources.profile_cancel
+import yams.feature.user.profile.generated.resources.profile_delete
+import yams.feature.user.profile.generated.resources.profile_delete_message
+import yams.feature.user.profile.generated.resources.profile_delete_player
+import yams.feature.user.profile.generated.resources.profile_delete_title
+import yams.feature.user.profile.generated.resources.profile_edit
+import yams.feature.user.profile.generated.resources.profile_loading
+import yams.feature.user.profile.generated.resources.profile_no_games_message
+import yams.feature.user.profile.generated.resources.profile_no_games_title
+import yams.feature.user.profile.generated.resources.profile_not_found_message
+import yams.feature.user.profile.generated.resources.profile_not_found_title
+import yams.feature.user.profile.generated.resources.profile_options_cd
+import yams.feature.user.profile.generated.resources.profile_recent_games
+import yams.feature.user.profile.generated.resources.profile_title
+import yams.feature.user.profile.generated.resources.profile_victories_many
+import yams.feature.user.profile.generated.resources.profile_victories_one
+import yams.feature.user.profile.generated.resources.profile_view_history
 
 @Composable
 internal fun UserProfileRoute(

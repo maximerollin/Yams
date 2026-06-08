@@ -132,7 +132,7 @@ private fun GamePreparationUserOrderRandomPreview() {
             users = UserMocks.users.subList(0, 3),
             isUserOrderRandomized = true,
             onToggleIsUserOrderRandomized = {},
-            onOrderUser = { a, b -> {} }
+            onOrderUser = { _, _ -> run {} }
         )
     }
 }
@@ -145,7 +145,7 @@ private fun GamePreparationUserOrderManualPreview() {
             users = UserMocks.users.subList(0, 3),
             isUserOrderRandomized = false,
             onToggleIsUserOrderRandomized = {},
-            onOrderUser = { a, b -> {} }
+            onOrderUser = { _, _ -> run {} }
         )
     }
 }

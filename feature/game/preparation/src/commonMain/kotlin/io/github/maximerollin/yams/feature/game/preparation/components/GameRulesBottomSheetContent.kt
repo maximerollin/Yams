@@ -269,7 +269,7 @@ private fun RuleSectionTabs(
     selectedSection: RuleEditorSection,
     onSectionSelected: (RuleEditorSection) -> Unit,
 ) {
-    val sections = RuleEditorSection.values()
+    val sections = RuleEditorSection.entries.toTypedArray()
     AnimatedSegmentedControl(
         items = sections.map { section ->
             SegmentedControlItem(label = section.tabLabel())

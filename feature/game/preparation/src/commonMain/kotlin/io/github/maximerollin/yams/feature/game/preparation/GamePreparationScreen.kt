@@ -320,7 +320,7 @@ private fun GamePreparationScreenRandomPreview() {
             onToggleIsUserOrderRandomized = {},
             onToggleGameSettings = {},
             onUpdateGameSettings = {},
-            onOrderUser = { _, _ -> {} }
+            onOrderUser = { _, _ -> run {} }
         )
     }
 }
@@ -337,7 +337,7 @@ private fun GamePreparationScreenManualPreview() {
             onToggleIsUserOrderRandomized = {},
             onToggleGameSettings = {},
             onUpdateGameSettings = {},
-            onOrderUser = { _, _ -> {} }
+            onOrderUser = { _, _ -> run {} }
         )
     }
 }

@@ -3,8 +3,8 @@ package io.github.maximerollin.yams.feature.game.result.domain
 import io.github.maximerollin.yams.core.model.GameId
 import io.github.maximerollin.yams.core.model.UserId
 import io.github.maximerollin.yams.data.game.GameRepository
-import io.github.maximerollin.yams.data.game.model.GameResult
 import io.github.maximerollin.yams.data.game.model.GamePlayState
+import io.github.maximerollin.yams.data.game.model.GameResult
 import io.github.maximerollin.yams.data.game.model.PlayerResult
 import io.github.maximerollin.yams.data.game.model.ScoreEntry
 import io.github.maximerollin.yams.feature.game.result.model.GameResultPlayerUiState
@@ -13,7 +13,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 
 internal class GetGameResultPreviewUseCase(
     private val gameRepository: GameRepository,
@@ -84,9 +83,11 @@ internal class GetGameResultPreviewUseCase(
                     score = scoreByPlayer.getValue(player.userId),
                     numberOfTurns = playerScoreEntries.size,
                     isWinner = ranksByPlayer.getValue(player.userId) == 1,
-                    numberOfFiveOfAKind = GameResultStateLogic.getFiveOfAKindCount(playerScoreEntries),
+                    numberOfFiveOfAKind = GameResultStateLogic.getFiveOfAKindCount(
+                        playerScoreEntries
+                    ),
                     totalVictoryCount = victoryCounts[player.userId].orZero() +
-                        if (ranksByPlayer.getValue(player.userId) == 1) 1 else 0,
+                            if (ranksByPlayer.getValue(player.userId) == 1) 1 else 0,
                 )
             }
             .sortedWith(
