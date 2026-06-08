@@ -17,7 +17,7 @@ class AppViewModel(
     }
 
     private suspend fun initStartDestination() {
-        val gameCount = gameRepository.getNumberOfFinishedGames().first()
+        val gameCount = gameRepository.getNumberOfGames().first()
         startDestination = when {
             gameCount == 0 -> WelcomeRoute
             else -> HomeRoute

@@ -6,4 +6,13 @@
     <string name="home_logo_cd">Logo de %1$s</string>
     <string name="home_new_game">Nueva partida</string>
     <string name="home_create_game_cd">Crear una partida</string>
+    <string name="home_active_game_title">Partida en curso</string>
+    <string name="home_active_game_players_one">%1$d jugador</string>
+    <string name="home_active_game_players_many">%1$d jugadores</string>
+    <string name="home_resume_game">Reanudar</string>
+    <string name="home_abandon_game">Abandonar</string>
+    <string name="home_abandon_title">¿Abandonar la partida?</string>
+    <string name="home_abandon_message">Esta partida desaparecerá del panel de reanudación. No se mostrará en el historial.</string>
+    <string name="home_abandon_cancel">Conservar</string>
+    <string name="home_abandon_confirm">Abandonar</string>
 </resources>

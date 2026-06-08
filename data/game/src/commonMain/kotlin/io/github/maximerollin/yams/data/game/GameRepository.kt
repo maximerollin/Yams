@@ -47,6 +47,7 @@ public interface GameRepository {
     public fun getUserVictoryCount(userId: UserId): Flow<Int>
     public suspend fun createGame(value: CreateGame, isShuffled: Boolean): GameId
     public suspend fun finishGame(createGameResult: CreateGameResult)
+    public suspend fun abandonGame(gameId: GameId)
     public suspend fun deleteGame(gameId: GameId)
     public suspend fun updateGamePhoto(gameId: GameId, photo: PlatformFile?)
     public suspend fun undoLastMove(gameId: GameId)
@@ -151,6 +152,21 @@ internal class DefaultGameRepository(
 
     override suspend fun deleteGame(gameId: GameId) {
         gameLocalDataSource.deleteGame(gameId.value)
+    }
+
+    override suspend fun abandonGame(gameId: GameId) {
+        val gameEntity = gameLocalDataSource.getGameById(gameId.value).first()
+            ?: throw IllegalStateException("Game not found")
+
+        if (gameEntity.status != GameStatusEntity.IN_PROGRESS) return
+
+        gameLocalDataSource.updateGame(
+            game = gameEntity.copy(
+                status = GameStatusEntity.CANCELLED,
+                updatedAt = Clock.System.now(),
+                finishedAt = null,
+            )
+        )
     }
 
     override suspend fun updateGamePhoto(gameId: GameId, photo: PlatformFile?) {

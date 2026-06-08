@@ -6,4 +6,13 @@
     <string name="home_logo_cd">Logo %1$s</string>
     <string name="home_new_game">Nouvelle partie</string>
     <string name="home_create_game_cd">Créer une partie</string>
+    <string name="home_active_game_title">Partie en cours</string>
+    <string name="home_active_game_players_one">%1$d joueur</string>
+    <string name="home_active_game_players_many">%1$d joueurs</string>
+    <string name="home_resume_game">Reprendre</string>
+    <string name="home_abandon_game">Abandonner</string>
+    <string name="home_abandon_title">Abandonner la partie ?</string>
+    <string name="home_abandon_message">Cette partie disparaîtra de l'encart de reprise. Elle ne sera pas affichée dans l'historique.</string>
+    <string name="home_abandon_cancel">Garder</string>
+    <string name="home_abandon_confirm">Abandonner</string>
 </resources>

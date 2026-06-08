@@ -6,4 +6,13 @@
     <string name="home_logo_cd">%1$s logo</string>
     <string name="home_new_game">New game</string>
     <string name="home_create_game_cd">Create a game</string>
+    <string name="home_active_game_title">Game in progress</string>
+    <string name="home_active_game_players_one">%1$d player</string>
+    <string name="home_active_game_players_many">%1$d players</string>
+    <string name="home_resume_game">Resume</string>
+    <string name="home_abandon_game">Abandon</string>
+    <string name="home_abandon_title">Abandon this game?</string>
+    <string name="home_abandon_message">This game will disappear from the resume panel. It will not be shown in history.</string>
+    <string name="home_abandon_cancel">Keep</string>
+    <string name="home_abandon_confirm">Abandon</string>
 </resources>

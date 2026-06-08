@@ -6,4 +6,13 @@
     <string name="home_logo_cd">%1$s-Logo</string>
     <string name="home_new_game">Neue Partie</string>
     <string name="home_create_game_cd">Partie erstellen</string>
+    <string name="home_active_game_title">Laufende Partie</string>
+    <string name="home_active_game_players_one">%1$d Spieler</string>
+    <string name="home_active_game_players_many">%1$d Spieler</string>
+    <string name="home_resume_game">Fortsetzen</string>
+    <string name="home_abandon_game">Abbrechen</string>
+    <string name="home_abandon_title">Partie abbrechen?</string>
+    <string name="home_abandon_message">Diese Partie verschwindet aus dem Fortsetzen-Bereich. Sie wird nicht im Verlauf angezeigt.</string>
+    <string name="home_abandon_cancel">Behalten</string>
+    <string name="home_abandon_confirm">Abbrechen</string>
 </resources>

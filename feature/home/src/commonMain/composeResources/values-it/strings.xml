@@ -6,4 +6,13 @@
     <string name="home_logo_cd">Logo %1$s</string>
     <string name="home_new_game">Nuova partita</string>
     <string name="home_create_game_cd">Crea una partita</string>
+    <string name="home_active_game_title">Partita in corso</string>
+    <string name="home_active_game_players_one">%1$d giocatore</string>
+    <string name="home_active_game_players_many">%1$d giocatori</string>
+    <string name="home_resume_game">Riprendi</string>
+    <string name="home_abandon_game">Abbandona</string>
+    <string name="home_abandon_title">Abbandonare la partita?</string>
+    <string name="home_abandon_message">Questa partita scomparirà dal riquadro di ripresa. Non verrà mostrata nella cronologia.</string>
+    <string name="home_abandon_cancel">Mantieni</string>
+    <string name="home_abandon_confirm">Abbandona</string>
 </resources>

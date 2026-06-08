@@ -2,28 +2,53 @@ package io.github.maximerollin.yams.feature.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.maximerollin.yams.core.model.GameId
 import io.github.maximerollin.yams.data.game.GameRepository
+import io.github.maximerollin.yams.data.game.model.GamePlayState
 import io.github.maximerollin.yams.feature.user.common.toGameSummaries
 import io.github.maximerollin.yams.feature.user.common.toHomeStats
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 internal class HomeViewModel(
-    gameRepository: GameRepository,
+    private val gameRepository: GameRepository,
 ) : ViewModel() {
-    val uiState: StateFlow<HomeUiState> = gameRepository
-        .getFinishedGamesResults()
-        .map { results ->
-            HomeUiState.Success(
-                stats = results.toHomeStats(),
-                recentGames = results.toGameSummaries().take(8),
-            )
-        }
+    val uiState: StateFlow<HomeUiState> = combine(
+        gameRepository.getFinishedGamesResults(),
+        gameRepository.getInProgressGamesPlayState(),
+    ) { results, inProgressGames ->
+        HomeUiState.Success(
+            stats = results.toHomeStats(),
+            recentGames = results.toGameSummaries().take(8),
+            activeGame = inProgressGames.firstOrNull()?.toActiveGameUiState(),
+        )
+    }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = HomeUiState.Loading,
         )
+
+    fun abandonGame(gameId: GameId) {
+        viewModelScope.launch {
+            gameRepository.abandonGame(gameId)
+        }
+    }
 }
+
+private fun GamePlayState.toActiveGameUiState(): ActiveGameUiState =
+    ActiveGameUiState(
+        gameId = game.id,
+        playerCount = players.size,
+        players = players
+            .sortedBy { it.userIndex }
+            .map { player ->
+                ActiveGamePlayerUiState(
+                    name = player.name,
+                    avatar = player.avatar,
+                )
+            },
+    )

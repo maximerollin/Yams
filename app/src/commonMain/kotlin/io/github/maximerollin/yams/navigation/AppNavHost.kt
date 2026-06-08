@@ -94,6 +94,11 @@ private fun NavGraphBuilder.screens(navController: NavHostController) {
                 launchSingleTop = true
             }
         },
+        onNavigateToGamePlay = { gameId ->
+            navController.navigateToGamePlay(gameId) {
+                launchSingleTop = true
+            }
+        },
         onNavigateToGameResult = { gameId ->
             navController.navigateToGameResult(gameId)
         },

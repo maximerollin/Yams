@@ -17,12 +17,14 @@ public fun NavController.navigateToHome(builder: NavOptionsBuilder.() -> Unit) {
 
 public fun NavGraphBuilder.homeScreen(
     onNavigateToGameCreation: () -> Unit,
+    onNavigateToGamePlay: (GameId) -> Unit,
     onNavigateToGameResult: (GameId) -> Unit,
     onNavigateToUsers: () -> Unit,
 ) {
     composable<HomeRoute> {
         HomeRoute(
             onNavigateToGameCreation = onNavigateToGameCreation,
+            onNavigateToGamePlay = onNavigateToGamePlay,
             onNavigateToGameResult = onNavigateToGameResult,
             onNavigateToUsers = onNavigateToUsers,
         )
