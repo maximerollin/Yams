@@ -51,8 +51,10 @@ internal fun ScoringSelectionRow(
                 onOptionSelected(scoringOptions[index].second)
             },
             modifier = Modifier.fillMaxWidth(),
-            height = 38.dp,
+            height = 48.dp,
             containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f),
+            labelMaxLines = 2,
+            segmentHorizontalPadding = 6.dp,
         )
     }
 }

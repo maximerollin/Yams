@@ -29,6 +29,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
@@ -53,9 +55,11 @@ internal fun AnimatedSegmentedControl(
     indicatorVerticalInset: Dp = 4.dp,
     selectedTextColor: Color = YamsTheme.colors.gold,
     unselectedTextColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
-    textStyle: TextStyle = MaterialTheme.typography.labelLarge,
+    textStyle: TextStyle = MaterialTheme.typography.labelSmall.copy(textAlign = TextAlign.Center),
     selectedFontWeight: FontWeight = FontWeight.SemiBold,
     unselectedFontWeight: FontWeight = FontWeight.Medium,
+    labelMaxLines: Int = 1,
+    segmentHorizontalPadding: Dp = 6.dp,
 ) {
     if (items.isEmpty()) return
 
@@ -117,8 +121,14 @@ internal fun AnimatedSegmentedControl(
                             .clickable { onSelectedIndexChange(index) },
                     ) {
                         Row(
-                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            horizontalArrangement = Arrangement.spacedBy(
+                                space = 6.dp,
+                                alignment = Alignment.CenterHorizontally,
+                            ),
                             verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = segmentHorizontalPadding),
                         ) {
                             item.icon?.let { icon ->
                                 Icon(
@@ -137,6 +147,9 @@ internal fun AnimatedSegmentedControl(
                                     unselectedFontWeight
                                 },
                                 color = textColor,
+                                maxLines = labelMaxLines,
+                                overflow = TextOverflow.Ellipsis,
+                                softWrap = labelMaxLines > 1,
                             )
                         }
                     }

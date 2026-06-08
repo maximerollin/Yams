@@ -20,14 +20,19 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,6 +42,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -45,6 +51,7 @@ import io.github.maximerollin.yams.core.designsystem.component.YamsPrimarySmallB
 import io.github.maximerollin.yams.core.designsystem.component.YamsTextButton
 import io.github.maximerollin.yams.core.designsystem.icon.Close
 import io.github.maximerollin.yams.core.designsystem.icon.Delete
+import io.github.maximerollin.yams.core.designsystem.icon.Info
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.model.GameSettings
@@ -62,6 +69,7 @@ internal fun GameRulesBottomSheetContent(
     val scrollState = rememberScrollState()
     val currentSettings = toCustomSettings(settings)
     var selectedSection by remember { mutableStateOf(RuleEditorSection.COMBINATIONS) }
+    var showScoringHelp by remember { mutableStateOf(false) }
     var isNewRuleFormExpanded by remember { mutableStateOf(false) }
     var newRuleTitle by remember { mutableStateOf("") }
     var newRuleValue by remember { mutableStateOf("") }
@@ -72,32 +80,34 @@ internal fun GameRulesBottomSheetContent(
     val customRulesCount = currentSettings.customGameSettings.size
     val canAddRule = newRuleTitle.isNotBlank()
 
+    if (showScoringHelp) {
+        ScoringHelpBottomSheet(
+            onDismiss = { showScoringHelp = false },
+        )
+    }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = modifier
             .fillMaxWidth()
             .verticalScroll(scrollState),
     ) {
-        Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-            Surface(
-                shape = RoundedCornerShape(12.dp),
-                color = MaterialTheme.colorScheme.surfaceVariant,
-                modifier = Modifier.align(Alignment.CenterEnd),
-            ) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clickable(onClick = onClose),
-                ) {
-                    Icon(
-                        imageVector = YamsIcons.Close,
-                        contentDescription = stringResource(Res.string.prep_rules_close_cd),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(20.dp),
-                    )
-                }
-            }
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+        ) {
+            RuleSheetIconButton(
+                icon = YamsIcons.Info,
+                contentDescription = stringResource(Res.string.prep_scoring_help_open_cd),
+                onClick = { showScoringHelp = true },
+            )
+            RuleSheetIconButton(
+                icon = YamsIcons.Close,
+                contentDescription = stringResource(Res.string.prep_rules_close_cd),
+                onClick = onClose,
+            )
         }
 
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -298,6 +308,167 @@ private fun RuleSectionTabs(
 }
 
 @Composable
+private fun RuleSheetIconButton(
+    icon: ImageVector,
+    contentDescription: String,
+    onClick: () -> Unit,
+) {
+    Surface(
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+    ) {
+        IconButton(
+            onClick = onClick,
+            modifier = Modifier.size(40.dp),
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = contentDescription,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(20.dp),
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ScoringHelpBottomSheet(
+    onDismiss: () -> Unit,
+) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        containerColor = MaterialTheme.colorScheme.background,
+    ) {
+        ScoringHelpContent(
+            modifier = Modifier
+                .navigationBarsPadding()
+                .padding(horizontal = 20.dp, vertical = 16.dp),
+        )
+    }
+}
+
+@Composable
+private fun ScoringHelpContent(
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState()),
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text(
+                text = stringResource(Res.string.prep_scoring_help_title),
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+            Text(
+                text = stringResource(Res.string.prep_scoring_help_subtitle),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+
+        ScoringHelpSection(title = stringResource(Res.string.prep_scoring_help_methods)) {
+            ScoringHelpRow(
+                label = stringResource(Res.string.prep_scoring_sum_3_title),
+                description = stringResource(Res.string.prep_scoring_sum_3_desc),
+            )
+            ScoringHelpDivider()
+            ScoringHelpRow(
+                label = stringResource(Res.string.prep_scoring_sum_4_title),
+                description = stringResource(Res.string.prep_scoring_sum_4_desc),
+            )
+            ScoringHelpDivider()
+            ScoringHelpRow(
+                label = stringResource(Res.string.prep_scoring_sum_5_title),
+                description = stringResource(Res.string.prep_scoring_sum_5_desc),
+            )
+            ScoringHelpDivider()
+            ScoringHelpRow(
+                label = stringResource(Res.string.prep_scoring_fixed_title),
+                description = stringResource(Res.string.prep_scoring_fixed_desc),
+            )
+        }
+
+        ScoringHelpSection(title = stringResource(Res.string.prep_scoring_help_categories)) {
+            ScoringHelpRow(
+                label = stringResource(Res.string.prep_scoring_straights_title),
+                description = stringResource(Res.string.prep_scoring_straights_desc),
+            )
+            ScoringHelpDivider()
+            ScoringHelpRow(
+                label = stringResource(Res.string.prep_scoring_upper_bonus_title),
+                description = stringResource(Res.string.prep_scoring_upper_bonus_desc),
+            )
+            ScoringHelpDivider()
+            ScoringHelpRow(
+                label = stringResource(Res.string.prep_scoring_extra_yams_title),
+                description = stringResource(Res.string.prep_scoring_extra_yams_desc),
+            )
+            ScoringHelpDivider()
+            ScoringHelpRow(
+                label = stringResource(Res.string.prep_scoring_custom_rules_title),
+                description = stringResource(Res.string.prep_scoring_custom_rules_desc),
+            )
+        }
+    }
+}
+
+@Composable
+private fun ScoringHelpSection(
+    title: String,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    Surface(
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.surface,
+    ) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            content()
+        }
+    }
+}
+
+@Composable
+private fun ScoringHelpRow(
+    label: String,
+    description: String,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Text(
+            text = description,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+@Composable
+private fun ScoringHelpDivider() {
+    HorizontalDivider(
+        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+    )
+}
+
+@Composable
 private fun CombinationRulesContent(
     currentSettings: GameSettings.CustomSettings,
     onUpdateGameSettings: (GameSettings) -> Unit,
@@ -305,6 +476,7 @@ private fun CombinationRulesContent(
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         RuleCard(
             label = stringResource(Res.string.prep_rule_chance),
+            supportingText = stringResource(Res.string.prep_chance_description),
             checked = currentSettings.isChanceEnabled,
             onCheckedChange = { enabled ->
                 onUpdateGameSettings(currentSettings.copy(isChanceEnabled = enabled))
@@ -315,6 +487,7 @@ private fun CombinationRulesContent(
 
         RuleCard(
             label = stringResource(Res.string.prep_three_of_kind),
+            supportingText = stringResource(Res.string.prep_three_of_kind_description),
             checked = currentSettings.isThreeOfAKindEnabled,
             onCheckedChange = { enabled ->
                 onUpdateGameSettings(currentSettings.copy(isThreeOfAKindEnabled = enabled))
@@ -364,6 +537,7 @@ private fun CombinationRulesContent(
 
         RuleCard(
             label = stringResource(Res.string.prep_four_of_kind),
+            supportingText = stringResource(Res.string.prep_four_of_kind_description),
             checked = currentSettings.isFourOfAKindEnabled,
             onCheckedChange = { enabled ->
                 onUpdateGameSettings(currentSettings.copy(isFourOfAKindEnabled = enabled))
@@ -413,6 +587,7 @@ private fun CombinationRulesContent(
 
         RuleCard(
             label = stringResource(Res.string.prep_full),
+            supportingText = stringResource(Res.string.prep_full_description),
             checked = currentSettings.isFullHouseEnabled,
             onCheckedChange = { enabled ->
                 onUpdateGameSettings(currentSettings.copy(isFullHouseEnabled = enabled))
@@ -431,6 +606,7 @@ private fun CombinationRulesContent(
 
         RuleCard(
             label = stringResource(Res.string.prep_rule_yams),
+            supportingText = stringResource(Res.string.prep_yams_description),
             checked = currentSettings.isFiveOfAKindEnabled,
             onCheckedChange = { enabled ->
                 onUpdateGameSettings(currentSettings.copy(isFiveOfAKindEnabled = enabled))
@@ -449,6 +625,7 @@ private fun CombinationRulesContent(
 
         RuleCard(
             label = stringResource(Res.string.prep_extra_yams),
+            supportingText = stringResource(Res.string.prep_extra_yams_description),
             checked = currentSettings.isExtraFiveOfAKindEnabled,
             onCheckedChange = { enabled ->
                 onUpdateGameSettings(currentSettings.copy(isExtraFiveOfAKindEnabled = enabled))
@@ -473,12 +650,12 @@ private fun StraightsRulesContent(
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         RuleCard(
             label = stringResource(Res.string.prep_small_straight),
+            supportingText = stringResource(Res.string.prep_small_straight_description),
             checked = currentSettings.isSmallStraightEnabled,
             onCheckedChange = { enabled ->
                 onUpdateGameSettings(currentSettings.copy(isSmallStraightEnabled = enabled))
             },
         ) {
-            RuleMetaChip(text = stringResource(Res.string.prep_four_sequence))
             RuleValueInputRow(
                 label = stringResource(Res.string.prep_small_straight_value),
                 value = currentSettings.smallStraightValue,
@@ -490,12 +667,12 @@ private fun StraightsRulesContent(
 
         RuleCard(
             label = stringResource(Res.string.prep_large_straight),
+            supportingText = stringResource(Res.string.prep_large_straight_description),
             checked = currentSettings.isLargeStraightEnabled,
             onCheckedChange = { enabled ->
                 onUpdateGameSettings(currentSettings.copy(isLargeStraightEnabled = enabled))
             },
         ) {
-            RuleMetaChip(text = stringResource(Res.string.prep_five_sequence))
             RuleValueInputRow(
                 label = stringResource(Res.string.prep_large_straight_value),
                 value = currentSettings.largeStraightValue,
@@ -514,6 +691,7 @@ private fun BonusRulesContent(
 ) {
     RuleCard(
         label = stringResource(Res.string.prep_enable_upper_bonus),
+        supportingText = stringResource(Res.string.prep_upper_bonus_description),
         checked = currentSettings.isUpperBonusEnabled,
         onCheckedChange = { enabled ->
             onUpdateGameSettings(currentSettings.copy(isUpperBonusEnabled = enabled))
@@ -559,126 +737,185 @@ private fun CustomRulesContent(
     onCustomRulesEnabledChange: (Boolean) -> Unit,
     onAddRule: () -> Unit,
 ) {
-    RuleCard(
-        label = stringResource(Res.string.prep_enable_custom_rules),
-        checked = currentSettings.areCustomRulesEnabled,
-        onCheckedChange = onCustomRulesEnabledChange,
-    ) {
-        val enabledCustomRules = currentSettings.customGameSettings.count { it.isEnabled }
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            RuleMetaChip(
-                text = stringResource(
-                    Res.string.prep_custom_rules_count,
-                    enabledCustomRules,
-                    customRulesCount,
-                ),
-            )
-            YamsTextButton(onClick = onToggleNewRuleForm) {
-                Text(
-                    if (isNewRuleFormExpanded) {
-                        stringResource(Res.string.prep_hide_form)
-                    } else {
-                        stringResource(Res.string.prep_add_rule)
-                    },
-                )
-            }
-        }
-
-        AnimatedVisibility(visible = isNewRuleFormExpanded) {
-            NewCustomRuleForm(
-                newRuleTitle = newRuleTitle,
-                onNewRuleTitleChange = onNewRuleTitleChange,
-                newRuleValue = newRuleValue,
-                onNewRuleValueChange = onNewRuleValueChange,
-                newRuleDescription = newRuleDescription,
-                onNewRuleDescriptionChange = onNewRuleDescriptionChange,
-                newRuleScoring = newRuleScoring,
-                onNewRuleScoringChange = onNewRuleScoringChange,
-                canAddRule = canAddRule,
-                onAddRule = onAddRule,
-            )
-        }
-
-        Text(
-            text = stringResource(Res.string.prep_existing_rules),
-            style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        ColumnCountCard(
+            columnCount = currentSettings.columnCount,
+            onColumnCountChange = { columnCount ->
+                onUpdateGameSettings(currentSettings.copy(columnCount = columnCount))
+            },
         )
-        if (currentSettings.customGameSettings.isNotEmpty()) {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                currentSettings.customGameSettings.forEachIndexed { index, customRule ->
-                    CustomRuleCard(
-                        customRule = customRule,
-                        onCheckedChange = { enabled ->
-                            val updatedCustomRules =
-                                currentSettings.customGameSettings.mapIndexed { currentIndex, rule ->
-                                    if (currentIndex == index) {
-                                        rule.copy(isEnabled = enabled)
-                                    } else {
-                                        rule
-                                    }
-                                }
-                            onUpdateGameSettings(
-                                currentSettings.copy(customGameSettings = updatedCustomRules)
-                            )
-                        },
-                        onDelete = {
-                            val updatedCustomRules =
-                                currentSettings.customGameSettings.filterIndexed { currentIndex, _ ->
-                                    currentIndex != index
-                                }
-                            onUpdateGameSettings(
-                                currentSettings.copy(customGameSettings = updatedCustomRules)
-                            )
-                        },
-                        onScoringSelected = { scoring ->
-                            val updatedCustomRules =
-                                currentSettings.customGameSettings.mapIndexed { currentIndex, rule ->
-                                    if (currentIndex == index) {
-                                        rule.copy(
-                                            scoring = scoring,
-                                            value = if (
-                                                scoring == GameSettings.SettingsScoring.FIXED_CUSTOM
-                                            ) {
-                                                rule.value
-                                            } else {
-                                                null
-                                            },
-                                        )
-                                    } else {
-                                        rule
-                                    }
-                                }
-                            onUpdateGameSettings(
-                                currentSettings.copy(customGameSettings = updatedCustomRules)
-                            )
-                        },
-                        onValueChange = { value ->
-                            val updatedCustomRules =
-                                currentSettings.customGameSettings.mapIndexed { currentIndex, rule ->
-                                    if (currentIndex == index) {
-                                        rule.copy(value = value)
-                                    } else {
-                                        rule
-                                    }
-                                }
-                            onUpdateGameSettings(
-                                currentSettings.copy(customGameSettings = updatedCustomRules)
-                            )
+
+        RuleCard(
+            label = stringResource(Res.string.prep_enable_custom_rules),
+            supportingText = stringResource(Res.string.prep_custom_rules_description),
+            checked = currentSettings.areCustomRulesEnabled,
+            onCheckedChange = onCustomRulesEnabledChange,
+        ) {
+            val enabledCustomRules = currentSettings.customGameSettings.count { it.isEnabled }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                RuleMetaChip(
+                    text = stringResource(
+                        Res.string.prep_custom_rules_count,
+                        enabledCustomRules,
+                        customRulesCount,
+                    ),
+                )
+                YamsTextButton(onClick = onToggleNewRuleForm) {
+                    Text(
+                        if (isNewRuleFormExpanded) {
+                            stringResource(Res.string.prep_hide_form)
+                        } else {
+                            stringResource(Res.string.prep_add_rule)
                         },
                     )
                 }
             }
-        } else {
+
+            AnimatedVisibility(visible = isNewRuleFormExpanded) {
+                NewCustomRuleForm(
+                    newRuleTitle = newRuleTitle,
+                    onNewRuleTitleChange = onNewRuleTitleChange,
+                    newRuleValue = newRuleValue,
+                    onNewRuleValueChange = onNewRuleValueChange,
+                    newRuleDescription = newRuleDescription,
+                    onNewRuleDescriptionChange = onNewRuleDescriptionChange,
+                    newRuleScoring = newRuleScoring,
+                    onNewRuleScoringChange = onNewRuleScoringChange,
+                    canAddRule = canAddRule,
+                    onAddRule = onAddRule,
+                )
+            }
+
             Text(
-                text = stringResource(Res.string.prep_no_custom_rules),
-                style = MaterialTheme.typography.bodyMedium,
+                text = stringResource(Res.string.prep_existing_rules),
+                style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            if (currentSettings.customGameSettings.isNotEmpty()) {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    currentSettings.customGameSettings.forEachIndexed { index, customRule ->
+                        CustomRuleCard(
+                            customRule = customRule,
+                            onCheckedChange = { enabled ->
+                                val updatedCustomRules =
+                                    currentSettings.customGameSettings.mapIndexed { currentIndex, rule ->
+                                        if (currentIndex == index) {
+                                            rule.copy(isEnabled = enabled)
+                                        } else {
+                                            rule
+                                        }
+                                    }
+                                onUpdateGameSettings(
+                                    currentSettings.copy(customGameSettings = updatedCustomRules)
+                                )
+                            },
+                            onDelete = {
+                                val updatedCustomRules =
+                                    currentSettings.customGameSettings.filterIndexed { currentIndex, _ ->
+                                        currentIndex != index
+                                    }
+                                onUpdateGameSettings(
+                                    currentSettings.copy(customGameSettings = updatedCustomRules)
+                                )
+                            },
+                            onScoringSelected = { scoring ->
+                                val updatedCustomRules =
+                                    currentSettings.customGameSettings.mapIndexed { currentIndex, rule ->
+                                        if (currentIndex == index) {
+                                            rule.copy(
+                                                scoring = scoring,
+                                                value = if (
+                                                    scoring == GameSettings.SettingsScoring.FIXED_CUSTOM
+                                                ) {
+                                                    rule.value
+                                                } else {
+                                                    null
+                                                },
+                                            )
+                                        } else {
+                                            rule
+                                        }
+                                    }
+                                onUpdateGameSettings(
+                                    currentSettings.copy(customGameSettings = updatedCustomRules)
+                                )
+                            },
+                            onValueChange = { value ->
+                                val updatedCustomRules =
+                                    currentSettings.customGameSettings.mapIndexed { currentIndex, rule ->
+                                        if (currentIndex == index) {
+                                            rule.copy(value = value)
+                                        } else {
+                                            rule
+                                        }
+                                    }
+                                onUpdateGameSettings(
+                                    currentSettings.copy(customGameSettings = updatedCustomRules)
+                                )
+                            },
+                        )
+                    }
+                }
+            } else {
+                Text(
+                    text = stringResource(Res.string.prep_no_custom_rules),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ColumnCountCard(
+    columnCount: Int,
+    onColumnCountChange: (Int) -> Unit,
+) {
+    val columnOptions = listOf(1, 2)
+    val selectedIndex = columnOptions.indexOf(columnCount.coerceIn(1, 2)).coerceAtLeast(0)
+
+    Surface(
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surface,
+    ) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+        ) {
+            Text(
+                text = stringResource(Res.string.prep_column_count_title),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+            Text(
+                text = stringResource(Res.string.prep_column_count_description),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                text = stringResource(Res.string.prep_column_count_label),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            AnimatedSegmentedControl(
+                items = columnOptions.map { columnCountOption ->
+                    SegmentedControlItem(label = columnCountOption.toString())
+                },
+                selectedIndex = selectedIndex,
+                onSelectedIndexChange = { index ->
+                    onColumnCountChange(columnOptions[index])
+                },
+                modifier = Modifier.fillMaxWidth(),
+                height = 40.dp,
+                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f),
             )
         }
     }
@@ -861,6 +1098,7 @@ private fun NewCustomRuleForm(
 @Composable
 private fun RuleCard(
     label: String,
+    supportingText: String? = null,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     details: @Composable ColumnScope.() -> Unit = {},
@@ -877,6 +1115,7 @@ private fun RuleCard(
         ) {
             RuleToggleRow(
                 label = label,
+                supportingText = supportingText,
                 checked = checked,
                 onCheckedChange = onCheckedChange,
             )
@@ -1090,5 +1329,26 @@ public fun GameRulesBottomSheetContentPreview() {
                 onUpdateGameSettings = {},
             )
         }
+    }
+}
+
+@Preview
+@Composable
+private fun ScoringHelpContentPreview() {
+    YamsTheme {
+        ScoringHelpContent(
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp),
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun ColumnCountCardPreview() {
+    YamsTheme {
+        ColumnCountCard(
+            columnCount = 2,
+            onColumnCountChange = {},
+        )
     }
 }
