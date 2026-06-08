@@ -57,6 +57,9 @@ kotlin {
             implementation(projects.feature.game.play)
             implementation(projects.feature.game.result)
             implementation(projects.feature.user.edition)
+            implementation(projects.feature.user.users)
+            implementation(projects.feature.user.profile)
+            implementation(projects.feature.user.history)
 
             implementation(libs.androidx.navigation)
             implementation(libs.koin.compose)

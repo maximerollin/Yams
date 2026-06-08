@@ -1,0 +1,20 @@
+<resources>
+    <string name="profile_back_cd">Retour</string>
+    <string name="profile_title">Profil</string>
+    <string name="profile_options_cd">Options</string>
+    <string name="profile_loading">Chargement du profil...</string>
+    <string name="profile_not_found_title">Joueur introuvable</string>
+    <string name="profile_not_found_message">Ce profil n'est plus disponible.</string>
+    <string name="profile_victories_one">%1$d victoire</string>
+    <string name="profile_victories_many">%1$d victoires</string>
+    <string name="profile_view_history">Voir tout l'historique</string>
+    <string name="profile_recent_games">Dernières parties</string>
+    <string name="profile_no_games_title">Aucune partie</string>
+    <string name="profile_no_games_message">Ce joueur n'a pas encore de partie terminée.</string>
+    <string name="profile_edit">Modifier le profil</string>
+    <string name="profile_delete_player">Supprimer le joueur</string>
+    <string name="profile_delete_title">Supprimer %1$s</string>
+    <string name="profile_delete_message">Ce joueur sera retiré de la liste des profils.</string>
+    <string name="profile_cancel">Annuler</string>
+    <string name="profile_delete">Supprimer</string>
+</resources>

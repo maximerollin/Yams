@@ -38,6 +38,8 @@ import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.designsystem.theme.colors
 import io.github.maximerollin.yams.core.ui.AnimatedDiceBackground
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import yams.feature.welcome.generated.resources.*
 import yams.core.ui.generated.resources.app_icon
 import yams.core.ui.generated.resources.Res as CoreUiRes
 
@@ -87,14 +89,14 @@ internal fun WelcomeScreen(
 
                     Image(
                         painter = painterResource(CoreUiRes.drawable.app_icon),
-                        contentDescription = "Yams Icon",
+                        contentDescription = stringResource(Res.string.welcome_app_icon_cd),
                         modifier = Modifier
                             .size(40.dp)
                             .clip(shape = RoundedCornerShape(8.dp))
                     )
 
                     Text(
-                        text = "Yams Score",
+                        text = stringResource(Res.string.welcome_title),
                         fontSize = 28.sp,
                         lineHeight = 28.sp,
                         fontWeight = FontWeight.Bold,
@@ -107,7 +109,7 @@ internal fun WelcomeScreen(
 
                 // Subtitle
                 Text(
-                    text = "Parce que chaque partie mérite d'être mémorable !",
+                    text = stringResource(Res.string.welcome_subtitle),
                     fontSize = 18.sp,
                     lineHeight = 24.sp,
                     fontWeight = FontWeight.Medium,
@@ -125,15 +127,15 @@ internal fun WelcomeScreen(
                 ) {
                     FeatureCard(
                         icon = YamsIcons.RocketLaunch,
-                        text = "Feuille de score interactive"
+                        text = stringResource(Res.string.welcome_feature_score_sheet)
                     )
                     FeatureCard(
                         icon = YamsIcons.History,
-                        text = "Historique de toutes vos parties"
+                        text = stringResource(Res.string.welcome_feature_history)
                     )
                     FeatureCard(
                         icon = YamsIcons.Trophy,
-                        text = "Statistiques et records personnels"
+                        text = stringResource(Res.string.welcome_feature_stats)
                     )
                 }
 
@@ -142,7 +144,7 @@ internal fun WelcomeScreen(
                 // Call to action button
                 YamsPrimaryButton(
                     onClick = onNavigateToNewGame,
-                    text = "Commencer ma première partie"
+                    text = stringResource(Res.string.welcome_cta)
                 )
 
                 Spacer(modifier = Modifier.height(40.dp))

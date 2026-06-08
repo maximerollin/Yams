@@ -69,7 +69,12 @@ public class UserEditionViewModel(
                         name = name.trim(),
                         avatar = avatar.toUserCreateAvatar(),
                     )
-                    _uiState.update { it.copy(savedNewUserId = newUserId) }
+                    _uiState.update {
+                        it.copy(
+                            savedNewUserId = newUserId,
+                            savedUserId = newUserId,
+                        )
+                    }
                 }
 
                 else -> {
@@ -78,6 +83,7 @@ public class UserEditionViewModel(
                         name = name.trim(),
                         avatar = avatar.toUserCreateAvatar(),
                     )
+                    _uiState.update { it.copy(savedUserId = userId) }
                 }
             }
         }
@@ -90,6 +96,7 @@ public data class UserEditionUiState(
     val name: String = "",
     val avatar: Avatar = Avatar.Drawable(AppAvatars.random()),
     val savedNewUserId: UserId? = null,
+    val savedUserId: UserId? = null,
 )
 
 public sealed interface UserEditionAction {

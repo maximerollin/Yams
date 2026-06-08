@@ -18,6 +18,8 @@ import io.github.maximerollin.yams.feature.game.play.bonusStatusText
 import io.github.maximerollin.yams.feature.game.play.model.PlayerState
 import io.github.maximerollin.yams.feature.game.play.valueFor
 import io.github.maximerollin.yams.feature.game.play.valuesFor
+import org.jetbrains.compose.resources.stringResource
+import yams.feature.game.play.generated.resources.*
 
 @Composable
 internal fun GamePlayUpperScoreSection(
@@ -38,11 +40,11 @@ internal fun GamePlayUpperScoreSection(
     modifier: Modifier = Modifier,
 ) {
     ScoreSection(
-        title = "Table mineure",
+        title = stringResource(Res.string.play_upper_title),
         subtitle = if (isMultiColumn) {
-            "Chaque ligne peut être remplie dans n'importe quelle colonne."
+            stringResource(Res.string.play_upper_subtitle_multi)
         } else {
-            "De 1 à 6, avec le récapitulatif du bonus du haut."
+            stringResource(Res.string.play_upper_subtitle_single)
         },
         icon = YamsIcons.Target,
         accentColor = YamsTheme.colors.gold,
@@ -88,32 +90,32 @@ internal fun GamePlayUpperScoreSection(
             HorizontalDivider(color = MaterialTheme.colorScheme.surface)
 
             SummaryGridRow(
-                label = "Sous-total",
-                supportingText = "Calculé séparément pour chaque colonne",
+                label = stringResource(Res.string.play_subtotal),
+                supportingText = stringResource(Res.string.play_subtotal_by_column),
                 values = upperSubtotals.map(Int::toString),
                 scrollState = scrollState,
             )
             SummaryGridRow(
-                label = "Seuil bonus",
-                supportingText = "À atteindre dans chaque colonne",
+                label = stringResource(Res.string.play_bonus_threshold),
+                supportingText = stringResource(Res.string.play_bonus_threshold_by_column),
                 values = List(columnCount) { settings.upperBonusThreshold.toString() },
                 scrollState = scrollState,
             )
             SummaryGridRow(
-                label = "Valeur bonus",
-                supportingText = "Récompense gagnée quand le seuil est atteint",
+                label = stringResource(Res.string.play_bonus_value),
+                supportingText = stringResource(Res.string.play_bonus_value_awarded),
                 values = List(columnCount) { settings.upperBonusValue.toString() },
                 scrollState = scrollState,
             )
             SummaryGridRow(
-                label = "Bonus appliqué",
-                supportingText = "Le bonus peut être gagné dans une colonne et pas dans une autre",
+                label = stringResource(Res.string.play_bonus_applied),
+                supportingText = stringResource(Res.string.play_bonus_by_column),
                 values = upperBonuses.map(Int::toString),
                 scrollState = scrollState,
             )
             SummaryGridRow(
-                label = "Total table mineure",
-                supportingText = "Sous-total et bonus inclus par colonne",
+                label = stringResource(Res.string.play_upper_total),
+                supportingText = stringResource(Res.string.play_upper_total_by_column),
                 values = upperTotals.map(Int::toString),
                 scrollState = scrollState,
                 emphasize = true,
@@ -144,26 +146,26 @@ internal fun GamePlayUpperScoreSection(
             HorizontalDivider(color = MaterialTheme.colorScheme.surface)
 
             SummaryRow(
-                label = "Sous-total",
+                label = stringResource(Res.string.play_subtotal),
                 value = upperSubtotals.firstOrNull()?.toString().orEmpty(),
-                supportingText = "Somme actuelle de la section du haut",
+                supportingText = stringResource(Res.string.play_upper_subtotal_single),
             )
             SummaryRow(
-                label = "Seuil bonus",
+                label = stringResource(Res.string.play_bonus_threshold),
                 value = settings.upperBonusThreshold.toString(),
-                supportingText = "Le bonus démarre à partir de ce total",
+                supportingText = stringResource(Res.string.play_bonus_starts_at),
             )
             SummaryRow(
-                label = "Valeur bonus",
+                label = stringResource(Res.string.play_bonus_value),
                 value = settings.upperBonusValue.toString(),
                 supportingText = if (settings.isUpperBonusEnabled) {
-                    "Valeur ajoutée une fois le seuil atteint"
+                    stringResource(Res.string.play_bonus_value_enabled)
                 } else {
-                    "Bonus désactivé dans cette partie"
+                    stringResource(Res.string.play_bonus_disabled)
                 },
             )
             SummaryRow(
-                label = "Total table mineure",
+                label = stringResource(Res.string.play_upper_total),
                 value = upperTotals.firstOrNull()?.toString().orEmpty(),
                 supportingText = if (settings.isUpperBonusEnabled) {
                     bonusStatusText(
@@ -171,7 +173,7 @@ internal fun GamePlayUpperScoreSection(
                         settings = settings,
                     )
                 } else {
-                    "Calcul sans bonus"
+                    stringResource(Res.string.play_no_bonus_calculation)
                 },
                 emphasize = true,
             )

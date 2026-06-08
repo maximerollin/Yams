@@ -33,6 +33,8 @@ import io.github.maximerollin.yams.core.designsystem.icon.Undo
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.designsystem.theme.colors
+import org.jetbrains.compose.resources.stringResource
+import yams.feature.game.play.generated.resources.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -82,7 +84,7 @@ private fun GamePlayFinishedDialogContent(
                 ) {
                     Icon(
                         imageVector = YamsIcons.Trophy,
-                        contentDescription = "Partie terminée",
+                        contentDescription = stringResource(Res.string.play_finished_title),
                         tint = YamsTheme.colors.brown,
                         modifier = Modifier.size(30.dp),
                     )
@@ -94,14 +96,14 @@ private fun GamePlayFinishedDialogContent(
                 verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 Text(
-                    text = "Partie terminée",
+                    text = stringResource(Res.string.play_finished_title),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Center,
                 )
                 Text(
-                    text = "Toutes les cases sont remplies. Vérifie le dernier score avant d'ouvrir les résultats.",
+                    text = stringResource(Res.string.play_finished_message),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
@@ -119,13 +121,13 @@ private fun GamePlayFinishedDialogContent(
             ) {
                 GamePlayFinishedDialogStatusRow(
                     icon = YamsIcons.Check,
-                    title = "Grille complète",
-                    description = "La partie peut être clôturée.",
+                    title = stringResource(Res.string.play_finished_grid_complete),
+                    description = stringResource(Res.string.play_finished_can_close),
                 )
                 GamePlayFinishedDialogStatusRow(
                     icon = YamsIcons.Undo,
-                    title = "Dernier coup modifiable",
-                    description = "Tu peux encore revenir en arrière si besoin.",
+                    title = stringResource(Res.string.play_finished_last_move_editable),
+                    description = stringResource(Res.string.play_finished_can_undo),
                 )
             }
 
@@ -135,7 +137,7 @@ private fun GamePlayFinishedDialogContent(
                 color = MaterialTheme.colorScheme.surfaceVariant,
             ) {
                 Text(
-                    text = "Les résultats seront plus faciles à relire si le dernier score est corrigé maintenant.",
+                    text = stringResource(Res.string.play_finished_note),
                     modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -149,13 +151,13 @@ private fun GamePlayFinishedDialogContent(
             ) {
                 YamsPrimaryButton(
                     onClick = onGoToResults,
-                    text = "Voir les résultats",
+                    text = stringResource(Res.string.play_view_results),
                 )
                 YamsSecondaryButton(
                     onClick = onUndoLastMove,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Text(text = "Annuler le dernier coup")
+                    Text(text = stringResource(Res.string.play_undo_last_move))
                 }
             }
         }

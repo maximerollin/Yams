@@ -1,0 +1,10 @@
+<resources>
+    <string name="history_back_cd">Zurück</string>
+    <string name="history_title">Verlauf</string>
+    <string name="history_title_with_user">Verlauf von %1$s</string>
+    <string name="history_loading">Verlauf wird geladen...</string>
+    <string name="history_not_found_title">Spieler nicht gefunden</string>
+    <string name="history_not_found_message">Dieser Verlauf ist nicht mehr verfügbar.</string>
+    <string name="history_empty_title">Keine Partien</string>
+    <string name="history_empty_message">Dieser Spieler hat noch keine abgeschlossene Partie.</string>
+</resources>

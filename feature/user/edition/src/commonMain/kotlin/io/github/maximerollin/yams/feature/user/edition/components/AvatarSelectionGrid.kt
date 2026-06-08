@@ -43,6 +43,8 @@ import io.github.maximerollin.yams.feature.user.edition.model.Avatar
 import io.github.vinceglb.filekit.dialogs.FileKitMode
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
+import org.jetbrains.compose.resources.stringResource
+import yams.feature.user.edition.generated.resources.*
 
 @Composable
 public fun AvatarSelectionGrid(
@@ -70,7 +72,7 @@ public fun AvatarSelectionGrid(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Choisir un avatar",
+                text = stringResource(Res.string.edition_choose_avatar),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface
@@ -93,7 +95,7 @@ public fun AvatarSelectionGrid(
                 ) {
                     Icon(
                         imageVector = YamsIcons.AddPhotoAlternate,
-                        contentDescription = "Galerie",
+                        contentDescription = stringResource(Res.string.edition_gallery_cd),
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = modifier.size(24.dp)
                     )
@@ -102,7 +104,7 @@ public fun AvatarSelectionGrid(
         }
 
         Text(
-            text = "Sélectionnez votre avatar parmi les options ci-dessous",
+            text = stringResource(Res.string.edition_avatar_help),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.alpha(0.8f)

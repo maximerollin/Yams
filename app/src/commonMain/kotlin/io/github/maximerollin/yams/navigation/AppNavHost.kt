@@ -18,9 +18,19 @@ import io.github.maximerollin.yams.feature.game.play.navigation.gamePlayScreen
 import io.github.maximerollin.yams.feature.game.play.navigation.navigateToGamePlay
 import io.github.maximerollin.yams.feature.game.preparation.navigation.gamePreparationScreen
 import io.github.maximerollin.yams.feature.game.preparation.navigation.navigateToGamePreparation
+import io.github.maximerollin.yams.feature.game.result.navigation.gameResultScreen
+import io.github.maximerollin.yams.feature.game.result.navigation.navigateToGameResult
 import io.github.maximerollin.yams.feature.home.navigation.HomeRoute
 import io.github.maximerollin.yams.feature.home.navigation.homeScreen
 import io.github.maximerollin.yams.feature.home.navigation.navigateToHome
+import io.github.maximerollin.yams.feature.user.edition.navigation.navigateToUserEdition
+import io.github.maximerollin.yams.feature.user.edition.navigation.userEditionScreen
+import io.github.maximerollin.yams.feature.user.history.navigation.navigateToUserHistory
+import io.github.maximerollin.yams.feature.user.history.navigation.userHistoryScreen
+import io.github.maximerollin.yams.feature.user.profile.navigation.navigateToUserProfile
+import io.github.maximerollin.yams.feature.user.profile.navigation.userProfileScreen
+import io.github.maximerollin.yams.feature.user.users.navigation.navigateToUsers
+import io.github.maximerollin.yams.feature.user.users.navigation.usersScreen
 import io.github.maximerollin.yams.feature.welcome.navigation.WelcomeRoute
 import io.github.maximerollin.yams.feature.welcome.navigation.navigateToWelcome
 import io.github.maximerollin.yams.feature.welcome.navigation.welcomeScreen
@@ -79,7 +89,54 @@ private fun NavGraphBuilder.screens(navController: NavHostController) {
     )
 
     homeScreen(
+        onNavigateToGameCreation = {
+            navController.navigateToGameCreation {
+                launchSingleTop = true
+            }
+        },
+        onNavigateToGameResult = { gameId ->
+            navController.navigateToGameResult(gameId)
+        },
+        onNavigateToUsers = {
+            navController.navigateToUsers()
+        },
+    )
 
+    usersScreen(
+        onNavigateBack = navController::navigateUp,
+        onNavigateToUserProfile = { userId ->
+            navController.navigateToUserProfile(userId)
+        },
+    )
+
+    userProfileScreen(
+        onNavigateBack = navController::navigateUp,
+        onNavigateToUsers = {
+            navController.navigateToUsers {
+                launchSingleTop = true
+                popUpTo(HomeRoute)
+            }
+        },
+        onNavigateToUserEdition = { userId ->
+            navController.navigateToUserEdition(userId)
+        },
+        onNavigateToUserHistory = { userId ->
+            navController.navigateToUserHistory(userId)
+        },
+        onNavigateToGameResult = { gameId ->
+            navController.navigateToGameResult(gameId)
+        },
+    )
+
+    userHistoryScreen(
+        onNavigateBack = navController::navigateUp,
+        onNavigateToGameResult = { gameId ->
+            navController.navigateToGameResult(gameId)
+        },
+    )
+
+    userEditionScreen(
+        onNavigateBack = navController::navigateUp,
     )
 
     gameCreationScreen(
@@ -122,34 +179,39 @@ private fun NavGraphBuilder.screens(navController: NavHostController) {
             }
         },
         onNavigateToResults = { gameId ->
-//            navController.navigateToGameResult(gameId) {
-//                launchSingleTop = true
-//            }
+            navController.navigateToGameResult(gameId) {
+                launchSingleTop = true
+            }
         },
     )
 
-//    gameResultScreen(
-//        onNavigateBack = {
-//            if (!navController.popBackStack()) {
-//                navController.navigateToHome {
-//                    popUpTo(navController.graph.id) { inclusive = true }
-//                }
-//            }
-//        },
-//        onNavigateHome = {
-//            navController.navigateToHome {
-//                launchSingleTop = true
-//                popUpTo(navController.graph.id) { inclusive = true }
-//                navController.graph.setStartDestination(HomeRoute())
-//            }
-//        },
-//        onNavigateToGame = { gameId ->
-//            navController.navigateToGamePlay(gameId) {
-//                navController.currentDestination?.id?.let {
-//                    popUpTo(it) { inclusive = true }
-//                }
-//                launchSingleTop = true
-//            }
-//        },
-//    )
+    gameResultScreen(
+        onNavigateBack = {
+            if (!navController.popBackStack()) {
+                navController.navigateToHome {
+                    launchSingleTop = true
+                    popUpTo(navController.graph.id) { inclusive = true }
+                    navController.graph.setStartDestination(HomeRoute)
+                }
+            }
+        },
+        onNavigateHome = {
+            navController.navigateToHome {
+                launchSingleTop = true
+                popUpTo(navController.graph.id) { inclusive = true }
+                navController.graph.setStartDestination(HomeRoute)
+            }
+        },
+        onNavigateToGame = { gameId ->
+            navController.navigateToGamePlay(gameId) {
+                navController.currentDestination?.id?.let {
+                    popUpTo(it) { inclusive = true }
+                }
+                launchSingleTop = true
+            }
+        },
+        onNavigateToUserProfile = { userId ->
+            navController.navigateToUserProfile(userId)
+        },
+    )
 }

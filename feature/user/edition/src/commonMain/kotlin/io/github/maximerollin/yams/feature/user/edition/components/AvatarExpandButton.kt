@@ -29,6 +29,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
 import io.github.maximerollin.yams.core.designsystem.icon.AddReaction
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
+import org.jetbrains.compose.resources.stringResource
+import yams.feature.user.edition.generated.resources.*
 
 @Composable
 public fun AvatarExpandButton(
@@ -96,7 +98,7 @@ public fun AvatarExpandButton(
             Icon(
                 modifier = modifier.padding(12.dp).fillMaxSize().align(Alignment.Center),
                 imageVector = YamsIcons.AddReaction,
-                contentDescription = "Plus d'avatar",
+                contentDescription = stringResource(Res.string.edition_more_avatars_cd),
                 tint = MaterialTheme.colorScheme.primary,
             )
         }

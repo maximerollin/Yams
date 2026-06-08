@@ -48,7 +48,8 @@ import io.github.maximerollin.yams.core.designsystem.icon.Delete
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.model.GameSettings
-import io.github.maximerollin.yams.core.model.GameSettings.Companion.getName
+import org.jetbrains.compose.resources.stringResource
+import yams.feature.game.preparation.generated.resources.*
 
 @Composable
 internal fun GameRulesBottomSheetContent(
@@ -91,7 +92,7 @@ internal fun GameRulesBottomSheetContent(
                 ) {
                     Icon(
                         imageVector = YamsIcons.Close,
-                        contentDescription = "Fermer",
+                        contentDescription = stringResource(Res.string.prep_rules_close_cd),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(20.dp),
                     )
@@ -106,15 +107,15 @@ internal fun GameRulesBottomSheetContent(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(
-                    text = "Règles de la partie",
+                    text = stringResource(Res.string.prep_rules_title),
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.weight(1f),
                 )
-                RuleMetaChip(text = settings.ruleSet.getName())
+                RuleMetaChip(text = ruleSetLabel(settings.ruleSet))
             }
             Text(
-                text = "Modifiez une catégorie à la fois pour garder une vue claire.",
+                text = stringResource(Res.string.prep_rules_subtitle),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -134,8 +135,8 @@ internal fun GameRulesBottomSheetContent(
         )
 
         SettingsSection(
-            title = selectedSection.title,
-            subtitle = selectedSection.subtitle,
+            title = selectedSection.title(),
+            subtitle = selectedSection.subtitle(),
         ) {
             AnimatedContent(
                 targetState = selectedSection,
@@ -271,7 +272,7 @@ private fun RuleSectionTabs(
     val sections = RuleEditorSection.values()
     AnimatedSegmentedControl(
         items = sections.map { section ->
-            SegmentedControlItem(label = section.tabLabel)
+            SegmentedControlItem(label = section.tabLabel())
         },
         selectedIndex = sections.indexOf(selectedSection).coerceAtLeast(0),
         onSelectedIndexChange = { index -> onSectionSelected(sections[index]) },
@@ -281,15 +282,15 @@ private fun RuleSectionTabs(
     )
 
     AnimatedContent(
-        targetState = selectedSection.hint,
+        targetState = selectedSection,
         transitionSpec = {
             fadeIn(animationSpec = tween(180))
                 .togetherWith(fadeOut(animationSpec = tween(120)))
         },
         label = "RuleSectionHint",
-    ) { hint ->
+    ) { section ->
         Text(
-            text = hint,
+            text = section.hint(),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -303,29 +304,29 @@ private fun CombinationRulesContent(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         RuleCard(
-            label = "Chance",
+            label = stringResource(Res.string.prep_rule_chance),
             checked = currentSettings.isChanceEnabled,
             onCheckedChange = { enabled ->
                 onUpdateGameSettings(currentSettings.copy(isChanceEnabled = enabled))
             },
         ) {
-            RuleMetaChip(text = "Somme des 5 dés")
+            RuleMetaChip(text = stringResource(Res.string.prep_sum_5_dice))
         }
 
         RuleCard(
-            label = "Brelan",
+            label = stringResource(Res.string.prep_three_of_kind),
             checked = currentSettings.isThreeOfAKindEnabled,
             onCheckedChange = { enabled ->
                 onUpdateGameSettings(currentSettings.copy(isThreeOfAKindEnabled = enabled))
             },
         ) {
             ScoringSelectionRow(
-                label = "Mode de score",
-                optionOneLabel = "Somme 3",
+                label = stringResource(Res.string.prep_score_mode),
+                optionOneLabel = stringResource(Res.string.prep_sum_3_dice),
                 optionOne = GameSettings.SettingsScoring.SUM_MATCHING_THREE,
-                optionTwoLabel = "Somme 5",
+                optionTwoLabel = stringResource(Res.string.prep_sum_5_dice),
                 optionTwo = GameSettings.SettingsScoring.SUM_ALL_FIVE_DICE,
-                optionThreeLabel = "Valeur",
+                optionThreeLabel = stringResource(Res.string.prep_fixed_value),
                 optionThree = GameSettings.SettingsScoring.FIXED_CUSTOM,
                 selected = currentSettings.threeOfAKindScoring,
                 onOptionSelected = { scoring ->
@@ -347,7 +348,7 @@ private fun CombinationRulesContent(
                 GameSettings.SettingsScoring.FIXED_CUSTOM
             ) {
                 RuleValueInputRow(
-                    label = "Valeur brelan",
+                    label = stringResource(Res.string.prep_three_of_kind_value),
                     value = currentSettings.threeOfAKindValue,
                     onValueChange = { value ->
                         onUpdateGameSettings(
@@ -362,19 +363,19 @@ private fun CombinationRulesContent(
         }
 
         RuleCard(
-            label = "Carré",
+            label = stringResource(Res.string.prep_four_of_kind),
             checked = currentSettings.isFourOfAKindEnabled,
             onCheckedChange = { enabled ->
                 onUpdateGameSettings(currentSettings.copy(isFourOfAKindEnabled = enabled))
             },
         ) {
             ScoringSelectionRow(
-                label = "Mode de score",
-                optionOneLabel = "Somme 4",
+                label = stringResource(Res.string.prep_score_mode),
+                optionOneLabel = stringResource(Res.string.prep_sum_4_dice),
                 optionOne = GameSettings.SettingsScoring.SUM_MATCHING_FOUR,
-                optionTwoLabel = "Somme 5",
+                optionTwoLabel = stringResource(Res.string.prep_sum_5_dice),
                 optionTwo = GameSettings.SettingsScoring.SUM_ALL_FIVE_DICE,
-                optionThreeLabel = "Valeur",
+                optionThreeLabel = stringResource(Res.string.prep_fixed_value),
                 optionThree = GameSettings.SettingsScoring.FIXED_CUSTOM,
                 selected = currentSettings.fourOfAKindScoring,
                 onOptionSelected = { scoring ->
@@ -396,7 +397,7 @@ private fun CombinationRulesContent(
                 GameSettings.SettingsScoring.FIXED_CUSTOM
             ) {
                 RuleValueInputRow(
-                    label = "Valeur carré",
+                    label = stringResource(Res.string.prep_four_of_kind_value),
                     value = currentSettings.fourOfAKindValue,
                     onValueChange = { value ->
                         onUpdateGameSettings(
@@ -411,14 +412,14 @@ private fun CombinationRulesContent(
         }
 
         RuleCard(
-            label = "Full",
+            label = stringResource(Res.string.prep_full),
             checked = currentSettings.isFullHouseEnabled,
             onCheckedChange = { enabled ->
                 onUpdateGameSettings(currentSettings.copy(isFullHouseEnabled = enabled))
             },
         ) {
             RuleValueInputRow(
-                label = "Valeur full",
+                label = stringResource(Res.string.prep_full_value),
                 value = currentSettings.fullHouseValue,
                 isNullable = false,
                 onValueChange = { value ->
@@ -429,14 +430,14 @@ private fun CombinationRulesContent(
         }
 
         RuleCard(
-            label = "Yams",
+            label = stringResource(Res.string.prep_rule_yams),
             checked = currentSettings.isFiveOfAKindEnabled,
             onCheckedChange = { enabled ->
                 onUpdateGameSettings(currentSettings.copy(isFiveOfAKindEnabled = enabled))
             },
         ) {
             RuleValueInputRow(
-                label = "Valeur Yams",
+                label = stringResource(Res.string.prep_yams_value),
                 value = currentSettings.fiveOfAKindValue,
                 isNullable = false,
                 onValueChange = { value ->
@@ -447,14 +448,14 @@ private fun CombinationRulesContent(
         }
 
         RuleCard(
-            label = "Yams supplémentaire",
+            label = stringResource(Res.string.prep_extra_yams),
             checked = currentSettings.isExtraFiveOfAKindEnabled,
             onCheckedChange = { enabled ->
                 onUpdateGameSettings(currentSettings.copy(isExtraFiveOfAKindEnabled = enabled))
             },
         ) {
             RuleValueInputRow(
-                label = "Valeur Yams supplémentaire",
+                label = stringResource(Res.string.prep_extra_yams_value),
                 value = currentSettings.extraFiveOfAKindValue,
                 onValueChange = { value ->
                     onUpdateGameSettings(currentSettings.copy(extraFiveOfAKindValue = value))
@@ -471,15 +472,15 @@ private fun StraightsRulesContent(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         RuleCard(
-            label = "Petite suite",
+            label = stringResource(Res.string.prep_small_straight),
             checked = currentSettings.isSmallStraightEnabled,
             onCheckedChange = { enabled ->
                 onUpdateGameSettings(currentSettings.copy(isSmallStraightEnabled = enabled))
             },
         ) {
-            RuleMetaChip(text = "4 dés qui se suivent")
+            RuleMetaChip(text = stringResource(Res.string.prep_four_sequence))
             RuleValueInputRow(
-                label = "Valeur petite suite",
+                label = stringResource(Res.string.prep_small_straight_value),
                 value = currentSettings.smallStraightValue,
                 onValueChange = { value ->
                     onUpdateGameSettings(currentSettings.copy(smallStraightValue = value))
@@ -488,15 +489,15 @@ private fun StraightsRulesContent(
         }
 
         RuleCard(
-            label = "Grande suite",
+            label = stringResource(Res.string.prep_large_straight),
             checked = currentSettings.isLargeStraightEnabled,
             onCheckedChange = { enabled ->
                 onUpdateGameSettings(currentSettings.copy(isLargeStraightEnabled = enabled))
             },
         ) {
-            RuleMetaChip(text = "5 dés qui se suivent")
+            RuleMetaChip(text = stringResource(Res.string.prep_five_sequence))
             RuleValueInputRow(
-                label = "Valeur grande suite",
+                label = stringResource(Res.string.prep_large_straight_value),
                 value = currentSettings.largeStraightValue,
                 onValueChange = { value ->
                     onUpdateGameSettings(currentSettings.copy(largeStraightValue = value))
@@ -512,14 +513,14 @@ private fun BonusRulesContent(
     onUpdateGameSettings: (GameSettings) -> Unit,
 ) {
     RuleCard(
-        label = "Activer le bonus supérieur",
+        label = stringResource(Res.string.prep_enable_upper_bonus),
         checked = currentSettings.isUpperBonusEnabled,
         onCheckedChange = { enabled ->
             onUpdateGameSettings(currentSettings.copy(isUpperBonusEnabled = enabled))
         },
     ) {
         RuleValueInputRow(
-            label = "Seuil",
+            label = stringResource(Res.string.prep_threshold),
             value = currentSettings.upperBonusThreshold,
             isNullable = false,
             onValueChange = { value ->
@@ -528,7 +529,7 @@ private fun BonusRulesContent(
             },
         )
         RuleValueInputRow(
-            label = "Valeur",
+            label = stringResource(Res.string.prep_value),
             value = currentSettings.upperBonusValue,
             isNullable = false,
             onValueChange = { value ->
@@ -559,7 +560,7 @@ private fun CustomRulesContent(
     onAddRule: () -> Unit,
 ) {
     RuleCard(
-        label = "Activer les règles personnalisées",
+        label = stringResource(Res.string.prep_enable_custom_rules),
         checked = currentSettings.areCustomRulesEnabled,
         onCheckedChange = onCustomRulesEnabledChange,
     ) {
@@ -570,9 +571,21 @@ private fun CustomRulesContent(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            RuleMetaChip(text = "$enabledCustomRules active(s) / $customRulesCount")
+            RuleMetaChip(
+                text = stringResource(
+                    Res.string.prep_custom_rules_count,
+                    enabledCustomRules,
+                    customRulesCount,
+                ),
+            )
             YamsTextButton(onClick = onToggleNewRuleForm) {
-                Text(if (isNewRuleFormExpanded) "Masquer le formulaire" else "Ajouter une règle")
+                Text(
+                    if (isNewRuleFormExpanded) {
+                        stringResource(Res.string.prep_hide_form)
+                    } else {
+                        stringResource(Res.string.prep_add_rule)
+                    },
+                )
             }
         }
 
@@ -592,7 +605,7 @@ private fun CustomRulesContent(
         }
 
         Text(
-            text = "Règles existantes",
+            text = stringResource(Res.string.prep_existing_rules),
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -663,7 +676,7 @@ private fun CustomRulesContent(
             }
         } else {
             Text(
-                text = "Aucune règle personnalisée pour le moment.",
+                text = stringResource(Res.string.prep_no_custom_rules),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -711,7 +724,7 @@ private fun CustomRuleCard(
                     ) {
                         Icon(
                             imageVector = YamsIcons.Delete,
-                            contentDescription = "Supprimer la règle",
+                            contentDescription = stringResource(Res.string.prep_delete_rule_cd),
                             tint = MaterialTheme.colorScheme.onErrorContainer,
                             modifier = Modifier.size(16.dp),
                         )
@@ -725,17 +738,17 @@ private fun CustomRuleCard(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     ScoringSelectionRow(
-                        label = "Mode de score",
-                        optionOneLabel = "Somme 5",
+                        label = stringResource(Res.string.prep_score_mode),
+                        optionOneLabel = stringResource(Res.string.prep_sum_5_dice),
                         optionOne = GameSettings.SettingsScoring.SUM_ALL_FIVE_DICE,
-                        optionTwoLabel = "Valeur",
+                        optionTwoLabel = stringResource(Res.string.prep_fixed_value),
                         optionTwo = GameSettings.SettingsScoring.FIXED_CUSTOM,
                         selected = customRule.scoring,
                         onOptionSelected = onScoringSelected,
                     )
                     if (customRule.scoring == GameSettings.SettingsScoring.FIXED_CUSTOM) {
                         RuleValueInputRow(
-                            label = "Valeur",
+                            label = stringResource(Res.string.prep_value),
                             value = customRule.value,
                             onValueChange = onValueChange,
                         )
@@ -779,12 +792,12 @@ private fun NewCustomRuleForm(
                 .padding(12.dp),
         ) {
             Text(
-                text = "Créer une nouvelle règle",
+                text = stringResource(Res.string.prep_create_rule),
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onBackground,
             )
             Text(
-                text = "Nom obligatoire, description facultative.",
+                text = stringResource(Res.string.prep_create_rule_help),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -793,17 +806,17 @@ private fun NewCustomRuleForm(
                 onValueChange = onNewRuleTitleChange,
                 placeholder = {
                     Text(
-                        text = "Nom de la règle",
+                        text = stringResource(Res.string.prep_rule_name_placeholder),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 },
             )
             ScoringSelectionRow(
-                label = "Mode de score",
-                optionOneLabel = "Somme 5",
+                label = stringResource(Res.string.prep_score_mode),
+                optionOneLabel = stringResource(Res.string.prep_sum_5_dice),
                 optionOne = GameSettings.SettingsScoring.SUM_ALL_FIVE_DICE,
-                optionTwoLabel = "Valeur",
+                optionTwoLabel = stringResource(Res.string.prep_fixed_value),
                 optionTwo = GameSettings.SettingsScoring.FIXED_CUSTOM,
                 selected = newRuleScoring,
                 onOptionSelected = onNewRuleScoringChange,
@@ -817,7 +830,7 @@ private fun NewCustomRuleForm(
                     ),
                     placeholder = {
                         Text(
-                            text = "Valeur (optionnelle)",
+                            text = stringResource(Res.string.prep_value_optional),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -829,7 +842,7 @@ private fun NewCustomRuleForm(
                 onValueChange = onNewRuleDescriptionChange,
                 placeholder = {
                     Text(
-                        text = "Description (optionnelle)",
+                        text = stringResource(Res.string.prep_description_optional),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -837,7 +850,7 @@ private fun NewCustomRuleForm(
             )
             YamsPrimarySmallButton(
                 onClick = onAddRule,
-                text = "Ajouter la règle",
+                text = stringResource(Res.string.prep_add_rule_button),
                 enabled = canAddRule,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -925,36 +938,53 @@ private fun AnimatedRuleDetails(
     }
 }
 
-private enum class RuleEditorSection(
-    val tabLabel: String,
-    val title: String,
-    val subtitle: String,
-    val hint: String,
-) {
-    COMBINATIONS(
-        tabLabel = "Combos",
-        title = "Combinaisons",
-        subtitle = "Figures principales du tableau",
-        hint = "Activez les combinaisons utiles, puis choisissez leur mode de score.",
-    ),
-    STRAIGHTS(
-        tabLabel = "Suites",
-        title = "Suites",
-        subtitle = "Petite et grande suite",
-        hint = "Réglez uniquement les suites à jouer dans votre variante.",
-    ),
-    BONUS(
-        tabLabel = "Bonus",
-        title = "Bonus supérieur",
-        subtitle = "Seuil et valeur du bonus",
-        hint = "Définissez le seuil à atteindre et la valeur accordée.",
-    ),
-    CUSTOM(
-        tabLabel = "Perso",
-        title = "Règles personnalisées",
-        subtitle = "Ajoutez vos scores spéciaux",
-        hint = "Gardez vos règles maison dans cette section dédiée.",
-    ),
+private enum class RuleEditorSection {
+    COMBINATIONS,
+    STRAIGHTS,
+    BONUS,
+    CUSTOM,
+}
+
+@Composable
+private fun RuleEditorSection.tabLabel(): String = when (this) {
+    RuleEditorSection.COMBINATIONS -> stringResource(Res.string.prep_tab_combos)
+    RuleEditorSection.STRAIGHTS -> stringResource(Res.string.prep_tab_straights)
+    RuleEditorSection.BONUS -> stringResource(Res.string.prep_tab_bonus)
+    RuleEditorSection.CUSTOM -> stringResource(Res.string.prep_tab_custom)
+}
+
+@Composable
+private fun RuleEditorSection.title(): String = when (this) {
+    RuleEditorSection.COMBINATIONS -> stringResource(Res.string.prep_section_combinations)
+    RuleEditorSection.STRAIGHTS -> stringResource(Res.string.prep_section_straights)
+    RuleEditorSection.BONUS -> stringResource(Res.string.prep_section_bonus)
+    RuleEditorSection.CUSTOM -> stringResource(Res.string.prep_section_custom)
+}
+
+@Composable
+private fun RuleEditorSection.subtitle(): String = when (this) {
+    RuleEditorSection.COMBINATIONS -> stringResource(
+        Res.string.prep_section_combinations_subtitle,
+    )
+
+    RuleEditorSection.STRAIGHTS -> stringResource(Res.string.prep_section_straights_subtitle)
+    RuleEditorSection.BONUS -> stringResource(Res.string.prep_section_bonus_subtitle)
+    RuleEditorSection.CUSTOM -> stringResource(Res.string.prep_section_custom_subtitle)
+}
+
+@Composable
+private fun RuleEditorSection.hint(): String = when (this) {
+    RuleEditorSection.COMBINATIONS -> stringResource(Res.string.prep_section_combinations_hint)
+    RuleEditorSection.STRAIGHTS -> stringResource(Res.string.prep_section_straights_hint)
+    RuleEditorSection.BONUS -> stringResource(Res.string.prep_section_bonus_hint)
+    RuleEditorSection.CUSTOM -> stringResource(Res.string.prep_section_custom_hint)
+}
+
+@Composable
+private fun ruleSetLabel(ruleSet: GameSettings.RuleSet): String = when (ruleSet) {
+    GameSettings.RuleSet.YAHTZEE -> stringResource(Res.string.prep_rule_yahtzee)
+    GameSettings.RuleSet.YAMS -> stringResource(Res.string.prep_rule_yams)
+    GameSettings.RuleSet.CUSTOM -> stringResource(Res.string.prep_rule_custom)
 }
 
 @Composable

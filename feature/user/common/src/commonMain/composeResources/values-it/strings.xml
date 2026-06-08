@@ -1,0 +1,16 @@
+<resources>
+    <string name="common_avatar_cd">Avatar di %1$s</string>
+    <string name="common_stats_title">Statistiche</string>
+    <string name="common_stats_subtitle">Panoramica giocatori</string>
+    <string name="common_games">Partite</string>
+    <string name="common_yams">Yams</string>
+    <string name="common_yams_per_game">Yams / partita</string>
+    <string name="common_record">Record</string>
+    <string name="common_game_players_one">%1$s - %2$d giocatore</string>
+    <string name="common_game_players_many">%1$s - %2$d giocatori</string>
+    <string name="common_winner_score">%1$s vince con %2$d pt</string>
+    <string name="common_score_points">%1$d pt</string>
+    <string name="common_record_score">%1$s - %2$d pt</string>
+    <string name="common_victories">Vittorie</string>
+    <string name="common_average_score">Punteggio medio</string>
+</resources>

@@ -34,6 +34,8 @@ import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.mocks.UserMocks
 import io.github.maximerollin.yams.core.model.User
 import io.github.maximerollin.yams.core.model.UserId
+import org.jetbrains.compose.resources.stringResource
+import yams.feature.game.creation.generated.resources.*
 
 @Composable
 public fun GameCreationUserCard(
@@ -61,7 +63,7 @@ public fun GameCreationUserCard(
             .height(140.dp)
             .combinedClickable(
                 onClick = onClick,
-                onLongClickLabel = "Ouvrir le menu contextuel",
+                onLongClickLabel = stringResource(Res.string.creation_context_menu),
                 onLongClick = {
                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                     onLongClick(user.id)
@@ -96,9 +98,9 @@ public fun GameCreationUserCard(
                         .background(MaterialTheme.colorScheme.primaryContainer),
                     contentAlignment = Alignment.Center
                 ) {
-                    AsyncImage(
-                        model = user.avatar,
-                        contentDescription = "User avatar",
+                        AsyncImage(
+                            model = user.avatar,
+                            contentDescription = stringResource(Res.string.creation_user_avatar_cd),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxSize()

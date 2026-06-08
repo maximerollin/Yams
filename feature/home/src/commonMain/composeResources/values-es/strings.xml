@@ -1,0 +1,9 @@
+<resources>
+    <string name="home_loading">Cargando inicio...</string>
+    <string name="home_recent_games_title">Últimas partidas</string>
+    <string name="home_no_finished_games_title">No hay partidas terminadas</string>
+    <string name="home_no_finished_games_message">Crea y termina una partida para llenar tu historial.</string>
+    <string name="home_logo_cd">Logo de %1$s</string>
+    <string name="home_new_game">Nueva partida</string>
+    <string name="home_create_game_cd">Crear una partida</string>
+</resources>

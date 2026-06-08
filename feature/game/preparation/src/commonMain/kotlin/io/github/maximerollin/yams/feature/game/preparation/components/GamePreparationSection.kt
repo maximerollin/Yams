@@ -28,6 +28,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import io.github.maximerollin.yams.core.designsystem.component.YamsPrimarySmallButton
+import org.jetbrains.compose.resources.stringResource
+import yams.feature.game.preparation.generated.resources.*
 
 @Composable
 public fun GamePreparationSection(
@@ -36,13 +38,16 @@ public fun GamePreparationSection(
     onAction: (() -> Unit)? = null,
     onActionEnabled: Boolean = false,
     onActionState: Boolean = false,
-    actionLabelClosed: String = "Détails",
-    actionLabelOpen: String = "Fermer",
+    actionLabelClosed: String? = null,
+    actionLabelOpen: String? = null,
     modifier: Modifier = Modifier,
     subtitle: String? = null,
     accentColor: Color = MaterialTheme.colorScheme.primary,
     content: @Composable ColumnScope.() -> Unit,
 ) {
+    val closedLabel = actionLabelClosed ?: stringResource(Res.string.prep_action_details)
+    val openLabel = actionLabelOpen ?: stringResource(Res.string.prep_action_close)
+
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(28.dp),
@@ -108,8 +113,8 @@ public fun GamePreparationSection(
                     YamsPrimarySmallButton(
                         onClick = onAction!!,
                         text = when (onActionState) {
-                            false -> actionLabelClosed
-                            true -> actionLabelOpen
+                            false -> closedLabel
+                            true -> openLabel
                         },
                     )
                 }

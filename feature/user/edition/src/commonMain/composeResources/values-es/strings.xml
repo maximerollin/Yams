@@ -1,0 +1,17 @@
+<resources>
+    <string name="edition_back_cd">Volver</string>
+    <string name="edition_title">Editar perfil</string>
+    <string name="edition_save">Guardar</string>
+    <string name="edition_create">Crear</string>
+    <string name="edition_delete">Eliminar</string>
+    <string name="edition_name_cd">Nombre del jugador</string>
+    <string name="edition_username_placeholder">Nombre del jugador</string>
+    <string name="edition_selected_avatar_cd">Avatar seleccionado</string>
+    <string name="edition_current_avatar">Tu avatar actual</string>
+    <string name="edition_choose_avatar">Elegir un avatar</string>
+    <string name="edition_gallery_cd">Galería</string>
+    <string name="edition_avatar_help">Selecciona tu avatar entre las opciones siguientes</string>
+    <string name="edition_more_avatars_cd">Más avatares</string>
+    <string name="edition_select_avatar_cd">Seleccionar este avatar</string>
+    <string name="edition_camera_cd">Cámara</string>
+</resources>

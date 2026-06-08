@@ -52,8 +52,10 @@ import io.github.maximerollin.yams.feature.game.preparation.components.GamePrepa
 import io.github.maximerollin.yams.feature.game.preparation.components.GamePreparationSettings
 import io.github.maximerollin.yams.feature.game.preparation.components.GamePreparationTopBar
 import io.github.maximerollin.yams.feature.game.preparation.components.GamePreparationUserOrder
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import yams.feature.game.preparation.generated.resources.*
 
 @Composable
 internal fun GamePreparationRoute(
@@ -146,35 +148,35 @@ private fun GamePreparationStrategyTips(
 ) {
     val tips = when (selectedRuleSet) {
         GameSettings.RuleSet.YAMS -> listOf(
-            "Vise rapidement une ligne forte dans la section supérieure pour sécuriser le bonus.",
-            "Quand un lancer est moyen, garde une paire flexible pour viser Full ou brelan au tour suivant.",
-            "Ne force pas le Yams trop tôt: maximise d'abord les points stables.",
-            "Utilise la chance comme filet de sécurité quand aucune combinaison forte ne sort.",
-            "Une fois le bonus du haut bien engagé, vise surtout les grosses cases (Full, suites, Yams).",
+            stringResource(Res.string.prep_tip_yams_1),
+            stringResource(Res.string.prep_tip_yams_2),
+            stringResource(Res.string.prep_tip_yams_3),
+            stringResource(Res.string.prep_tip_yams_4),
+            stringResource(Res.string.prep_tip_yams_5),
         )
 
         GameSettings.RuleSet.YAHTZEE -> listOf(
-            "Priorise les combinaisons régulières en début de partie pour limiter les zéros.",
-            "Un carré faible peut parfois rapporter moins qu'une suite: compare avant de valider.",
-            "Garde un plan B sur chaque lancer pour éviter de bloquer une ligne clé.",
-            "Sécurise d'abord les combinaisons faciles pour garder les choix ouverts en fin de partie.",
-            "Quand deux options se valent, choisis celle qui laisse le plus de flexibilité au lancer suivant.",
+            stringResource(Res.string.prep_tip_yahtzee_1),
+            stringResource(Res.string.prep_tip_yahtzee_2),
+            stringResource(Res.string.prep_tip_yahtzee_3),
+            stringResource(Res.string.prep_tip_yahtzee_4),
+            stringResource(Res.string.prep_tip_yahtzee_5),
         )
 
         GameSettings.RuleSet.CUSTOM -> listOf(
-            "Commence par les règles à valeur fixe pour sécuriser un socle de points.",
-            "Si une règle custom est risquée, attends un lancer naturellement favorable.",
-            "Répartis les prises de risque entre les joueurs pour garder une partie serrée.",
-            "Repère les règles custom les plus rentables et garde-les pour les lancers vraiment favorables.",
-            "Quand une règle est rarement réalisable, n'hésite pas à la sacrifier tôt pour mieux gérer la suite.",
+            stringResource(Res.string.prep_tip_custom_1),
+            stringResource(Res.string.prep_tip_custom_2),
+            stringResource(Res.string.prep_tip_custom_3),
+            stringResource(Res.string.prep_tip_custom_4),
+            stringResource(Res.string.prep_tip_custom_5),
         )
     }
     var currentTipIndex by remember(selectedRuleSet) { mutableStateOf(0) }
     var tipsDirection by remember(selectedRuleSet) { mutableStateOf(1) }
 
     GamePreparationSection(
-        title = "Astuces express",
-        subtitle = "Un conseil rapide pour bien démarrer la partie.",
+        title = stringResource(Res.string.prep_tips_title),
+        subtitle = stringResource(Res.string.prep_tips_subtitle),
         icon = YamsIcons.Strategy,
         accentColor = MaterialTheme.colorScheme.tertiary,
         modifier = modifier,
@@ -185,7 +187,11 @@ private fun GamePreparationStrategyTips(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = "Astuce ${currentTipIndex + 1}/${tips.size}",
+                text = stringResource(
+                    Res.string.prep_tip_count,
+                    currentTipIndex + 1,
+                    tips.size,
+                ),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurface,
             )
@@ -201,14 +207,14 @@ private fun GamePreparationStrategyTips(
                             if (index < 0) tips.lastIndex else index
                         }
                     },
-                    text = "Préc."
+                    text = stringResource(Res.string.prep_previous)
                 )
                 YamsPrimarySmallButton(
                     onClick = {
                         tipsDirection = 1
                         currentTipIndex = (currentTipIndex + 1) % tips.size
                     },
-                    text = "Suiv."
+                    text = stringResource(Res.string.prep_next)
                 )
             }
         }

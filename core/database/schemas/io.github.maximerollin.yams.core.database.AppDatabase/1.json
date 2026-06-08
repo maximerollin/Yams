@@ -1,0 +1,549 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "b18bd8907904625de666f5861689610e",
+    "entities": [
+      {
+        "tableName": "User",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `avatar` TEXT, `createdAt` INTEGER NOT NULL, `archived` INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "avatar",
+            "columnName": "avatar",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "createdAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "archived",
+            "columnName": "archived",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "Game",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `status` TEXT NOT NULL, `createdAt` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, `finishedAt` INTEGER, `photo` TEXT, `gameNumber` INTEGER NOT NULL, `settingsruleSet` TEXT NOT NULL, `settingscolumnCount` INTEGER NOT NULL, `settingschanceValue` TEXT, `settingsisChanceEnabled` INTEGER NOT NULL, `settingsthreeOfAKindScoring` TEXT, `settingsthreeOfAKindValue` INTEGER, `settingsisThreeOfAKindEnabled` INTEGER NOT NULL, `settingsfourOfAKindScoring` TEXT, `settingsfourOfAKindValue` INTEGER, `settingsisFourOfAKindEnabled` INTEGER NOT NULL, `settingsfullHouseValue` INTEGER NOT NULL, `settingsisFullHouseEnabled` INTEGER NOT NULL, `settingssmallStraightValue` INTEGER, `settingsisSmallStraightEnabled` INTEGER NOT NULL, `settingslargeStraightValue` INTEGER, `settingsisLargeStraightEnabled` INTEGER NOT NULL, `settingsfiveOfAKindValue` INTEGER NOT NULL, `settingsisFiveOfAKindEnabled` INTEGER NOT NULL, `settingsjokerRule` INTEGER NOT NULL, `settingsextraFiveOfAKindValue` INTEGER, `settingsisExtraFiveOfAKindEnabled` INTEGER NOT NULL, `settingsupperBonusThreshold` INTEGER NOT NULL, `settingsupperBonusValue` INTEGER NOT NULL, `settingsisUpperBonusEnabled` INTEGER NOT NULL, `settingsareCustomRulesEnabled` INTEGER NOT NULL, `settingscustomGameSettings` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "createdAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updatedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "finishedAt",
+            "columnName": "finishedAt",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "photo",
+            "columnName": "photo",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "gameNumber",
+            "columnName": "gameNumber",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "settings.ruleSet",
+            "columnName": "settingsruleSet",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "settings.columnCount",
+            "columnName": "settingscolumnCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "settings.chanceValue",
+            "columnName": "settingschanceValue",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "settings.isChanceEnabled",
+            "columnName": "settingsisChanceEnabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "settings.threeOfAKindScoring",
+            "columnName": "settingsthreeOfAKindScoring",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "settings.threeOfAKindValue",
+            "columnName": "settingsthreeOfAKindValue",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "settings.isThreeOfAKindEnabled",
+            "columnName": "settingsisThreeOfAKindEnabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "settings.fourOfAKindScoring",
+            "columnName": "settingsfourOfAKindScoring",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "settings.fourOfAKindValue",
+            "columnName": "settingsfourOfAKindValue",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "settings.isFourOfAKindEnabled",
+            "columnName": "settingsisFourOfAKindEnabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "settings.fullHouseValue",
+            "columnName": "settingsfullHouseValue",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "settings.isFullHouseEnabled",
+            "columnName": "settingsisFullHouseEnabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "settings.smallStraightValue",
+            "columnName": "settingssmallStraightValue",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "settings.isSmallStraightEnabled",
+            "columnName": "settingsisSmallStraightEnabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "settings.largeStraightValue",
+            "columnName": "settingslargeStraightValue",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "settings.isLargeStraightEnabled",
+            "columnName": "settingsisLargeStraightEnabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "settings.fiveOfAKindValue",
+            "columnName": "settingsfiveOfAKindValue",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "settings.isFiveOfAKindEnabled",
+            "columnName": "settingsisFiveOfAKindEnabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "settings.jokerRule",
+            "columnName": "settingsjokerRule",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "settings.extraFiveOfAKindValue",
+            "columnName": "settingsextraFiveOfAKindValue",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "settings.isExtraFiveOfAKindEnabled",
+            "columnName": "settingsisExtraFiveOfAKindEnabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "settings.upperBonusThreshold",
+            "columnName": "settingsupperBonusThreshold",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "settings.upperBonusValue",
+            "columnName": "settingsupperBonusValue",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "settings.isUpperBonusEnabled",
+            "columnName": "settingsisUpperBonusEnabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "settings.areCustomRulesEnabled",
+            "columnName": "settingsareCustomRulesEnabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "settings.customGameSettings",
+            "columnName": "settingscustomGameSettings",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "Player",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`gameId` TEXT NOT NULL, `userId` TEXT NOT NULL, `userIndex` INTEGER NOT NULL, PRIMARY KEY(`gameId`, `userId`), FOREIGN KEY(`gameId`) REFERENCES `Game`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`userId`) REFERENCES `User`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "gameId",
+            "columnName": "gameId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userId",
+            "columnName": "userId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userIndex",
+            "columnName": "userIndex",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "gameId",
+            "userId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_Player_gameId",
+            "unique": false,
+            "columnNames": [
+              "gameId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Player_gameId` ON `${TABLE_NAME}` (`gameId`)"
+          },
+          {
+            "name": "index_Player_userId",
+            "unique": false,
+            "columnNames": [
+              "userId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Player_userId` ON `${TABLE_NAME}` (`userId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Game",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "gameId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "User",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "userId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "PlayerResult",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`gameId` TEXT NOT NULL, `userId` TEXT NOT NULL, `rank` INTEGER NOT NULL, `finalScore` INTEGER NOT NULL, `numberOfTurn` INTEGER NOT NULL, `rawScore` INTEGER NOT NULL, `isWinner` INTEGER NOT NULL, `numberOfFiveOfAKind` INTEGER NOT NULL, PRIMARY KEY(`gameId`, `userId`), FOREIGN KEY(`gameId`) REFERENCES `Game`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`userId`) REFERENCES `User`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "gameId",
+            "columnName": "gameId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userId",
+            "columnName": "userId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rank",
+            "columnName": "rank",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "finalScore",
+            "columnName": "finalScore",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numberOfTurn",
+            "columnName": "numberOfTurn",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rawScore",
+            "columnName": "rawScore",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isWinner",
+            "columnName": "isWinner",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numberOfFiveOfAKind",
+            "columnName": "numberOfFiveOfAKind",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "gameId",
+            "userId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_PlayerResult_gameId",
+            "unique": false,
+            "columnNames": [
+              "gameId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_PlayerResult_gameId` ON `${TABLE_NAME}` (`gameId`)"
+          },
+          {
+            "name": "index_PlayerResult_userId",
+            "unique": false,
+            "columnNames": [
+              "userId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_PlayerResult_userId` ON `${TABLE_NAME}` (`userId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Game",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "gameId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "User",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "userId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "ScoreEntry",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `gameId` TEXT NOT NULL, `userId` TEXT NOT NULL, `scoreKey` TEXT NOT NULL, `columnIndex` INTEGER NOT NULL, `score` INTEGER NOT NULL, `awardsExtraFiveOfAKindBonus` INTEGER NOT NULL DEFAULT 0, `timestamp` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`gameId`) REFERENCES `Game`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`userId`) REFERENCES `User`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gameId",
+            "columnName": "gameId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userId",
+            "columnName": "userId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "scoreKey",
+            "columnName": "scoreKey",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "columnIndex",
+            "columnName": "columnIndex",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "score",
+            "columnName": "score",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "awardsExtraFiveOfAKindBonus",
+            "columnName": "awardsExtraFiveOfAKindBonus",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "timestamp",
+            "columnName": "timestamp",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_ScoreEntry_gameId",
+            "unique": false,
+            "columnNames": [
+              "gameId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_ScoreEntry_gameId` ON `${TABLE_NAME}` (`gameId`)"
+          },
+          {
+            "name": "index_ScoreEntry_userId",
+            "unique": false,
+            "columnNames": [
+              "userId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_ScoreEntry_userId` ON `${TABLE_NAME}` (`userId`)"
+          },
+          {
+            "name": "index_ScoreEntry_scoreKey",
+            "unique": false,
+            "columnNames": [
+              "scoreKey"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_ScoreEntry_scoreKey` ON `${TABLE_NAME}` (`scoreKey`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Game",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "gameId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "User",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "userId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b18bd8907904625de666f5861689610e')"
+    ]
+  }
+}

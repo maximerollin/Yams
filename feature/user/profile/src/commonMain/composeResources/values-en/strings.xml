@@ -1,0 +1,20 @@
+<resources>
+    <string name="profile_back_cd">Back</string>
+    <string name="profile_title">Profile</string>
+    <string name="profile_options_cd">Options</string>
+    <string name="profile_loading">Loading profile...</string>
+    <string name="profile_not_found_title">Player not found</string>
+    <string name="profile_not_found_message">This profile is no longer available.</string>
+    <string name="profile_victories_one">%1$d victory</string>
+    <string name="profile_victories_many">%1$d victories</string>
+    <string name="profile_view_history">View full history</string>
+    <string name="profile_recent_games">Recent games</string>
+    <string name="profile_no_games_title">No games</string>
+    <string name="profile_no_games_message">This player has no completed games yet.</string>
+    <string name="profile_edit">Edit profile</string>
+    <string name="profile_delete_player">Delete player</string>
+    <string name="profile_delete_title">Delete %1$s</string>
+    <string name="profile_delete_message">This player will be removed from the profile list.</string>
+    <string name="profile_cancel">Cancel</string>
+    <string name="profile_delete">Delete</string>
+</resources>

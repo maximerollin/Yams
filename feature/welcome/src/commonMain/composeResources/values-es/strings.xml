@@ -1,0 +1,9 @@
+<resources>
+    <string name="welcome_app_icon_cd">Icono de Yams</string>
+    <string name="welcome_title">Yams Score</string>
+    <string name="welcome_subtitle">Porque cada partida merece ser memorable.</string>
+    <string name="welcome_feature_score_sheet">Hoja de puntuación interactiva</string>
+    <string name="welcome_feature_history">Historial de todas tus partidas</string>
+    <string name="welcome_feature_stats">Estadísticas y récords personales</string>
+    <string name="welcome_cta">Empezar mi primera partida</string>
+</resources>

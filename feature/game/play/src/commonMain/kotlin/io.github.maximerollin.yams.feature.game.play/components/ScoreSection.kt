@@ -22,6 +22,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.stringResource
+import yams.feature.game.play.generated.resources.*
 
 @Composable
 internal fun ScoreSection(
@@ -76,7 +78,7 @@ internal fun ScoreSection(
                 }
                 ScorePill(
                     value = trailingValue,
-                    suffix = "pts",
+                    suffix = stringResource(Res.string.play_points_suffix),
                 )
             }
 

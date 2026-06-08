@@ -20,6 +20,8 @@ import io.github.maximerollin.yams.core.designsystem.icon.Tune
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.model.GameSettings
+import org.jetbrains.compose.resources.stringResource
+import yams.feature.game.preparation.generated.resources.*
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,7 +39,7 @@ public fun GamePreparationSettings(
     }
 
     GamePreparationSection(
-        title = "Choix des règles",
+        title = stringResource(Res.string.prep_rules_choice),
         icon = YamsIcons.Tune,
         onAction = {
             if (showBottomSheet) {
@@ -48,14 +50,14 @@ public fun GamePreparationSettings(
         },
         onActionEnabled = true,
         onActionState = showBottomSheet,
-        actionLabelClosed = "Détails",
-        actionLabelOpen = "Fermer",
+        actionLabelClosed = stringResource(Res.string.prep_action_details),
+        actionLabelOpen = stringResource(Res.string.prep_action_close),
         modifier = modifier,
     ) {
         val ruleSetItems = listOf(
-            SegmentedControlItem(label = "Yahtzee"),
-            SegmentedControlItem(label = "Yams"),
-            SegmentedControlItem(label = "Custom"),
+            SegmentedControlItem(label = stringResource(Res.string.prep_rule_yahtzee)),
+            SegmentedControlItem(label = stringResource(Res.string.prep_rule_yams)),
+            SegmentedControlItem(label = stringResource(Res.string.prep_rule_custom)),
         )
         val ruleSets = listOf(
             GameSettings.RuleSet.YAHTZEE,

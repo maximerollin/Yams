@@ -1,0 +1,31 @@
+<resources>
+    <string name="result_loading">Ergebnisse werden geladen...</string>
+    <string name="result_empty">Noch keine Ergebnisse zum Anzeigen.</string>
+    <string name="result_ranking">Rangliste</string>
+    <string name="result_back_cd">Zurück</string>
+    <string name="result_title">Ergebnisse</string>
+    <string name="result_victories">Siege</string>
+    <string name="result_points_per_turn">Pkt. / Zug</string>
+    <string name="result_yams">Yams</string>
+    <string name="result_podium">Podium</string>
+    <string name="result_yams_count">%1$d Yams</string>
+    <string name="result_yam_count_one">%1$d Yam</string>
+    <string name="result_yam_count_many">%1$d Yams</string>
+    <string name="result_points">%1$d Pkt.</string>
+    <string name="result_duration">Dauer</string>
+    <string name="result_avatar_cd">Avatar von %1$s</string>
+    <string name="result_winner">Gewinner</string>
+    <string name="result_average_per_turn">%1$s / Zug</string>
+    <string name="result_undo_last_move">Letzten Zug zurücknehmen</string>
+    <string name="result_finish_game">Partie beenden</string>
+    <string name="result_game_finished">Partie beendet</string>
+    <string name="result_win_for_one">Sieg für %1$s</string>
+    <string name="result_win_for_two">Sieg für %1$s und %2$s</string>
+    <string name="result_shared_win">Geteilter Sieg</string>
+    <string name="result_rank_first">1.</string>
+    <string name="result_rank_other">%1$d.</string>
+    <string name="result_duration_in_progress">Läuft</string>
+    <string name="result_duration_less_than_minute">&lt; 1 Min.</string>
+    <string name="result_duration_hours_minutes">%1$d Std. %2$d Min.</string>
+    <string name="result_duration_minutes">%1$d Min.</string>
+</resources>

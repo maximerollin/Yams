@@ -17,6 +17,8 @@ import io.github.maximerollin.yams.feature.game.play.ScoreSelectionRequest
 import io.github.maximerollin.yams.feature.game.play.model.PlayerState
 import io.github.maximerollin.yams.feature.game.play.valueFor
 import io.github.maximerollin.yams.feature.game.play.valuesFor
+import org.jetbrains.compose.resources.stringResource
+import yams.feature.game.play.generated.resources.*
 
 @Composable
 internal fun GamePlayCombinationSection(
@@ -34,11 +36,11 @@ internal fun GamePlayCombinationSection(
     modifier: Modifier = Modifier,
 ) {
     ScoreSection(
-        title = "Combinaisons",
+        title = stringResource(Res.string.play_combinations_title),
         subtitle = if (isMultiColumn) {
-            "Choisis librement la colonne à remplir pour chaque figure."
+            stringResource(Res.string.play_combinations_subtitle_multi)
         } else {
-            "Brelan, carré, full, suites, Yams et variantes fixes."
+            stringResource(Res.string.play_combinations_subtitle_single)
         },
         icon = YamsIcons.Timeline,
         accentColor = YamsTheme.colors.brown,
@@ -94,8 +96,8 @@ internal fun GamePlayCombinationSection(
             HorizontalDivider(color = MaterialTheme.colorScheme.surface)
 
             SummaryGridRow(
-                label = "Total combinaisons",
-                supportingText = "Somme des figures de chaque colonne",
+                label = stringResource(Res.string.play_combinations_total),
+                supportingText = stringResource(Res.string.play_combinations_total_help),
                 values = lowerTotals.map(Int::toString),
                 scrollState = scrollState,
                 emphasize = true,

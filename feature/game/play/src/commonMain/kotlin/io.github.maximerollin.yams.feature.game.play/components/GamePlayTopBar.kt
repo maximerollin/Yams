@@ -16,6 +16,8 @@ import io.github.maximerollin.yams.core.designsystem.icon.Info
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.designsystem.theme.colors
+import org.jetbrains.compose.resources.stringResource
+import yams.feature.game.play.generated.resources.*
 
 @Composable
 internal fun GamePlayTopBar(
@@ -30,12 +32,12 @@ internal fun GamePlayTopBar(
             AppIconButton(
                 icon = YamsIcons.Home,
                 onClick = onNavigateHome,
-                contentDescription = "Accueil",
+                contentDescription = stringResource(Res.string.play_home_cd),
             )
         },
         center = {
             Text(
-                text = "Feuille de score",
+                text = stringResource(Res.string.play_title),
                 modifier = Modifier.fillMaxWidth(),
                 style = MaterialTheme.typography.titleMedium,
                 color = YamsTheme.colors.brown,
@@ -46,7 +48,7 @@ internal fun GamePlayTopBar(
             AppIconButton(
                 icon = YamsIcons.Info,
                 onClick = onShowInformation,
-                contentDescription = "Informations",
+                contentDescription = stringResource(Res.string.play_info_cd),
             )
         },
     )

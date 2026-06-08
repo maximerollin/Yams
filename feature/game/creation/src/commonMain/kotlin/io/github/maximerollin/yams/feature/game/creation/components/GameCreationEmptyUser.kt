@@ -25,6 +25,8 @@ import androidx.compose.ui.unit.dp
 import io.github.maximerollin.yams.core.designsystem.icon.PersonAdd
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
+import org.jetbrains.compose.resources.stringResource
+import yams.feature.game.creation.generated.resources.*
 
 @Composable
 public fun GameCreationEmptyUser(
@@ -60,7 +62,7 @@ public fun GameCreationEmptyUser(
                 ) {
                     Icon(
                         imageVector = YamsIcons.PersonAdd,
-                        contentDescription = "Ajouter un joueur",
+                        contentDescription = stringResource(Res.string.creation_add_player_cd),
                         modifier = Modifier.size(40.dp),
                         tint = MaterialTheme.colorScheme.primary
                     )
@@ -70,7 +72,7 @@ public fun GameCreationEmptyUser(
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "Créer un joueur",
+                text = stringResource(Res.string.creation_create_player),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onBackground,
@@ -80,7 +82,7 @@ public fun GameCreationEmptyUser(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Commencez par ajouter des joueurs\npour créer une partie",
+                text = stringResource(Res.string.creation_empty_message),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                 textAlign = TextAlign.Center

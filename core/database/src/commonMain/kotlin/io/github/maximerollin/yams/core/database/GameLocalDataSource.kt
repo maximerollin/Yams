@@ -21,7 +21,7 @@ internal class RoomGameLocalDataSource(
 ) : GameLocalDataSource {
     override fun getGames(): Flow<List<GameEntity>> = gameDao.getGames()
     override fun getGameById(id: String): Flow<GameEntity?> = gameDao.getGameById(id)
-    override fun getNumberOfGames(): Flow<Int> = gameDao.getNumberOfFinishedGames()
+    override fun getNumberOfGames(): Flow<Int> = gameDao.getNumberOfGames()
     override fun getNumberOfFinishedGames(): Flow<Int> = gameDao.getNumberOfFinishedGames()
     override suspend fun insertGame(game: GameEntity) = gameDao.insertGame(game)
     override suspend fun updateGame(game: GameEntity) = gameDao.updateGame(game)

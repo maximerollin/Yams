@@ -40,6 +40,8 @@ import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.designsystem.theme.colors
 import io.github.maximerollin.yams.feature.user.edition.model.Avatar
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import yams.feature.user.edition.generated.resources.*
 
 @Composable
 public fun SelectedAvatarPreview(
@@ -103,7 +105,9 @@ public fun SelectedAvatarPreview(
                                 is Avatar.Drawable -> {
                                     Image(
                                         painter = painterResource(avatar.drawable),
-                                        contentDescription = "Avatar sélectionné",
+                                        contentDescription = stringResource(
+                                            Res.string.edition_selected_avatar_cd,
+                                        ),
                                         contentScale = ContentScale.Crop,
                                         modifier = Modifier.size(112.dp)
                                     )
@@ -112,7 +116,9 @@ public fun SelectedAvatarPreview(
                                 is Avatar.File -> {
                                     AsyncImage(
                                         model = avatar.file,
-                                        contentDescription = "Avatar sélectionné",
+                                        contentDescription = stringResource(
+                                            Res.string.edition_selected_avatar_cd,
+                                        ),
                                         contentScale = ContentScale.Crop,
                                         modifier = Modifier.size(112.dp)
                                     )
@@ -134,7 +140,7 @@ public fun SelectedAvatarPreview(
                         modifier = Modifier.size(16.dp)
                     )
                     Text(
-                        text = "Votre avatar actuel",
+                        text = stringResource(Res.string.edition_current_avatar),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.onSurface,

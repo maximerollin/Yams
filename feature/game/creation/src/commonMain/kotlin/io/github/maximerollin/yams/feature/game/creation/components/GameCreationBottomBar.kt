@@ -37,6 +37,8 @@ import io.github.maximerollin.yams.core.designsystem.component.YamsPrimaryButton
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.mocks.UserMocks
 import io.github.maximerollin.yams.core.model.User
+import org.jetbrains.compose.resources.stringResource
+import yams.feature.game.creation.generated.resources.*
 
 private const val MAX_VISIBLE_AVATAR_COUNT = 5
 
@@ -88,7 +90,14 @@ internal fun GameCreationBottomBar(
                     Spacer(modifier = Modifier.weight(1f))
 
                     Text(
-                        text = "${selectedUsers.size} joueur${if (selectedUsers.size > 1) "s" else ""}",
+                        text = stringResource(
+                            if (selectedUsers.size > 1) {
+                                Res.string.creation_selected_players_many
+                            } else {
+                                Res.string.creation_selected_players_one
+                            },
+                            selectedUsers.size,
+                        ),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp,
@@ -110,7 +119,7 @@ internal fun GameCreationBottomBar(
         YamsPrimaryButton(
             onClick = onCreateGame,
             enabled = selectedUsers.isNotEmpty(),
-            text = "Continuer",
+            text = stringResource(Res.string.creation_continue),
             modifier = Modifier
                 .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
         )
@@ -130,7 +139,7 @@ private fun SelectedUserAvatar(
     ) {
         AsyncImage(
             model = user.avatar,
-            contentDescription = "User avatar",
+            contentDescription = stringResource(Res.string.creation_user_avatar_cd),
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxSize()

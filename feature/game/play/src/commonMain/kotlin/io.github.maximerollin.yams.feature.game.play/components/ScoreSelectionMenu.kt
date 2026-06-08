@@ -19,6 +19,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.unit.dp
 import io.github.maximerollin.yams.feature.game.play.ScoreSelectionOption
+import org.jetbrains.compose.resources.stringResource
+import yams.feature.game.play.generated.resources.*
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -91,7 +93,14 @@ internal fun ScoreSelectionMenu(
                 DropdownMenuItem(
                     text = {
                         Text(
-                            text = option.label,
+                            text = if (option.awardsExtraFiveOfAKindBonus) {
+                                stringResource(
+                                    Res.string.play_score_option_yam_bonus,
+                                    option.score,
+                                )
+                            } else {
+                                stringResource(Res.string.play_points_value, option.score)
+                            },
                             style = MaterialTheme.typography.bodyMedium,
                         )
                     },

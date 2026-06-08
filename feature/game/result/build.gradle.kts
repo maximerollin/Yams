@@ -7,6 +7,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.data.game)
             implementation(libs.coil.compose)
+            implementation(libs.confettikit)
         }
     }
 }

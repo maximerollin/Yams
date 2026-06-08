@@ -27,6 +27,8 @@ import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.mocks.UserMocks
 import io.github.maximerollin.yams.core.model.User
 import sh.calvin.reorderable.ReorderableColumn
+import org.jetbrains.compose.resources.stringResource
+import yams.feature.game.preparation.generated.resources.*
 
 @Composable
 public fun GamePreparationUserOrder(
@@ -39,7 +41,7 @@ public fun GamePreparationUserOrder(
     var showUsers by remember { mutableStateOf(true) }
 
     GamePreparationSection(
-        title = "Ordre des joueurs",
+        title = stringResource(Res.string.prep_user_order_title),
         onAction = { showUsers = !showUsers },
         onActionEnabled = !isUserOrderRandomized,
         onActionState = showUsers,
@@ -48,8 +50,14 @@ public fun GamePreparationUserOrder(
     ) {
         AnimatedSegmentedControl(
             items = listOf(
-                SegmentedControlItem(label = "Aléatoire", icon = YamsIcons.Tactic),
-                SegmentedControlItem(label = "Choisir", icon = YamsIcons.DragHandle),
+                SegmentedControlItem(
+                    label = stringResource(Res.string.prep_order_random),
+                    icon = YamsIcons.Tactic,
+                ),
+                SegmentedControlItem(
+                    label = stringResource(Res.string.prep_order_choose),
+                    icon = YamsIcons.DragHandle,
+                ),
             ),
             selectedIndex = if (isUserOrderRandomized) 0 else 1,
             onSelectedIndexChange = { index ->

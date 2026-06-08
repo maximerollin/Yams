@@ -32,6 +32,8 @@ import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.mocks.UserMocks
 import io.github.maximerollin.yams.core.model.User
+import org.jetbrains.compose.resources.stringResource
+import yams.feature.game.preparation.generated.resources.*
 
 @Composable
 public fun UserOrderDraggableItem(
@@ -74,7 +76,7 @@ public fun UserOrderDraggableItem(
             // User avatar
             AsyncImage(
                 model = user.avatar,
-                contentDescription = "User name",
+                contentDescription = stringResource(Res.string.prep_user_avatar_cd),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(48.dp)
@@ -97,7 +99,7 @@ public fun UserOrderDraggableItem(
 
             Icon(
                 imageVector = YamsIcons.DragHandle,
-                contentDescription = "drag handle icon",
+                contentDescription = stringResource(Res.string.prep_drag_handle_cd),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                 modifier = Modifier.size(24.dp)
             )

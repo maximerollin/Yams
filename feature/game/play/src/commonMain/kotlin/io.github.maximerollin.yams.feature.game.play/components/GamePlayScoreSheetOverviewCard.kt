@@ -42,6 +42,8 @@ import io.github.maximerollin.yams.core.designsystem.theme.colors
 import io.github.maximerollin.yams.core.model.User
 import io.github.maximerollin.yams.feature.game.play.model.GamePlayColumnSummary
 import io.github.maximerollin.yams.feature.game.play.model.PlayerState
+import org.jetbrains.compose.resources.stringResource
+import yams.feature.game.play.generated.resources.*
 
 @Composable
 internal fun GamePlayScoreSheetOverviewCard(
@@ -83,14 +85,14 @@ internal fun GamePlayScoreSheetOverviewCard(
                 ) { currentUser ->
                     TurnStatusPill(
                         icon = YamsIcons.PersonRaisedHand,
-                        label = "Tour en cours",
+                        label = stringResource(Res.string.play_turn_current),
                         value = currentUser.name,
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }
                 ScorePill(
                     value = overallTotal.toString(),
-                    suffix = "pts",
+                    suffix = stringResource(Res.string.play_points_suffix),
                     emphasize = true,
                 )
             }
@@ -107,7 +109,7 @@ internal fun GamePlayScoreSheetOverviewCard(
                 PlayerPagerButton(
                     onClick = onPreviousPlayer,
                     icon = YamsIcons.ChevronLeft,
-                    contentDescription = "Voir la feuille précédente",
+                    contentDescription = stringResource(Res.string.play_previous_sheet_cd),
                 )
 
                 AnimatedContent(
@@ -163,7 +165,7 @@ internal fun GamePlayScoreSheetOverviewCard(
                                 if (isAnimatedSelectedPlayerActive) {
                                     Icon(
                                         imageVector = YamsIcons.Crown,
-                                        contentDescription = "Joueur actif",
+                                        contentDescription = stringResource(Res.string.play_active_player_cd),
                                         tint = MaterialTheme.colorScheme.primary,
                                         modifier = Modifier.size(18.dp),
                                     )
@@ -171,9 +173,9 @@ internal fun GamePlayScoreSheetOverviewCard(
                             }
                             Text(
                                 text = if (isAnimatedSelectedPlayerActive) {
-                                    "Feuille active"
+                                    stringResource(Res.string.play_active_sheet)
                                 } else {
-                                    "Lecture seule"
+                                    stringResource(Res.string.play_read_only)
                                 },
                                 style = MaterialTheme.typography.labelLarge,
                                 color = if (isAnimatedSelectedPlayerActive) {
@@ -183,7 +185,11 @@ internal fun GamePlayScoreSheetOverviewCard(
                                 },
                             )
                             Text(
-                                text = "Joueur ${selectedIndex + 1}/$playerCount",
+                                text = stringResource(
+                                    Res.string.play_player_position,
+                                    selectedIndex + 1,
+                                    playerCount,
+                                ),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -194,19 +200,23 @@ internal fun GamePlayScoreSheetOverviewCard(
                 PlayerPagerButton(
                     onClick = onNextPlayer,
                     icon = YamsIcons.ChevronRight,
-                    contentDescription = "Voir la feuille suivante",
+                    contentDescription = stringResource(Res.string.play_next_sheet_cd),
                 )
             }
 
             Text(
                 text = if (isEditable) {
                     if (showColumnSummaries) {
-                        "Tu peux remplir n'importe quelle case vide, dans la colonne que tu veux, sans ordre imposé."
+                        stringResource(Res.string.play_editable_multi_help)
                     } else {
-                        "Tu peux utiliser cette feuille pour saisir les points du joueur en cours."
+                        stringResource(Res.string.play_editable_single_help)
                     }
                 } else {
-                    "La feuille de ${selectedPlayer.player.user.name} reste visible, mais elle n'est pas modifiable pendant le tour de ${currentTurnPlayer.player.user.name}."
+                    stringResource(
+                        Res.string.play_read_only_help,
+                        selectedPlayer.player.user.name,
+                        currentTurnPlayer.player.user.name,
+                    )
                 },
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -244,17 +254,24 @@ private fun ColumnSummaryRow(
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Text(
-                        text = "Col. ${summary.columnIndex + 1}",
+                        text = stringResource(
+                            Res.string.play_column_label,
+                            summary.columnIndex + 1,
+                        ),
                         style = MaterialTheme.typography.labelLarge,
                         color = YamsTheme.colors.brown,
                     )
                     Text(
-                        text = "${summary.filledCells}/${summary.totalCells} cases",
+                        text = stringResource(
+                            Res.string.play_filled_cells,
+                            summary.filledCells,
+                            summary.totalCells,
+                        ),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     Text(
-                        text = "${summary.totalScore} pts",
+                        text = stringResource(Res.string.play_points_value, summary.totalScore),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onSurface,
                     )

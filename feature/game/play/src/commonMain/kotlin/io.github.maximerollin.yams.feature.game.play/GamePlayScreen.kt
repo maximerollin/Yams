@@ -52,8 +52,10 @@ import io.github.maximerollin.yams.feature.game.play.model.GamePlayStateUi
 import io.github.maximerollin.yams.feature.game.play.model.GameStatus
 import io.github.maximerollin.yams.feature.game.play.model.PlayerState
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import yams.feature.game.play.generated.resources.*
 
 @Composable
 internal fun GamePlayRoute(
@@ -96,7 +98,7 @@ private fun GamePlayScreen(
 
     if (uiState == null) {
         GamePlayMessageState(
-            message = "Chargement de la feuille de score...",
+            message = stringResource(Res.string.play_loading),
             onNavigateHome = onNavigateHome,
             modifier = modifier,
         )
@@ -106,7 +108,7 @@ private fun GamePlayScreen(
     val settings = uiState.game.settings
     if (uiState.playerStates.isEmpty()) {
         GamePlayMessageState(
-            message = "Aucune feuille de score disponible pour le moment.",
+            message = stringResource(Res.string.play_empty),
             onNavigateHome = onNavigateHome,
             onShowInformation = { isInfoSheetVisible = true },
             modifier = modifier,
@@ -157,6 +159,10 @@ private fun GamePlayScreen(
     val lowerScrollState = rememberScrollState()
     val customScrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
+    val yamBonusSnackbarMessage = stringResource(
+        Res.string.play_yam_bonus_snackbar,
+        settings.extraFiveOfAKindValue ?: 0,
+    )
 
     val upperSubtotals = List(columnCount) { columnIndex ->
         selectedPlayer.sumOf(upperRows, columnIndex)
@@ -197,9 +203,7 @@ private fun GamePlayScreen(
                 option.awardsExtraFiveOfAKindBonus,
             )
             if (option.awardsExtraFiveOfAKindBonus) {
-                snackbarHostState.showSnackbar(
-                    "Yam bonus : ${settings.extraFiveOfAKindValue ?: 0} points supplementaires !"
-                )
+                snackbarHostState.showSnackbar(yamBonusSnackbarMessage)
             }
             screenScrollState.animateScrollTo(0)
         }
@@ -341,7 +345,7 @@ private fun GamePlayScreen(
             ) {
                 Icon(
                     imageVector = YamsIcons.Undo,
-                    contentDescription = "Annuler le dernier coup",
+                    contentDescription = stringResource(Res.string.play_undo_last_move),
                 )
             }
         }
@@ -424,57 +428,59 @@ private fun possibleAllDiceScoreOptions(minMatchingDiceCount: Int): List<Int> = 
     }
 }.toList().sorted()
 
+@Composable
 private fun buildUpperScoreRows(): List<ScoreRowUi> = listOf(
     ScoreRowUi(
         key = ScoreKey.ONES,
         badge = "1",
-        label = "As",
-        supportingText = "Somme des 1",
+        label = stringResource(Res.string.play_row_ones),
+        supportingText = stringResource(Res.string.play_sum_of_number, 1),
         scoreOptions = upperScoreOptions(1),
     ),
     ScoreRowUi(
         key = ScoreKey.TWOS,
         badge = "2",
-        label = "Deux",
-        supportingText = "Somme des 2",
+        label = stringResource(Res.string.play_row_twos),
+        supportingText = stringResource(Res.string.play_sum_of_number, 2),
         scoreOptions = upperScoreOptions(2),
     ),
     ScoreRowUi(
         key = ScoreKey.THREES,
         badge = "3",
-        label = "Trois",
-        supportingText = "Somme des 3",
+        label = stringResource(Res.string.play_row_threes),
+        supportingText = stringResource(Res.string.play_sum_of_number, 3),
         scoreOptions = upperScoreOptions(3),
     ),
     ScoreRowUi(
         key = ScoreKey.FOURS,
         badge = "4",
-        label = "Quatre",
-        supportingText = "Somme des 4",
+        label = stringResource(Res.string.play_row_fours),
+        supportingText = stringResource(Res.string.play_sum_of_number, 4),
         scoreOptions = upperScoreOptions(4),
     ),
     ScoreRowUi(
         key = ScoreKey.FIVES,
         badge = "5",
-        label = "Cinq",
-        supportingText = "Somme des 5",
+        label = stringResource(Res.string.play_row_fives),
+        supportingText = stringResource(Res.string.play_sum_of_number, 5),
         scoreOptions = upperScoreOptions(5),
     ),
     ScoreRowUi(
         key = ScoreKey.SIXES,
         badge = "6",
-        label = "Six",
-        supportingText = "Somme des 6",
+        label = stringResource(Res.string.play_row_sixes),
+        supportingText = stringResource(Res.string.play_sum_of_number, 6),
         scoreOptions = upperScoreOptions(6),
     ),
 )
 
+@Composable
 private fun buildMainScoreRows(settings: GameSettings): List<ScoreRowUi> = buildList {
     if (settings.isThreeOfAKindEnabled) {
         add(
             ScoreRowUi(
                 key = ScoreKey.THREE_OF_A_KIND,
-                label = "Brelan",
+                label = stringResource(Res.string.play_three_of_kind),
                 supportingText = scoringDescription(
                     scoring = settings.threeOfAKindScoring,
                     fixedValue = settings.threeOfAKindValue,
@@ -495,7 +501,7 @@ private fun buildMainScoreRows(settings: GameSettings): List<ScoreRowUi> = build
         add(
             ScoreRowUi(
                 key = ScoreKey.FOUR_OF_A_KIND,
-                label = "Carré",
+                label = stringResource(Res.string.play_four_of_kind),
                 supportingText = scoringDescription(
                     scoring = settings.fourOfAKindScoring,
                     fixedValue = settings.fourOfAKindValue,
@@ -516,8 +522,11 @@ private fun buildMainScoreRows(settings: GameSettings): List<ScoreRowUi> = build
         add(
             ScoreRowUi(
                 key = ScoreKey.FULL_HOUSE,
-                label = "Full",
-                supportingText = "${settings.fullHouseValue} pts fixes",
+                label = stringResource(Res.string.play_full),
+                supportingText = stringResource(
+                    Res.string.play_fixed_points,
+                    settings.fullHouseValue,
+                ),
                 fixedScore = settings.fullHouseValue,
                 scoreOptions = listOf(0, settings.fullHouseValue).distinct().sorted(),
             ),
@@ -527,8 +536,11 @@ private fun buildMainScoreRows(settings: GameSettings): List<ScoreRowUi> = build
         add(
             ScoreRowUi(
                 key = ScoreKey.SMALL_STRAIGHT,
-                label = "Petite suite",
-                supportingText = "${settings.smallStraightValue ?: 0} pts fixes",
+                label = stringResource(Res.string.play_small_straight),
+                supportingText = stringResource(
+                    Res.string.play_fixed_points,
+                    settings.smallStraightValue ?: 0,
+                ),
                 fixedScore = settings.smallStraightValue ?: 0,
                 scoreOptions = listOf(0, settings.smallStraightValue ?: 0).distinct().sorted(),
             ),
@@ -538,8 +550,11 @@ private fun buildMainScoreRows(settings: GameSettings): List<ScoreRowUi> = build
         add(
             ScoreRowUi(
                 key = ScoreKey.LARGE_STRAIGHT,
-                label = "Grande suite",
-                supportingText = "${settings.largeStraightValue ?: 0} pts fixes",
+                label = stringResource(Res.string.play_large_straight),
+                supportingText = stringResource(
+                    Res.string.play_fixed_points,
+                    settings.largeStraightValue ?: 0,
+                ),
                 fixedScore = settings.largeStraightValue ?: 0,
                 scoreOptions = listOf(0, settings.largeStraightValue ?: 0).distinct().sorted(),
             ),
@@ -549,8 +564,11 @@ private fun buildMainScoreRows(settings: GameSettings): List<ScoreRowUi> = build
         add(
             ScoreRowUi(
                 key = ScoreKey.FIVE_OF_A_KIND,
-                label = "Yams",
-                supportingText = "${settings.fiveOfAKindValue} pts fixes",
+                label = stringResource(Res.string.play_yams),
+                supportingText = stringResource(
+                    Res.string.play_fixed_points,
+                    settings.fiveOfAKindValue,
+                ),
                 fixedScore = settings.fiveOfAKindValue,
                 scoreOptions = listOf(0, settings.fiveOfAKindValue).distinct().sorted(),
             ),
@@ -560,7 +578,7 @@ private fun buildMainScoreRows(settings: GameSettings): List<ScoreRowUi> = build
         add(
             ScoreRowUi(
                 key = ScoreKey.CHANCE,
-                label = "Chance",
+                label = stringResource(Res.string.play_chance),
                 supportingText = scoringDescription(
                     scoring = settings.chanceValue,
                     fixedValue = null,
@@ -577,12 +595,16 @@ private fun buildMainScoreRows(settings: GameSettings): List<ScoreRowUi> = build
             ),
         )
     }
-    if (settings.isExtraFiveOfAKindEnabled && settings.extraFiveOfAKindValue != null) {
+    val extraFiveOfAKindValue = settings.extraFiveOfAKindValue
+    if (settings.isExtraFiveOfAKindEnabled && extraFiveOfAKindValue != null) {
         add(
             ScoreRowUi(
                 key = ScoreKey.EXTRA_FIVE_OF_A_KIND,
-                label = "Yams bonus",
-                supportingText = "Automatique: +${settings.extraFiveOfAKindValue} par Yam supplementaire",
+                label = stringResource(Res.string.play_yams_bonus),
+                supportingText = stringResource(
+                    Res.string.play_extra_yams_auto,
+                    extraFiveOfAKindValue,
+                ),
                 isInteractive = false,
                 countsAsTurn = false,
             ),
@@ -590,6 +612,7 @@ private fun buildMainScoreRows(settings: GameSettings): List<ScoreRowUi> = build
     }
 }
 
+@Composable
 private fun buildCustomScoreRows(settings: GameSettings): List<ScoreRowUi> {
     if (!settings.areCustomRulesEnabled) return emptyList()
     return settings.customGameSettings
@@ -615,17 +638,25 @@ private fun buildCustomScoreRows(settings: GameSettings): List<ScoreRowUi> {
         }
 }
 
+@Composable
 private fun scoringDescription(
     scoring: GameSettings.SettingsScoring?,
     fixedValue: Int?,
 ): String = when (scoring) {
-    GameSettings.SettingsScoring.SUM_ALL_FIVE_DICE -> "Somme des 5 dés"
-    GameSettings.SettingsScoring.SUM_MATCHING_THREE -> "Somme des 3 dés identiques"
-    GameSettings.SettingsScoring.SUM_MATCHING_FOUR -> "Somme des 4 dés identiques"
+    GameSettings.SettingsScoring.SUM_ALL_FIVE_DICE -> stringResource(Res.string.play_sum_5_dice)
+    GameSettings.SettingsScoring.SUM_MATCHING_THREE -> stringResource(
+        Res.string.play_sum_3_identical,
+    )
+    GameSettings.SettingsScoring.SUM_MATCHING_FOUR -> stringResource(
+        Res.string.play_sum_4_identical,
+    )
     GameSettings.SettingsScoring.FIXED,
-    GameSettings.SettingsScoring.FIXED_CUSTOM -> "${fixedValue ?: 0} pts fixes"
+    GameSettings.SettingsScoring.FIXED_CUSTOM -> stringResource(
+        Res.string.play_fixed_points,
+        fixedValue ?: 0,
+    )
 
-    null -> "Score défini par la règle"
+    null -> stringResource(Res.string.play_rule_defined_score)
 }
 
 private fun fixedScore(
@@ -679,7 +710,6 @@ private fun scoreSelectionOptions(
                 listOf(
                     ScoreSelectionOption(
                         score = score,
-                        label = "$score pts + Yam bonus",
                         awardsExtraFiveOfAKindBonus = true,
                     )
                 )
@@ -690,7 +720,6 @@ private fun scoreSelectionOptions(
                     ScoreSelectionOption(score = score),
                     ScoreSelectionOption(
                         score = score,
-                        label = "$score pts + Yam bonus",
                         awardsExtraFiveOfAKindBonus = true,
                     ),
                 )
@@ -834,14 +863,15 @@ private fun upperBonus(subtotal: Int, settings: GameSettings): Int {
     return if (subtotal >= settings.upperBonusThreshold) settings.upperBonusValue else 0
 }
 
+@Composable
 internal fun bonusStatusText(
     subtotal: Int,
     settings: GameSettings,
 ): String {
     val bonus = upperBonus(subtotal, settings)
-    if (bonus > 0) return "Bonus appliqué: +$bonus pts"
+    if (bonus > 0) return stringResource(Res.string.play_bonus_applied_status, bonus)
     val remaining = (settings.upperBonusThreshold - subtotal).coerceAtLeast(0)
-    return "Encore $remaining pts pour débloquer le bonus"
+    return stringResource(Res.string.play_bonus_remaining_status, remaining)
 }
 
 internal fun PlayerState.valueFor(key: ScoreKey): Int? =
@@ -894,7 +924,6 @@ internal data class ScoreSelectionRequest(
 
 internal data class ScoreSelectionOption(
     val score: Int,
-    val label: String = "$score pts",
     val awardsExtraFiveOfAKindBonus: Boolean = false,
 )
 

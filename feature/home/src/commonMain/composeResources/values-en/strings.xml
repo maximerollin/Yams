@@ -1,0 +1,9 @@
+<resources>
+    <string name="home_loading">Loading home...</string>
+    <string name="home_recent_games_title">Recent games</string>
+    <string name="home_no_finished_games_title">No completed games</string>
+    <string name="home_no_finished_games_message">Create and finish a game to fill your history.</string>
+    <string name="home_logo_cd">%1$s logo</string>
+    <string name="home_new_game">New game</string>
+    <string name="home_create_game_cd">Create a game</string>
+</resources>

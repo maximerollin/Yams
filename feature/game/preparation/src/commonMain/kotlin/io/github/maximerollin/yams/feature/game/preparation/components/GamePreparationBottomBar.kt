@@ -10,6 +10,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.maximerollin.yams.core.designsystem.component.YamsPrimaryButton
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
+import org.jetbrains.compose.resources.stringResource
+import yams.feature.game.preparation.generated.resources.*
 
 @Composable
 public fun GamePreparationBottomBar(
@@ -25,8 +27,8 @@ public fun GamePreparationBottomBar(
             onClick = onCreateGame,
             loading = createGameLoading,
             text = when (createGameLoading) {
-                false -> "Lancer la partie"
-                true -> "Lancement ..."
+                false -> stringResource(Res.string.prep_launch_game)
+                true -> stringResource(Res.string.prep_launching_game)
             },
             modifier = Modifier.padding(16.dp)
         )

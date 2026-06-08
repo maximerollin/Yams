@@ -5,6 +5,10 @@ import io.github.maximerollin.yams.feature.game.creation.di.featureGameCreationM
 import io.github.maximerollin.yams.feature.game.play.di.featureGamePlayModule
 import io.github.maximerollin.yams.feature.game.preparation.di.featureGamePreparationModule
 import io.github.maximerollin.yams.feature.game.result.di.featureGameResultModule
+import io.github.maximerollin.yams.feature.home.di.featureHomeModule
+import io.github.maximerollin.yams.feature.user.history.di.featureUserHistoryModule
+import io.github.maximerollin.yams.feature.user.profile.di.featureUserProfileModule
+import io.github.maximerollin.yams.feature.user.users.di.featureUserUsersModule
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +24,10 @@ val appModule = module {
         featureGamePreparationModule,
         featureGamePlayModule,
         featureGameResultModule,
+        featureHomeModule,
+        featureUserUsersModule,
+        featureUserProfileModule,
+        featureUserHistoryModule,
     )
 
     single(named("IO")) { Dispatchers.IO }

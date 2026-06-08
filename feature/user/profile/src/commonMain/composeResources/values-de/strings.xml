@@ -1,0 +1,20 @@
+<resources>
+    <string name="profile_back_cd">Zurück</string>
+    <string name="profile_title">Profil</string>
+    <string name="profile_options_cd">Optionen</string>
+    <string name="profile_loading">Profil wird geladen...</string>
+    <string name="profile_not_found_title">Spieler nicht gefunden</string>
+    <string name="profile_not_found_message">Dieses Profil ist nicht mehr verfügbar.</string>
+    <string name="profile_victories_one">%1$d Sieg</string>
+    <string name="profile_victories_many">%1$d Siege</string>
+    <string name="profile_view_history">Gesamten Verlauf ansehen</string>
+    <string name="profile_recent_games">Letzte Partien</string>
+    <string name="profile_no_games_title">Keine Partien</string>
+    <string name="profile_no_games_message">Dieser Spieler hat noch keine abgeschlossene Partie.</string>
+    <string name="profile_edit">Profil bearbeiten</string>
+    <string name="profile_delete_player">Spieler löschen</string>
+    <string name="profile_delete_title">%1$s löschen</string>
+    <string name="profile_delete_message">Dieser Spieler wird aus der Profilliste entfernt.</string>
+    <string name="profile_cancel">Abbrechen</string>
+    <string name="profile_delete">Löschen</string>
+</resources>

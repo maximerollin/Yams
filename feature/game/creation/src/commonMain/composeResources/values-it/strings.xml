@@ -1,0 +1,17 @@
+<resources>
+    <string name="creation_add_player_cd">Aggiungi giocatore</string>
+    <string name="creation_create_player">Crea giocatore</string>
+    <string name="creation_empty_message">Inizia aggiungendo giocatori\nper creare una partita</string>
+    <string name="creation_home_cd">Home</string>
+    <string name="creation_add_cd">Aggiungi</string>
+    <string name="creation_title">Selezione giocatori</string>
+    <string name="creation_selected_players_one">%1$d giocatore</string>
+    <string name="creation_selected_players_many">%1$d giocatori</string>
+    <string name="creation_continue">Continua</string>
+    <string name="creation_user_avatar_cd">Avatar giocatore</string>
+    <string name="creation_context_menu">Apri menu contestuale</string>
+    <string name="creation_delete_title">Elimina %1$s</string>
+    <string name="creation_delete_message">Vuoi davvero eliminare %1$s?</string>
+    <string name="creation_cancel">Annulla</string>
+    <string name="creation_delete">Elimina</string>
+</resources>

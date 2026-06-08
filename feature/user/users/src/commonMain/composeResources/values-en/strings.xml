@@ -1,0 +1,10 @@
+<resources>
+    <string name="users_back_cd">Back</string>
+    <string name="users_title">Players</string>
+    <string name="users_loading">Loading players...</string>
+    <string name="users_empty_title">No players</string>
+    <string name="users_empty_message">Create players from game creation.</string>
+    <string name="users_metric_victories">W</string>
+    <string name="users_metric_games">G</string>
+    <string name="users_metric_yams">Y</string>
+</resources>

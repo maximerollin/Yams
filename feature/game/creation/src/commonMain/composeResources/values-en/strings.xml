@@ -1,0 +1,17 @@
+<resources>
+    <string name="creation_add_player_cd">Add a player</string>
+    <string name="creation_create_player">Create a player</string>
+    <string name="creation_empty_message">Start by adding players\nto create a game</string>
+    <string name="creation_home_cd">Home</string>
+    <string name="creation_add_cd">Add</string>
+    <string name="creation_title">Player selection</string>
+    <string name="creation_selected_players_one">%1$d player</string>
+    <string name="creation_selected_players_many">%1$d players</string>
+    <string name="creation_continue">Continue</string>
+    <string name="creation_user_avatar_cd">Player avatar</string>
+    <string name="creation_context_menu">Open context menu</string>
+    <string name="creation_delete_title">Delete %1$s</string>
+    <string name="creation_delete_message">Are you sure you want to delete %1$s?</string>
+    <string name="creation_cancel">Cancel</string>
+    <string name="creation_delete">Delete</string>
+</resources>

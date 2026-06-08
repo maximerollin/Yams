@@ -6,7 +6,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.data.game)
-            implementation(projects.data.user)
+            implementation(projects.feature.user.common)
 
             implementation(libs.coil.compose)
 

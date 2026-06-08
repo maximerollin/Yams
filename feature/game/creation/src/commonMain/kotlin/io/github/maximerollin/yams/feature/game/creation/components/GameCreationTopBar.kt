@@ -18,6 +18,8 @@ import io.github.maximerollin.yams.core.designsystem.icon.Home
 import io.github.maximerollin.yams.core.designsystem.icon.PersonAdd
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
+import org.jetbrains.compose.resources.stringResource
+import yams.feature.game.creation.generated.resources.*
 
 @Composable
 public fun GameCreationTopBar(
@@ -31,7 +33,7 @@ public fun GameCreationTopBar(
             AppIconButton(
                 icon = YamsIcons.Home,
                 onClick = onNavigateHome,
-                contentDescription = "Home button"
+                contentDescription = stringResource(Res.string.creation_home_cd)
             )
         },
         center = {
@@ -40,7 +42,7 @@ public fun GameCreationTopBar(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    "Sélection des joueurs",
+                    stringResource(Res.string.creation_title),
                     color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
@@ -51,7 +53,7 @@ public fun GameCreationTopBar(
             AppIconButton(
                 icon = YamsIcons.PersonAdd,
                 onClick = onCreateUser,
-                contentDescription = "Add button"
+                contentDescription = stringResource(Res.string.creation_add_cd)
             )
         }
     )

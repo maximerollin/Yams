@@ -1,0 +1,9 @@
+<resources>
+    <string name="home_loading">Caricamento della home...</string>
+    <string name="home_recent_games_title">Ultime partite</string>
+    <string name="home_no_finished_games_title">Nessuna partita completata</string>
+    <string name="home_no_finished_games_message">Crea e completa una partita per riempire la cronologia.</string>
+    <string name="home_logo_cd">Logo %1$s</string>
+    <string name="home_new_game">Nuova partita</string>
+    <string name="home_create_game_cd">Crea una partita</string>
+</resources>

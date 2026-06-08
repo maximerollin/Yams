@@ -35,6 +35,8 @@ import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.designsystem.theme.colors
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import yams.feature.user.edition.generated.resources.*
 
 @Composable
 public fun AvatarGridItem(
@@ -89,7 +91,11 @@ public fun AvatarGridItem(
     ) {
         Image(
             painter = painterResource(drawable),
-            contentDescription = if (isSelected) "Avatar sélectionné" else "Sélectionner cet avatar",
+            contentDescription = if (isSelected) {
+                stringResource(Res.string.edition_selected_avatar_cd)
+            } else {
+                stringResource(Res.string.edition_select_avatar_cd)
+            },
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(if (isSelected) 58.dp else 60.dp)

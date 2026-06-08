@@ -28,7 +28,7 @@ internal class GameCreationViewModel(
         )
 
     val gamesNumber: StateFlow<Int> = gameRepository
-        .getNumberOfGames()
+        .getNumberOfFinishedGames()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),

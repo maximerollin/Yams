@@ -16,6 +16,8 @@ import io.github.maximerollin.yams.core.designsystem.icon.AddAPhoto
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.dialogs.compose.rememberCameraPickerLauncher
+import org.jetbrains.compose.resources.stringResource
+import yams.feature.user.edition.generated.resources.*
 
 @Composable
 internal actual fun CameraButton(
@@ -34,7 +36,7 @@ internal actual fun CameraButton(
     ) {
         Icon(
             imageVector = YamsIcons.AddAPhoto,
-            contentDescription = "Appareil photo",
+            contentDescription = stringResource(Res.string.edition_camera_cd),
             tint = MaterialTheme.colorScheme.primary,
             modifier = modifier.size(24.dp)
         )

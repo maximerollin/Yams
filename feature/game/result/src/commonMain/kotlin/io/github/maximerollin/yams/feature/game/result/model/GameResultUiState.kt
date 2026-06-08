@@ -11,6 +11,15 @@ internal data class GameResultUiState(
         playerResults.filter(GameResultPlayerUiState::isWinner)
 
     val totalYamCount: Int = playerResults.sumOf(GameResultPlayerUiState::numberOfFiveOfAKind)
+
+    val totalTurns: Int = playerResults.sumOf(GameResultPlayerUiState::numberOfTurns)
+
+    val averageScorePerTurn: Float =
+        if (totalTurns > 0) {
+            playerResults.sumOf(GameResultPlayerUiState::score).toFloat() / totalTurns
+        } else {
+            0f
+        }
 }
 
 internal data class GameResultPlayerUiState(
@@ -20,6 +29,7 @@ internal data class GameResultPlayerUiState(
     val numberOfTurns: Int,
     val isWinner: Boolean,
     val numberOfFiveOfAKind: Int,
+    val totalVictoryCount: Int,
 ) {
     val averageScorePerTurn: Float =
         if (numberOfTurns > 0) score.toFloat() / numberOfTurns else 0f

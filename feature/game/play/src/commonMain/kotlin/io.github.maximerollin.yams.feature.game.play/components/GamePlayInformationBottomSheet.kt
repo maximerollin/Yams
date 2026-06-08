@@ -24,7 +24,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.model.GameSettings
-import io.github.maximerollin.yams.core.model.GameSettings.Companion.getName
+import org.jetbrains.compose.resources.stringResource
+import yams.feature.game.play.generated.resources.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,37 +62,37 @@ private fun GamePlayInformationContent(
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Text(
-                text = "Informations de partie",
+                text = stringResource(Res.string.play_info_title),
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onBackground,
             )
             Text(
-                text = "Rappel rapide des règles actives pour cette feuille.",
+                text = stringResource(Res.string.play_info_subtitle),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
 
-        GameInformationSection(title = "Format") {
+        GameInformationSection(title = stringResource(Res.string.play_info_format)) {
             GameInformationRow(
-                label = "Jeu",
-                value = settings.ruleSet.getName(),
+                label = stringResource(Res.string.play_info_game),
+                value = ruleSetLabel(settings.ruleSet),
             )
             GameInformationRow(
-                label = "Colonnes",
+                label = stringResource(Res.string.play_info_columns),
                 value = if (settings.columnCount == 1) {
-                    "1 colonne"
+                    stringResource(Res.string.play_one_column)
                 } else {
-                    "${settings.columnCount} colonnes"
+                    stringResource(Res.string.play_many_columns, settings.columnCount)
                 },
                 supportingText = if (settings.columnCount == 1) {
-                    "Format classique sur une seule grille."
+                    stringResource(Res.string.play_classic_format)
                 } else {
-                    "Chaque ligne peut être remplie dans n'importe quelle colonne."
+                    stringResource(Res.string.play_multi_column_format)
                 },
             )
             GameInformationRow(
-                label = "Chance",
+                label = stringResource(Res.string.play_chance),
                 value = ruleValue(
                     isEnabled = settings.isChanceEnabled,
                     scoring = settings.chanceValue,
@@ -99,17 +100,21 @@ private fun GamePlayInformationContent(
             )
         }
 
-        GameInformationSection(title = "Scores") {
+        GameInformationSection(title = stringResource(Res.string.play_info_scores)) {
             GameInformationRow(
-                label = "Bonus haut",
+                label = stringResource(Res.string.play_upper_bonus),
                 value = if (settings.isUpperBonusEnabled) {
-                    "${settings.upperBonusThreshold} pts -> +${settings.upperBonusValue}"
+                    stringResource(
+                        Res.string.play_upper_bonus_value,
+                        settings.upperBonusThreshold,
+                        settings.upperBonusValue,
+                    )
                 } else {
-                    "Désactivé"
+                    stringResource(Res.string.play_disabled)
                 },
             )
             GameInformationRow(
-                label = "Brelan",
+                label = stringResource(Res.string.play_three_of_kind),
                 value = ruleValue(
                     isEnabled = settings.isThreeOfAKindEnabled,
                     scoring = settings.threeOfAKindScoring,
@@ -117,7 +122,7 @@ private fun GamePlayInformationContent(
                 ),
             )
             GameInformationRow(
-                label = "Carré",
+                label = stringResource(Res.string.play_four_of_kind),
                 value = ruleValue(
                     isEnabled = settings.isFourOfAKindEnabled,
                     scoring = settings.fourOfAKindScoring,
@@ -125,82 +130,87 @@ private fun GamePlayInformationContent(
                 ),
             )
             GameInformationRow(
-                label = "Full",
+                label = stringResource(Res.string.play_full),
                 value = if (settings.isFullHouseEnabled) {
-                    "${settings.fullHouseValue} pts"
+                    stringResource(Res.string.play_points_value, settings.fullHouseValue)
                 } else {
-                    "Désactivé"
+                    stringResource(Res.string.play_disabled)
                 },
             )
             GameInformationRow(
-                label = "Petite suite",
+                label = stringResource(Res.string.play_small_straight),
                 value = if (settings.isSmallStraightEnabled) {
-                    "${settings.smallStraightValue ?: 0} pts"
+                    stringResource(Res.string.play_points_value, settings.smallStraightValue ?: 0)
                 } else {
-                    "Désactivée"
+                    stringResource(Res.string.play_disabled_feminine)
                 },
             )
             GameInformationRow(
-                label = "Grande suite",
+                label = stringResource(Res.string.play_large_straight),
                 value = if (settings.isLargeStraightEnabled) {
-                    "${settings.largeStraightValue ?: 0} pts"
+                    stringResource(Res.string.play_points_value, settings.largeStraightValue ?: 0)
                 } else {
-                    "Désactivée"
+                    stringResource(Res.string.play_disabled_feminine)
                 },
             )
             GameInformationRow(
-                label = "Yams",
+                label = stringResource(Res.string.play_yams),
                 value = if (settings.isFiveOfAKindEnabled) {
-                    "${settings.fiveOfAKindValue} pts"
+                    stringResource(Res.string.play_points_value, settings.fiveOfAKindValue)
                 } else {
-                    "Désactivé"
+                    stringResource(Res.string.play_disabled)
                 },
             )
             GameInformationRow(
-                label = "Joker",
-                value = if (settings.jokerRule) "Activé" else "Désactivé",
+                label = stringResource(Res.string.play_joker),
+                value = if (settings.jokerRule) {
+                    stringResource(Res.string.play_enabled)
+                } else {
+                    stringResource(Res.string.play_disabled)
+                },
             )
             GameInformationRow(
-                label = "Bonus Yams",
-                value = if (
-                    settings.isExtraFiveOfAKindEnabled &&
-                    settings.extraFiveOfAKindValue != null
-                ) {
-                    "Auto +${settings.extraFiveOfAKindValue}"
-                } else {
-                    "Désactivé"
-                },
+                label = stringResource(Res.string.play_yams_bonus_info),
+                value = settings.extraFiveOfAKindValue?.let { extraFiveOfAKindValue ->
+                    if (settings.isExtraFiveOfAKindEnabled) {
+                        stringResource(
+                            Res.string.play_auto_bonus_value,
+                            extraFiveOfAKindValue,
+                        )
+                    } else {
+                        stringResource(Res.string.play_disabled)
+                    }
+                } ?: stringResource(Res.string.play_disabled),
                 supportingText = if (
                     settings.isExtraFiveOfAKindEnabled &&
                     settings.extraFiveOfAKindValue != null
                 ) {
-                    "Ajouté automatiquement quand un nouveau Yam est joué après la case Yams."
+                    stringResource(Res.string.play_auto_bonus_help)
                 } else {
                     null
                 },
             )
         }
 
-        GameInformationSection(title = "Règles custom") {
+        GameInformationSection(title = stringResource(Res.string.play_custom_rules)) {
             if (settings.areCustomRulesEnabled && customRules.isNotEmpty()) {
                 customRules.forEachIndexed { index, rule ->
                     GameInformationRow(
                         label = rule.title,
-                        value = scoringLabel(
-                            scoring = rule.scoring,
-                            fixedValue = rule.value,
-                        ),
+                        value = ruleValue(rule),
                         supportingText = rule.description,
                     )
                     if (index < customRules.lastIndex) {
-                        HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
+                        HorizontalDivider(
+                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                        )
                     }
                 }
             } else {
                 GameInformationRow(
-                    label = "État",
-                    value = "Aucune règle active",
-                    supportingText = "Cette partie utilise uniquement les règles standards.",
+                    label = stringResource(Res.string.play_state),
+                    value = stringResource(Res.string.play_no_active_rule),
+                    supportingText = stringResource(Res.string.play_standard_rules_only),
                 )
             }
         }
@@ -266,29 +276,49 @@ private fun GameInformationRow(
     }
 }
 
+@Composable
+private fun ruleValue(rule: GameSettings.CustomGameSettings): String =
+    scoringLabel(scoring = rule.scoring, fixedValue = rule.value)
+
+@Composable
 private fun ruleValue(
     isEnabled: Boolean,
     scoring: GameSettings.SettingsScoring?,
     fixedValue: Int? = null,
 ): String {
     if (!isEnabled || scoring == null) {
-        return "Désactivé"
+        return stringResource(Res.string.play_disabled)
     }
 
     return scoringLabel(scoring = scoring, fixedValue = fixedValue)
 }
 
+@Composable
 private fun scoringLabel(
     scoring: GameSettings.SettingsScoring,
     fixedValue: Int? = null,
 ): String {
     return when (scoring) {
-        GameSettings.SettingsScoring.SUM_ALL_FIVE_DICE -> "Somme des 5 dés"
-        GameSettings.SettingsScoring.SUM_MATCHING_THREE -> "Somme des 3 dés"
-        GameSettings.SettingsScoring.SUM_MATCHING_FOUR -> "Somme des 4 dés"
+        GameSettings.SettingsScoring.SUM_ALL_FIVE_DICE -> stringResource(Res.string.play_sum_5_dice)
+        GameSettings.SettingsScoring.SUM_MATCHING_THREE -> stringResource(
+            Res.string.play_sum_3_identical,
+        )
+        GameSettings.SettingsScoring.SUM_MATCHING_FOUR -> stringResource(
+            Res.string.play_sum_4_identical,
+        )
         GameSettings.SettingsScoring.FIXED,
-        GameSettings.SettingsScoring.FIXED_CUSTOM -> "${fixedValue ?: 0} pts"
+        GameSettings.SettingsScoring.FIXED_CUSTOM -> stringResource(
+            Res.string.play_points_value,
+            fixedValue ?: 0,
+        )
     }
+}
+
+@Composable
+private fun ruleSetLabel(ruleSet: GameSettings.RuleSet): String = when (ruleSet) {
+    GameSettings.RuleSet.YAHTZEE -> stringResource(Res.string.play_rule_yahtzee)
+    GameSettings.RuleSet.YAMS -> stringResource(Res.string.play_yams)
+    GameSettings.RuleSet.CUSTOM -> stringResource(Res.string.play_rule_custom)
 }
 
 @Preview

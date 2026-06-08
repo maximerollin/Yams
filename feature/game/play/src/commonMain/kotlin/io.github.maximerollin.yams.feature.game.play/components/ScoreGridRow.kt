@@ -23,6 +23,8 @@ import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.designsystem.theme.colors
 import io.github.maximerollin.yams.feature.game.play.ScoreRowUi
 import io.github.maximerollin.yams.feature.game.play.ScoreSelectionOption
+import org.jetbrains.compose.resources.stringResource
+import yams.feature.game.play.generated.resources.*
 
 private val ScoreLabelColumnWidth = 168.dp
 private val ScoreCellWidth = 72.dp
@@ -52,7 +54,7 @@ internal fun ScoreColumnHeader(
             ) {
                 repeat(columnCount) { index ->
                     ColumnHeaderCell(
-                        text = "C${index + 1}",
+                        text = stringResource(Res.string.play_column_short, index + 1),
                         compact = true,
                         modifier = Modifier.weight(1f),
                     )
@@ -66,7 +68,9 @@ internal fun ScoreColumnHeader(
                     horizontalArrangement = Arrangement.spacedBy(ScoreCellSpacing),
                 ) {
                     repeat(columnCount) { index ->
-                        ColumnHeaderCell(text = "C${index + 1}")
+                        ColumnHeaderCell(
+                            text = stringResource(Res.string.play_column_short, index + 1),
+                        )
                     }
                 }
             }

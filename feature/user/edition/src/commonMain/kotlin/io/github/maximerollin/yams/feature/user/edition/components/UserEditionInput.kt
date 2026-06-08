@@ -16,6 +16,8 @@ import io.github.maximerollin.yams.core.designsystem.component.AppInput
 import io.github.maximerollin.yams.core.designsystem.icon.Person
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
+import org.jetbrains.compose.resources.stringResource
+import yams.feature.user.edition.generated.resources.*
 
 @Composable
 internal fun UserEditionInput(
@@ -34,13 +36,13 @@ internal fun UserEditionInput(
         startIcon = {
             Icon(
                 imageVector = YamsIcons.Person,
-                contentDescription = "User name",
+                contentDescription = stringResource(Res.string.edition_name_cd),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         },
         placeholder = {
             Text(
-                text = "Username",
+                text = stringResource(Res.string.edition_username_placeholder),
                 style = TextStyle.Default.copy(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -61,4 +63,3 @@ private fun UserEditionInputPreview() {
         )
     }
 }
-

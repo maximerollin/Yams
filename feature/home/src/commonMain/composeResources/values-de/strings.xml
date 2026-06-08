@@ -1,0 +1,9 @@
+<resources>
+    <string name="home_loading">Startseite wird geladen...</string>
+    <string name="home_recent_games_title">Letzte Partien</string>
+    <string name="home_no_finished_games_title">Keine abgeschlossenen Partien</string>
+    <string name="home_no_finished_games_message">Erstelle und beende eine Partie, um deinen Verlauf zu füllen.</string>
+    <string name="home_logo_cd">%1$s-Logo</string>
+    <string name="home_new_game">Neue Partie</string>
+    <string name="home_create_game_cd">Partie erstellen</string>
+</resources>

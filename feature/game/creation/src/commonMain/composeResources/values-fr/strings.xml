@@ -1,0 +1,17 @@
+<resources>
+    <string name="creation_add_player_cd">Ajouter un joueur</string>
+    <string name="creation_create_player">Créer un joueur</string>
+    <string name="creation_empty_message">Commencez par ajouter des joueurs\npour créer une partie</string>
+    <string name="creation_home_cd">Accueil</string>
+    <string name="creation_add_cd">Ajouter</string>
+    <string name="creation_title">Sélection des joueurs</string>
+    <string name="creation_selected_players_one">%1$d joueur</string>
+    <string name="creation_selected_players_many">%1$d joueurs</string>
+    <string name="creation_continue">Continuer</string>
+    <string name="creation_user_avatar_cd">Avatar du joueur</string>
+    <string name="creation_context_menu">Ouvrir le menu contextuel</string>
+    <string name="creation_delete_title">Supprimer %1$s</string>
+    <string name="creation_delete_message">Voulez-vous vraiment supprimer %1$s ?</string>
+    <string name="creation_cancel">Annuler</string>
+    <string name="creation_delete">Supprimer</string>
+</resources>
