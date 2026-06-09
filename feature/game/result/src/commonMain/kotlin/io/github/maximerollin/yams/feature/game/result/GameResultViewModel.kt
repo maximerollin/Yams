@@ -4,20 +4,29 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.maximerollin.yams.core.model.Game
 import io.github.maximerollin.yams.core.model.GameId
+import io.github.maximerollin.yams.core.review.InAppReview
 import io.github.maximerollin.yams.data.game.GameRepository
+import io.github.maximerollin.yams.data.preference.PreferenceRepository
 import io.github.maximerollin.yams.feature.game.result.domain.FinishGameUseCase
 import io.github.maximerollin.yams.feature.game.result.domain.GetGameResultPreviewUseCase
 import io.github.maximerollin.yams.feature.game.result.model.GameResultUiState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.InjectedParam
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.ExperimentalTime
 
 internal class GameResultViewModel(
     @InjectedParam private val gameId: GameId,
     private val gameRepository: GameRepository,
+    private val preferenceRepository: PreferenceRepository,
     private val getGameResultPreviewUseCase: GetGameResultPreviewUseCase,
     private val finishGameUseCase: FinishGameUseCase,
 ) : ViewModel() {
@@ -74,6 +83,27 @@ internal class GameResultViewModel(
     fun onNavigationHandled() {
         _navigationTarget.value = null
         _isActionInProgress.value = false
+    }
+
+    @OptIn(ExperimentalTime::class)
+    fun checkInAppReview() {
+        viewModelScope.launch {
+            val numberOfFinishedGames = gameRepository.getNumberOfFinishedGames().first()
+            val lastInAppReviewShownDate = preferenceRepository.getInAppReviewShownDate().first()
+            val isSixMonthsPassed = lastInAppReviewShownDate?.let {
+                val now = Clock.System.now()
+                val sixMonthsLater = it + (30 * 6).days
+                now > sixMonthsLater
+            } ?: false
+            val shouldShowInAppReview =
+                numberOfFinishedGames >= 3 && (lastInAppReviewShownDate == null || isSixMonthsPassed)
+
+            if (shouldShowInAppReview) {
+                delay(1200.milliseconds)
+                InAppReview.requestReview()
+                preferenceRepository.inAppReviewShown()
+            }
+        }
     }
 }
 

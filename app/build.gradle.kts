@@ -69,6 +69,7 @@ kotlin {
         }
 
         androidMain.dependencies {
+            implementation(projects.core.review)
             implementation(libs.jetbrains.compose.uiTooling)
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)

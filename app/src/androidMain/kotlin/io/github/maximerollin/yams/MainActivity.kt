@@ -12,7 +12,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 
-// import io.github.vinceglb.molkky.core.review.InAppReviewKit
+import io.github.maximerollin.yams.core.review.InAppReviewKit
 import io.github.maximerollin.yams.navigation.PredictiveBackGestureAnimations
 
 class MainActivity : ComponentActivity() {
@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
 
-        // InAppReviewKit.init(this)
+        InAppReviewKit.init(this)
 
         setContent {
             App(
