@@ -38,6 +38,7 @@ import io.github.maximerollin.yams.core.designsystem.icon.Check
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.designsystem.theme.colors
+import io.github.maximerollin.yams.core.ui.utils.appAvatarFor
 import io.github.maximerollin.yams.feature.user.edition.model.Avatar
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -114,11 +115,15 @@ public fun SelectedAvatarPreview(
                                 }
 
                                 is Avatar.File -> {
+                                    val fallbackAvatar = painterResource(appAvatarFor(avatar.file.toString()))
                                     AsyncImage(
                                         model = avatar.file,
                                         contentDescription = stringResource(
                                             Res.string.edition_selected_avatar_cd,
                                         ),
+                                        placeholder = fallbackAvatar,
+                                        error = fallbackAvatar,
+                                        fallback = fallbackAvatar,
                                         contentScale = ContentScale.Crop,
                                         modifier = Modifier.size(112.dp)
                                     )

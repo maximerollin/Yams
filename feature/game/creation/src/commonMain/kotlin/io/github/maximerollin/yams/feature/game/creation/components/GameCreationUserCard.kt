@@ -34,6 +34,8 @@ import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.mocks.UserMocks
 import io.github.maximerollin.yams.core.model.User
 import io.github.maximerollin.yams.core.model.UserId
+import io.github.maximerollin.yams.core.ui.utils.appAvatarFor
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import yams.feature.game.creation.generated.resources.*
 
@@ -90,7 +92,6 @@ public fun GameCreationUserCard(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier.padding(12.dp)
             ) {
-                // Avatar placeholder
                 Box(
                     modifier = Modifier
                         .size(56.dp)
@@ -98,9 +99,13 @@ public fun GameCreationUserCard(
                         .background(MaterialTheme.colorScheme.primaryContainer),
                     contentAlignment = Alignment.Center
                 ) {
-                        AsyncImage(
-                            model = user.avatar,
-                            contentDescription = stringResource(Res.string.creation_user_avatar_cd),
+                    val fallbackAvatar = painterResource(appAvatarFor(user.name))
+                    AsyncImage(
+                        model = user.avatar,
+                        contentDescription = stringResource(Res.string.creation_user_avatar_cd),
+                        placeholder = fallbackAvatar,
+                        error = fallbackAvatar,
+                        fallback = fallbackAvatar,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxSize()

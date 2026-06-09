@@ -23,9 +23,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.maximerollin.yams.core.designsystem.preview.YamsStoreScreenshotPreviews
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.mocks.UserMocks
 import io.github.maximerollin.yams.core.model.User
@@ -217,9 +217,14 @@ internal fun GameCreationScreen(
     }
 }
 
-@Preview
+@YamsStoreScreenshotPreviews
 @Composable
 private fun GameCreationScreenPreview() {
+    GameCreationEmptyStoreScreenshotContent()
+}
+
+@Composable
+public fun GameCreationEmptyStoreScreenshotContent() {
     YamsTheme {
         GameCreationScreen(
             gameCreationUiState = GameCreationUiState(),
@@ -234,9 +239,14 @@ private fun GameCreationScreenPreview() {
     }
 }
 
-@Preview
+@YamsStoreScreenshotPreviews
 @Composable
 private fun GameCreationScreenWithUsersPreview() {
+    GameCreationSelectedStoreScreenshotContent()
+}
+
+@Composable
+public fun GameCreationSelectedStoreScreenshotContent() {
     YamsTheme {
         GameCreationScreen(
             gameCreationUiState = GameCreationUiState(
@@ -252,5 +262,3 @@ private fun GameCreationScreenWithUsersPreview() {
         )
     }
 }
-
-

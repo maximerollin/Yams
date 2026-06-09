@@ -34,11 +34,14 @@ import io.github.maximerollin.yams.core.designsystem.component.YamsDestructiveBu
 import io.github.maximerollin.yams.core.designsystem.component.YamsPrimaryButton
 import io.github.maximerollin.yams.core.designsystem.icon.ChevronLeft
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
+import io.github.maximerollin.yams.core.designsystem.preview.YamsStoreScreenshotPreviews
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.designsystem.theme.colors
 import io.github.maximerollin.yams.core.model.UserId
+import io.github.maximerollin.yams.core.ui.utils.AppAvatars
 import io.github.maximerollin.yams.feature.user.edition.components.UserEditionAvatar
 import io.github.maximerollin.yams.feature.user.edition.components.UserEditionInput
+import io.github.maximerollin.yams.feature.user.edition.model.Avatar
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -234,16 +237,24 @@ private fun UserEditionContent(
     }
 }
 
-@Preview(showBackground = true)
+@YamsStoreScreenshotPreviews
 @Composable
 private fun UserEditionScreenPreview() {
+    UserEditionStoreScreenshotContent()
+}
+
+@Composable
+public fun UserEditionStoreScreenshotContent() {
     YamsTheme {
-        UserEditionContent(
-            uiState = UserEditionUiState(),
+        UserEditionScreen(
+            uiState = UserEditionUiState(
+                userId = UserId("store-preview-alpha"),
+                name = "Alpha",
+                avatar = Avatar.Drawable(AppAvatars[0]),
+            ),
             onAction = {},
-            isEdit = true,
-            onDeleteUser = {},
-            onDismissRequest = {},
+            onNavigateBack = {},
+            modifier = Modifier.fillMaxSize(),
         )
     }
 }

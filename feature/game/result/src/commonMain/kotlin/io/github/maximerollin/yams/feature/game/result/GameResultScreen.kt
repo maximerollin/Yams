@@ -39,7 +39,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -51,12 +50,15 @@ import io.github.maximerollin.yams.core.designsystem.icon.ChevronLeft
 import io.github.maximerollin.yams.core.designsystem.icon.Trophy
 import io.github.maximerollin.yams.core.designsystem.icon.Undo
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
+import io.github.maximerollin.yams.core.designsystem.preview.YamsStoreScreenshotPreviews
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.designsystem.theme.colors
 import io.github.maximerollin.yams.core.model.Game
 import io.github.maximerollin.yams.core.model.GameId
 import io.github.maximerollin.yams.core.model.GameSettings
 import io.github.maximerollin.yams.core.model.UserId
+import io.github.maximerollin.yams.core.mocks.UserMocks
+import io.github.maximerollin.yams.core.ui.utils.appAvatarFor
 import io.github.maximerollin.yams.data.game.model.Player
 import io.github.maximerollin.yams.feature.game.result.model.GameResultPlayerUiState
 import io.github.maximerollin.yams.feature.game.result.model.GameResultUiState
@@ -72,6 +74,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -231,9 +234,7 @@ private fun GameResultScreen(
                         }
                     }
 
-                    if (resultState.game is Game.GameFinished) {
-                        GameResultConfetti(modifier = Modifier.fillMaxSize())
-                    }
+                    GameResultConfetti(modifier = Modifier.fillMaxSize())
                 }
             }
         }
@@ -543,24 +544,19 @@ private fun PlayerAvatar(
         contentAlignment = Alignment.Center,
     ) {
         val avatar = playerResult.player.avatar
-        if (avatar != null) {
-            AsyncImage(
-                model = avatar,
-                contentDescription = avatarContentDescription,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(3.dp)
-                    .clip(CircleShape),
-            )
-        } else {
-            Text(
-                text = playerResult.player.name.initial(),
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                fontWeight = FontWeight.Bold,
-            )
-        }
+        val fallbackAvatar = painterResource(appAvatarFor(playerResult.player.name))
+        AsyncImage(
+            model = avatar,
+            contentDescription = avatarContentDescription,
+            placeholder = fallbackAvatar,
+            error = fallbackAvatar,
+            fallback = fallbackAvatar,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(3.dp)
+                .clip(CircleShape),
+        )
     }
 }
 
@@ -879,10 +875,17 @@ private fun String.initial(): String =
     trim().firstOrNull()?.uppercase() ?: "?"
 
 @OptIn(ExperimentalTime::class)
-@Preview
+@YamsStoreScreenshotPreviews
 @Composable
 private fun GameResultScreenPreview() {
+    GameResultStoreScreenshotContent()
+}
+
+@OptIn(ExperimentalTime::class)
+@Composable
+public fun GameResultStoreScreenshotContent() {
     val gameId = GameId("preview-game")
+    val users = UserMocks.users
     val game = Game.GameInProgress(
         id = gameId,
         settings = GameSettings.YamsSettings(),
@@ -894,9 +897,9 @@ private fun GameResultScreenPreview() {
         playerResults = listOf(
             GameResultPlayerUiState(
                 player = Player(
-                    userId = UserId("alice"),
-                    name = "Alice",
-                    avatar = null,
+                    userId = users[0].id,
+                    name = users[0].name,
+                    avatar = users[0].avatar,
                     gameId = gameId,
                     userIndex = 0,
                 ),
@@ -909,9 +912,9 @@ private fun GameResultScreenPreview() {
             ),
             GameResultPlayerUiState(
                 player = Player(
-                    userId = UserId("bob"),
-                    name = "Bob",
-                    avatar = null,
+                    userId = users[1].id,
+                    name = users[1].name,
+                    avatar = users[1].avatar,
                     gameId = gameId,
                     userIndex = 1,
                 ),
@@ -924,9 +927,9 @@ private fun GameResultScreenPreview() {
             ),
             GameResultPlayerUiState(
                 player = Player(
-                    userId = UserId("claire"),
-                    name = "Claire",
-                    avatar = null,
+                    userId = users[2].id,
+                    name = users[2].name,
+                    avatar = users[2].avatar,
                     gameId = gameId,
                     userIndex = 2,
                 ),

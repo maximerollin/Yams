@@ -35,12 +35,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.maximerollin.yams.core.designsystem.component.YamsPrimarySmallButton
 import io.github.maximerollin.yams.core.designsystem.icon.Strategy
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
+import io.github.maximerollin.yams.core.designsystem.preview.YamsStoreScreenshotPreviews
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.mocks.UserMocks
 import io.github.maximerollin.yams.core.model.GameId
@@ -305,9 +305,14 @@ private fun PreparationTipItem(
     }
 }
 
-@Preview
+@YamsStoreScreenshotPreviews
 @Composable
 private fun GamePreparationScreenRandomPreview() {
+    GamePreparationRandomStoreScreenshotContent()
+}
+
+@Composable
+public fun GamePreparationRandomStoreScreenshotContent() {
     YamsTheme {
         GamePreparationScreen(
             gamePreparationUiState = GamePreparationUiState(
@@ -325,9 +330,14 @@ private fun GamePreparationScreenRandomPreview() {
     }
 }
 
-@Preview
+@YamsStoreScreenshotPreviews
 @Composable
 private fun GamePreparationScreenManualPreview() {
+    GamePreparationManualStoreScreenshotContent()
+}
+
+@Composable
+public fun GamePreparationManualStoreScreenshotContent() {
     YamsTheme {
         GamePreparationScreen(
             gamePreparationUiState = GamePreparationUiState(isUserOrderRandomized = false),

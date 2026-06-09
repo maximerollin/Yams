@@ -10,7 +10,6 @@ import androidx.compose.ui.unit.dp
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.ui.utils.AppAvatars
 import io.github.maximerollin.yams.feature.user.edition.model.Avatar
-import io.github.vinceglb.filekit.PlatformFile
 
 @Composable
 internal fun UserEditionAvatar(
@@ -49,6 +48,12 @@ private fun UserEditionAvatarPreview() {
 
 @Composable
 internal expect fun CameraButton(
-    onPhotoSelected: (PlatformFile) -> Unit,
+    onAvatarSelected: (Avatar) -> Unit,
+    modifier: Modifier = Modifier
+)
+
+@Composable
+internal expect fun GalleryButton(
+    onAvatarSelected: (Avatar) -> Unit,
     modifier: Modifier = Modifier
 )

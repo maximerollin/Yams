@@ -25,16 +25,22 @@ import io.github.maximerollin.yams.core.designsystem.icon.ChevronLeft
 import io.github.maximerollin.yams.core.designsystem.icon.History
 import io.github.maximerollin.yams.core.designsystem.icon.Person
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
+import io.github.maximerollin.yams.core.designsystem.preview.YamsStoreScreenshotPreviews
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.designsystem.theme.colors
+import io.github.maximerollin.yams.core.mocks.UserMocks
 import io.github.maximerollin.yams.core.model.GameId
 import io.github.maximerollin.yams.core.model.UserId
 import io.github.maximerollin.yams.feature.user.common.EmptyState
+import io.github.maximerollin.yams.feature.user.common.GameSummaryUiState
 import io.github.maximerollin.yams.feature.user.common.GameHistoryCard
 import io.github.maximerollin.yams.feature.user.common.LoadingState
+import io.github.maximerollin.yams.feature.user.common.PlayerSummaryUiState
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 import yams.feature.user.history.generated.resources.*
 
 @Composable
@@ -145,5 +151,57 @@ private fun UserHistoryScreen(
                 }
             }
         }
+    }
+}
+
+@OptIn(ExperimentalTime::class)
+@YamsStoreScreenshotPreviews
+@Composable
+private fun UserHistoryScreenPreview() {
+    UserHistoryStoreScreenshotContent()
+}
+
+@OptIn(ExperimentalTime::class)
+@Composable
+public fun UserHistoryStoreScreenshotContent() {
+    YamsTheme {
+        UserHistoryScreen(
+            uiState = UserHistoryUiState.Success(
+                user = UserMocks.users.first(),
+                games = previewHistoryGames(),
+            ),
+            onNavigateBack = {},
+            onNavigateToGameResult = {},
+        )
+    }
+}
+
+@OptIn(ExperimentalTime::class)
+private fun previewHistoryGames(): List<GameSummaryUiState> {
+    val players = UserMocks.users.take(4).mapIndexed { index, user ->
+        PlayerSummaryUiState(
+            userId = user.id,
+            name = user.name,
+            avatar = user.avatar,
+            rank = index + 1,
+            score = listOf(286, 249, 218, 207)[index],
+            yams = listOf(3, 2, 1, 1)[index],
+            isWinner = index == 0,
+        )
+    }
+
+    return List(4) { index ->
+        val shiftedPlayers = players.drop(index % players.size) + players.take(index % players.size)
+        GameSummaryUiState(
+            gameId = GameId("preview-history-game-$index"),
+            gameNumber = 24 - index,
+            finishedAt = Clock.System.now(),
+            photo = null,
+            players = shiftedPlayers,
+            topPlayers = shiftedPlayers.take(3),
+            totalPlayers = shiftedPlayers.size,
+            totalYams = shiftedPlayers.sumOf { it.yams },
+            highestScore = shiftedPlayers.maxOf { it.score },
+        )
     }
 }

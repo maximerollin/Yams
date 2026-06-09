@@ -30,13 +30,16 @@ import io.github.maximerollin.yams.core.designsystem.component.AppTopBar
 import io.github.maximerollin.yams.core.designsystem.icon.ChevronLeft
 import io.github.maximerollin.yams.core.designsystem.icon.Person
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
+import io.github.maximerollin.yams.core.designsystem.preview.YamsStoreScreenshotPreviews
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.designsystem.theme.colors
+import io.github.maximerollin.yams.core.mocks.UserMocks
 import io.github.maximerollin.yams.core.model.UserId
 import io.github.maximerollin.yams.feature.user.common.EmptyState
 import io.github.maximerollin.yams.feature.user.common.LoadingState
 import io.github.maximerollin.yams.feature.user.common.UserAvatar
 import io.github.maximerollin.yams.feature.user.common.UserCardUiState
+import io.github.maximerollin.yams.feature.user.common.UserStatsUiState
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import yams.feature.user.users.generated.resources.*
@@ -205,4 +208,34 @@ private fun UserMetric(
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         maxLines = 1,
     )
+}
+
+@YamsStoreScreenshotPreviews
+@Composable
+private fun UsersScreenPreview() {
+    UsersStoreScreenshotContent()
+}
+
+@Composable
+public fun UsersStoreScreenshotContent() {
+    YamsTheme {
+        UsersScreen(
+            uiState = UsersUiState.Success(
+                users = UserMocks.users.mapIndexed { index, user ->
+                    UserCardUiState(
+                        user = user,
+                        stats = UserStatsUiState(
+                            gamesPlayed = 12 + index,
+                            victories = 5 - index.coerceAtMost(4),
+                            totalYams = 9 + index,
+                            averageScore = 214f - index * 8f,
+                            highestScore = 286 - index * 13,
+                        ),
+                    )
+                }
+            ),
+            onNavigateBack = {},
+            onNavigateToUserProfile = {},
+        )
+    }
 }

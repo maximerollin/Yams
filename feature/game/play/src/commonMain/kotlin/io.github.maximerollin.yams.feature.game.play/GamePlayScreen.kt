@@ -28,9 +28,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.maximerollin.yams.core.designsystem.preview.YamsPhoneStoreScreenshotPreviews
+import io.github.maximerollin.yams.core.designsystem.preview.YamsStoreScreenshotPreviews
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.model.Game
 import io.github.maximerollin.yams.core.model.GameId
@@ -933,9 +934,14 @@ private enum class FiveOfAKindDetection {
     CERTAIN,
 }
 
-@Preview(name = "2 columns")
+@YamsStoreScreenshotPreviews
 @Composable
 private fun GamePlayScreenPreview() {
+    GamePlayTwoColumnsStoreScreenshotContent()
+}
+
+@Composable
+public fun GamePlayTwoColumnsStoreScreenshotContent() {
     YamsTheme {
         GamePlayScreen(
             uiState = gamePlayPreviewUiState(columnCount = 2),
@@ -943,22 +949,17 @@ private fun GamePlayScreenPreview() {
     }
 }
 
-@Preview(name = "1 column")
+@YamsPhoneStoreScreenshotPreviews
 @Composable
 private fun GamePlayScreenSingleColumnPreview() {
+    GamePlaySingleColumnStoreScreenshotContent()
+}
+
+@Composable
+public fun GamePlaySingleColumnStoreScreenshotContent() {
     YamsTheme {
         GamePlayScreen(
             uiState = gamePlayPreviewUiState(columnCount = 1),
-        )
-    }
-}
-
-@Preview(name = "4 columns")
-@Composable
-private fun GamePlayScreenFourColumnsPreview() {
-    YamsTheme {
-        GamePlayScreen(
-            uiState = gamePlayPreviewUiState(columnCount = 4),
         )
     }
 }

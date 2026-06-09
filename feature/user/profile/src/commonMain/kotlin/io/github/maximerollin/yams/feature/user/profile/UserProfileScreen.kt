@@ -47,20 +47,27 @@ import io.github.maximerollin.yams.core.designsystem.icon.History
 import io.github.maximerollin.yams.core.designsystem.icon.MoreVert
 import io.github.maximerollin.yams.core.designsystem.icon.Person
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
+import io.github.maximerollin.yams.core.designsystem.preview.YamsStoreScreenshotPreviews
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.designsystem.theme.colors
 import io.github.maximerollin.yams.core.designsystem.util.IconInfo
+import io.github.maximerollin.yams.core.mocks.UserMocks
 import io.github.maximerollin.yams.core.model.GameId
 import io.github.maximerollin.yams.core.model.UserId
 import io.github.maximerollin.yams.feature.user.common.EmptyState
+import io.github.maximerollin.yams.feature.user.common.GameSummaryUiState
 import io.github.maximerollin.yams.feature.user.common.GameHistoryCard
 import io.github.maximerollin.yams.feature.user.common.LoadingState
+import io.github.maximerollin.yams.feature.user.common.PlayerSummaryUiState
 import io.github.maximerollin.yams.feature.user.common.ProfileStatRow
 import io.github.maximerollin.yams.feature.user.common.UserAvatar
+import io.github.maximerollin.yams.feature.user.common.UserStatsUiState
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 import yams.feature.user.profile.generated.resources.Res
 import yams.feature.user.profile.generated.resources.profile_back_cd
 import yams.feature.user.profile.generated.resources.profile_cancel
@@ -397,5 +404,77 @@ private fun DeleteUserDialog(
                 Text(text = stringResource(Res.string.profile_delete))
             }
         },
+    )
+}
+
+@OptIn(ExperimentalTime::class)
+@YamsStoreScreenshotPreviews
+@Composable
+private fun UserProfileScreenPreview() {
+    UserProfileStoreScreenshotContent()
+}
+
+@OptIn(ExperimentalTime::class)
+@Composable
+public fun UserProfileStoreScreenshotContent() {
+    YamsTheme {
+        UserProfileScreen(
+            uiState = UserProfileUiState.Success(
+                user = UserMocks.users.first(),
+                stats = UserStatsUiState(
+                    gamesPlayed = 24,
+                    victories = 11,
+                    totalYams = 31,
+                    averageScore = 223.5f,
+                    highestScore = 286,
+                ),
+                recentGames = previewProfileGames(),
+            ),
+            onNavigateBack = {},
+            onNavigateToUserEdition = {},
+            onNavigateToUserHistory = {},
+            onNavigateToGameResult = {},
+            onDeleteUser = {},
+        )
+    }
+}
+
+@OptIn(ExperimentalTime::class)
+private fun previewProfileGames(): List<GameSummaryUiState> {
+    val players = UserMocks.users.take(4).mapIndexed { index, user ->
+        PlayerSummaryUiState(
+            userId = user.id,
+            name = user.name,
+            avatar = user.avatar,
+            rank = index + 1,
+            score = listOf(286, 249, 218, 207)[index],
+            yams = listOf(3, 2, 1, 1)[index],
+            isWinner = index == 0,
+        )
+    }
+
+    return listOf(
+        GameSummaryUiState(
+            gameId = GameId("preview-profile-game-1"),
+            gameNumber = 24,
+            finishedAt = Clock.System.now(),
+            photo = null,
+            players = players,
+            topPlayers = players.take(3),
+            totalPlayers = players.size,
+            totalYams = players.sumOf { it.yams },
+            highestScore = players.maxOf { it.score },
+        ),
+        GameSummaryUiState(
+            gameId = GameId("preview-profile-game-2"),
+            gameNumber = 23,
+            finishedAt = Clock.System.now(),
+            photo = null,
+            players = players.drop(1) + players.first(),
+            topPlayers = players.drop(1).take(3),
+            totalPlayers = players.size,
+            totalYams = 4,
+            highestScore = 263,
+        ),
     )
 }

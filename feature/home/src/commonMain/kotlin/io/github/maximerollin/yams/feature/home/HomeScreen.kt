@@ -45,18 +45,26 @@ import io.github.maximerollin.yams.core.designsystem.icon.Delete
 import io.github.maximerollin.yams.core.designsystem.icon.RocketLaunch
 import io.github.maximerollin.yams.core.designsystem.icon.Timer
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
+import io.github.maximerollin.yams.core.designsystem.preview.YamsStoreScreenshotPreviews
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.designsystem.theme.colors
 import io.github.maximerollin.yams.core.designsystem.util.IconInfo
+import io.github.maximerollin.yams.core.mocks.UserMocks
 import io.github.maximerollin.yams.core.model.GameId
+import io.github.maximerollin.yams.core.model.UserId
 import io.github.maximerollin.yams.feature.user.common.EmptyState
 import io.github.maximerollin.yams.feature.user.common.Avatar
+import io.github.maximerollin.yams.feature.user.common.GameSummaryUiState
 import io.github.maximerollin.yams.feature.user.common.GameHistoryCard
+import io.github.maximerollin.yams.feature.user.common.HomeStatsUiState
 import io.github.maximerollin.yams.feature.user.common.HomeStatsCard
 import io.github.maximerollin.yams.feature.user.common.LoadingState
+import io.github.maximerollin.yams.feature.user.common.PlayerSummaryUiState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 import yams.feature.home.generated.resources.*
 import yams.core.ui.generated.resources.app_icon
 import yams.core.ui.generated.resources.Res as CoreUiRes
@@ -432,5 +440,87 @@ private fun AbandonGameDialog(
                 Text(text = stringResource(Res.string.home_abandon_confirm))
             }
         },
+    )
+}
+
+@OptIn(ExperimentalTime::class)
+@YamsStoreScreenshotPreviews
+@Composable
+private fun HomeScreenPreview() {
+    HomeStoreScreenshotContent()
+}
+
+@OptIn(ExperimentalTime::class)
+@Composable
+public fun HomeStoreScreenshotContent() {
+    YamsTheme {
+        HomeScreen(
+            uiState = previewHomeUiState(),
+            onNavigateToGameCreation = {},
+            onNavigateToGamePlay = {},
+            onNavigateToGameResult = {},
+            onNavigateToUsers = {},
+            onAbandonGame = {},
+        )
+    }
+}
+
+@OptIn(ExperimentalTime::class)
+private fun previewHomeUiState(): HomeUiState.Success {
+    val users = UserMocks.users
+    val players = users.take(4).mapIndexed { index, user ->
+        PlayerSummaryUiState(
+            userId = user.id,
+            name = user.name,
+            avatar = user.avatar,
+            rank = index + 1,
+            score = listOf(286, 241, 218, 193)[index],
+            yams = listOf(3, 2, 1, 0)[index],
+            isWinner = index == 0,
+        )
+    }
+
+    return HomeUiState.Success(
+        stats = HomeStatsUiState(
+            gamesPlayed = 18,
+            totalYams = 37,
+            averageYamsPerGame = 2.1f,
+            highestScore = 286,
+            highestScorePlayerName = users.first().name,
+        ),
+        recentGames = listOf(
+            GameSummaryUiState(
+                gameId = GameId("preview-finished-1"),
+                gameNumber = 18,
+                finishedAt = Clock.System.now(),
+                photo = null,
+                players = players,
+                topPlayers = players.take(3),
+                totalPlayers = players.size,
+                totalYams = players.sumOf { it.yams },
+                highestScore = players.maxOf { it.score },
+            ),
+            GameSummaryUiState(
+                gameId = GameId("preview-finished-2"),
+                gameNumber = 17,
+                finishedAt = Clock.System.now(),
+                photo = null,
+                players = players.drop(1) + players.first(),
+                topPlayers = players.drop(1).take(3),
+                totalPlayers = players.size,
+                totalYams = 5,
+                highestScore = 251,
+            ),
+        ),
+        activeGame = ActiveGameUiState(
+            gameId = GameId("preview-active"),
+            playerCount = users.size,
+            players = users.map {
+                ActiveGamePlayerUiState(
+                    name = it.name,
+                    avatar = it.avatar,
+                )
+            },
+        ),
     )
 }

@@ -25,8 +25,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.AndroidUiModes
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.maximerollin.yams.core.designsystem.component.YamsPrimaryButton
@@ -34,6 +32,7 @@ import io.github.maximerollin.yams.core.designsystem.icon.History
 import io.github.maximerollin.yams.core.designsystem.icon.RocketLaunch
 import io.github.maximerollin.yams.core.designsystem.icon.Trophy
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
+import io.github.maximerollin.yams.core.designsystem.preview.YamsStoreScreenshotPreviews
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.designsystem.theme.colors
 import io.github.maximerollin.yams.core.ui.AnimatedDiceBackground
@@ -58,6 +57,7 @@ internal fun WelcomeRoute(
 internal fun WelcomeScreen(
     onNavigateToNewGame: () -> Unit,
     modifier: Modifier = Modifier,
+    isAnimatedBackgroundEnabled: Boolean = true,
 ) {
     Scaffold(modifier = modifier) { paddingValues ->
         Box(
@@ -68,7 +68,9 @@ internal fun WelcomeScreen(
             // Animated dice background
             AnimatedDiceBackground(
                 diceColor = YamsTheme.colors.brown,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                isAnimationEnabled = isAnimatedBackgroundEnabled,
+                randomSeed = if (isAnimatedBackgroundEnabled) null else 42,
             )
 
             // Content
@@ -194,13 +196,18 @@ private fun FeatureCard(
     }
 }
 
-@Preview(uiMode = AndroidUiModes.UI_MODE_NIGHT_YES)
-@Preview(name = "light")
+@YamsStoreScreenshotPreviews
 @Composable
 private fun WelcomeScreenPreview() {
+    WelcomeStoreScreenshotContent()
+}
+
+@Composable
+public fun WelcomeStoreScreenshotContent() {
     YamsTheme {
         WelcomeScreen(
             onNavigateToNewGame = {},
+            isAnimatedBackgroundEnabled = false,
         )
     }
 }

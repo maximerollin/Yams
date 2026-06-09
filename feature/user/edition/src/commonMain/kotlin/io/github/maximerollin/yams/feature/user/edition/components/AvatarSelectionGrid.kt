@@ -7,7 +7,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,15 +33,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import io.github.maximerollin.yams.core.designsystem.icon.AddAPhoto
 import io.github.maximerollin.yams.core.designsystem.icon.AddPhotoAlternate
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
 import io.github.maximerollin.yams.core.ui.utils.AppAvatars
 import io.github.maximerollin.yams.feature.user.edition.model.Avatar
-import io.github.vinceglb.filekit.dialogs.FileKitMode
-import io.github.vinceglb.filekit.dialogs.FileKitType
-import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import org.jetbrains.compose.resources.stringResource
 import yams.feature.user.edition.generated.resources.*
 
@@ -55,12 +54,7 @@ public fun AvatarSelectionGrid(
     var isExpanded by remember { mutableStateOf(false) }
     val visibleAvatarCount = 4
     val hasMore = AppAvatars.size > visibleAvatarCount
-
-    val galleryLauncher = rememberFilePickerLauncher(
-        type = FileKitType.Image,
-        mode = FileKitMode.Single,
-        onResult = { photo -> photo?.let { onAvatarSelected(Avatar.File(it)) } }
-    )
+    val isPreview = LocalInspectionMode.current
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -81,23 +75,22 @@ public fun AvatarSelectionGrid(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                CameraButton(
-                    onPhotoSelected = { onAvatarSelected(Avatar.File(it)) },
-                )
-
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = modifier
-                        .size(48.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primaryContainer)
-                        .clickable { galleryLauncher.launch() }
-                ) {
-                    Icon(
-                        imageVector = YamsIcons.AddPhotoAlternate,
+                if (isPreview) {
+                    PreviewPickerButton(
+                        icon = YamsIcons.AddAPhoto,
+                        contentDescription = stringResource(Res.string.edition_camera_cd),
+                    )
+                    PreviewPickerButton(
+                        icon = YamsIcons.AddPhotoAlternate,
                         contentDescription = stringResource(Res.string.edition_gallery_cd),
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = modifier.size(24.dp)
+                    )
+                } else {
+                    CameraButton(
+                        onAvatarSelected = onAvatarSelected,
+                    )
+
+                    GalleryButton(
+                        onAvatarSelected = onAvatarSelected,
                     )
                 }
             }
@@ -179,5 +172,27 @@ public fun AvatarSelectionGrid(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun PreviewPickerButton(
+    icon: ImageVector,
+    contentDescription: String,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .size(48.dp)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.primaryContainer),
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = contentDescription,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(24.dp),
+        )
     }
 }

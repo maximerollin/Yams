@@ -37,6 +37,8 @@ import io.github.maximerollin.yams.core.designsystem.component.YamsPrimaryButton
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.mocks.UserMocks
 import io.github.maximerollin.yams.core.model.User
+import io.github.maximerollin.yams.core.ui.utils.appAvatarFor
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import yams.feature.game.creation.generated.resources.*
 
@@ -137,9 +139,13 @@ private fun SelectedUserAvatar(
             .clip(CircleShape)
             .background(MaterialTheme.colorScheme.primary)
     ) {
+        val fallbackAvatar = painterResource(appAvatarFor(user.name))
         AsyncImage(
             model = user.avatar,
             contentDescription = stringResource(Res.string.creation_user_avatar_cd),
+            placeholder = fallbackAvatar,
+            error = fallbackAvatar,
+            fallback = fallbackAvatar,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxSize()

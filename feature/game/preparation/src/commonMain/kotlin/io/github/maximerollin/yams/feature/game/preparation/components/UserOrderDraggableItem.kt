@@ -32,6 +32,8 @@ import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.mocks.UserMocks
 import io.github.maximerollin.yams.core.model.User
+import io.github.maximerollin.yams.core.ui.utils.appAvatarFor
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import yams.feature.game.preparation.generated.resources.*
 
@@ -74,9 +76,13 @@ public fun UserOrderDraggableItem(
             Spacer(modifier = Modifier.width(12.dp))
 
             // User avatar
+            val fallbackAvatar = painterResource(appAvatarFor(user.name))
             AsyncImage(
                 model = user.avatar,
                 contentDescription = stringResource(Res.string.prep_user_avatar_cd),
+                placeholder = fallbackAvatar,
+                error = fallbackAvatar,
+                fallback = fallbackAvatar,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(48.dp)

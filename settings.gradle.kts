@@ -35,6 +35,7 @@ plugins {
 }
 
 include(":app")
+include(":screenshots")
 include(":core:database")
 include(":core:designsystem")
 include(":core:file")

@@ -39,7 +39,8 @@ import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.designsystem.theme.colors
 import io.github.maximerollin.yams.core.model.User
-import io.github.vinceglb.filekit.PlatformFile
+import io.github.maximerollin.yams.core.ui.utils.appAvatarFor
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import yams.feature.user.common.generated.resources.Res
 import yams.feature.user.common.generated.resources.common_avatar_cd
@@ -141,7 +142,7 @@ public fun UserAvatar(
 @Composable
 public fun Avatar(
     name: String,
-    avatar: PlatformFile?,
+    avatar: Any?,
     modifier: Modifier = Modifier,
     size: Dp = 52.dp,
 ) {
@@ -152,24 +153,19 @@ public fun Avatar(
             .background(MaterialTheme.colorScheme.primaryContainer),
         contentAlignment = Alignment.Center,
     ) {
-        if (avatar != null) {
-            AsyncImage(
-                model = avatar,
-                contentDescription = stringResource(Res.string.common_avatar_cd, name),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(2.dp)
-                    .clip(CircleShape),
-            )
-        } else {
-            Text(
-                text = name.initial(),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                fontWeight = FontWeight.Bold,
-            )
-        }
+        val fallbackAvatar = painterResource(appAvatarFor(name))
+        AsyncImage(
+            model = avatar,
+            contentDescription = stringResource(Res.string.common_avatar_cd, name),
+            placeholder = fallbackAvatar,
+            error = fallbackAvatar,
+            fallback = fallbackAvatar,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(2.dp)
+                .clip(CircleShape),
+        )
     }
 }
 

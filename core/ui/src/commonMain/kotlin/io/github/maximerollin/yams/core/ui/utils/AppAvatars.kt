@@ -33,3 +33,13 @@ public val AppAvatars: List<DrawableResource> = listOf(
     Res.drawable.avatar_13,
     Res.drawable.avatar_14,
 )
+
+public fun appAvatarFor(key: String): DrawableResource =
+    AppAvatars[key.stableAvatarIndex()]
+
+private fun String.stableAvatarIndex(): Int {
+    val value = fold(0) { accumulator, char ->
+        ((accumulator * 31) + char.code) and Int.MAX_VALUE
+    }
+    return value % AppAvatars.size
+}

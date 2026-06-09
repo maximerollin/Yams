@@ -32,42 +32,49 @@ public fun AnimatedDiceBackground(
     diceColor: Color,
     modifier: Modifier = Modifier,
     diceCount: Int = 15,
+    isAnimationEnabled: Boolean = true,
+    randomSeed: Int? = null,
 ) {
     val circlesCount = 3
     val baseDuration = 50_000L
-    
+
     // Remember random configurations for each dice path
-    val diceConfigs = remember(diceCount) {
+    val diceConfigs = remember(diceCount, randomSeed) {
+        val random = randomSeed?.let { Random(it) } ?: Random
         List(diceCount) {
             DiceConfig(
-                circleIndex = Random.nextInt(circlesCount),
-                startAngle = Random.nextFloat() * 360f,
-                diceValue = Random.nextInt(1, 7),
-                rotationSpeed = Random.nextFloat() * 2f - 1f, // -1 to 1
-                size = 20f + Random.nextFloat() * 15f, // 20-35dp
-                duration = baseDuration + Random.nextLong(-20_000, 40_000)
+                circleIndex = random.nextInt(circlesCount),
+                startAngle = random.nextFloat() * 360f,
+                diceValue = random.nextInt(1, 7),
+                rotationSpeed = random.nextFloat() * 2f - 1f, // -1 to 1
+                size = 20f + random.nextFloat() * 15f, // 20-35dp
+                duration = baseDuration + random.nextLong(-20_000, 40_000)
             )
         }
     }
-    
+
     // Create animations for each circle path
-    val circleAnimations = (0 until circlesCount).map { index ->
-        val infiniteTransition = rememberInfiniteTransition(label = "circle_$index")
-        val angle by infiniteTransition.animateFloat(
-            initialValue = 0f,
-            targetValue = 360f,
-            animationSpec = infiniteRepeatable(
-                animation = tween(
-                    durationMillis = (baseDuration + index * 15_000).toInt(),
-                    easing = LinearEasing
+    val circleAnimations = if (isAnimationEnabled) {
+        (0 until circlesCount).map { index ->
+            val infiniteTransition = rememberInfiniteTransition(label = "circle_$index")
+            val angle by infiniteTransition.animateFloat(
+                initialValue = 0f,
+                targetValue = 360f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(
+                        durationMillis = (baseDuration + index * 15_000).toInt(),
+                        easing = LinearEasing
+                    ),
+                    repeatMode = RepeatMode.Restart
                 ),
-                repeatMode = RepeatMode.Restart
-            ),
-            label = "angle_$index"
-        )
-        angle
+                label = "angle_$index"
+            )
+            angle
+        }
+    } else {
+        List(circlesCount) { 0f }
     }
-    
+
     Canvas(modifier = modifier.fillMaxSize()) {
         val center = Offset(size.width / 2f, size.height / 2f)
         val baseRadius = size.width * 0.3f
@@ -167,4 +174,3 @@ private fun getPositionOnCircle(center: Offset, radius: Float, angle: Float): Of
     val y = center.y + radius * sin(angleInRad)
     return Offset(x, y)
 }
-
