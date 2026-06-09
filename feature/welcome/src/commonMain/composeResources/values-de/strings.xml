@@ -1,6 +1,6 @@
 <resources>
-    <string name="welcome_app_icon_cd">Yams-Symbol</string>
-    <string name="welcome_title">Yams Score</string>
+    <string name="welcome_app_icon_cd">Kniffel-Symbol</string>
+    <string name="welcome_title">Kniffel Score</string>
     <string name="welcome_subtitle">Weil jede Partie unvergesslich sein sollte!</string>
     <string name="welcome_feature_score_sheet">Interaktiver Punkteblock</string>
     <string name="welcome_feature_history">Verlauf aller deiner Partien</string>

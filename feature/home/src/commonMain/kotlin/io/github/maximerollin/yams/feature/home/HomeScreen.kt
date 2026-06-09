@@ -69,8 +69,6 @@ import yams.feature.home.generated.resources.*
 import yams.core.ui.generated.resources.app_icon
 import yams.core.ui.generated.resources.Res as CoreUiRes
 
-private const val AppName = "Yamigo"
-
 @Composable
 internal fun HomeRoute(
     onNavigateToGameCreation: () -> Unit,
@@ -198,6 +196,7 @@ internal fun HomeScreen(
 
 @Composable
 private fun HomeBrandTitle() {
+    val appName = stringResource(yams.feature.home.generated.resources.Res.string.home_app_name)
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
@@ -207,14 +206,14 @@ private fun HomeBrandTitle() {
             painter = painterResource(CoreUiRes.drawable.app_icon),
             contentDescription = stringResource(
                 yams.feature.home.generated.resources.Res.string.home_logo_cd,
-                AppName,
+                appName,
             ),
             modifier = Modifier
                 .size(34.dp)
                 .clip(CircleShape),
         )
         Text(
-            text = AppName,
+            text = appName,
             modifier = Modifier.padding(start = 10.dp),
             style = MaterialTheme.typography.titleMedium,
             color = YamsTheme.colors.brown,

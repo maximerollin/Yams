@@ -1,5 +1,6 @@
 <resources>
     <string name="home_loading">Loading home...</string>
+    <string name="home_app_name">Yahtzee Score</string>
     <string name="home_recent_games_title">Recent games</string>
     <string name="home_no_finished_games_title">No completed games</string>
     <string name="home_no_finished_games_message">Create and finish a game to fill your history.</string>
