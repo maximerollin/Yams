@@ -3,6 +3,7 @@ package io.github.maximerollin.yams.feature.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.maximerollin.yams.core.model.GameId
+import io.github.maximerollin.yams.data.billing.BillingRepository
 import io.github.maximerollin.yams.data.game.GameRepository
 import io.github.maximerollin.yams.data.game.model.GamePlayState
 import io.github.maximerollin.yams.feature.user.common.toGameSummaries
@@ -15,15 +16,18 @@ import kotlinx.coroutines.launch
 
 internal class HomeViewModel(
     private val gameRepository: GameRepository,
+    billingRepository: BillingRepository,
 ) : ViewModel() {
     val uiState: StateFlow<HomeUiState> = combine(
         gameRepository.getFinishedGamesResults(),
         gameRepository.getInProgressGamesPlayState(),
-    ) { results, inProgressGames ->
+        billingRepository.getYamsPlusStatus(),
+    ) { results, inProgressGames, isPremium ->
         HomeUiState.Success(
             stats = results.toHomeStats(),
             recentGames = results.toGameSummaries().take(8),
             activeGame = inProgressGames.firstOrNull()?.toActiveGameUiState(),
+            isPremium = isPremium,
         )
     }
         .stateIn(

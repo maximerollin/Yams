@@ -6,6 +6,7 @@ import io.github.maximerollin.yams.feature.game.play.di.featureGamePlayModule
 import io.github.maximerollin.yams.feature.game.preparation.di.featureGamePreparationModule
 import io.github.maximerollin.yams.feature.game.result.di.featureGameResultModule
 import io.github.maximerollin.yams.feature.home.di.featureHomeModule
+import io.github.maximerollin.yams.feature.paywall.di.featurePaywallModule
 import io.github.maximerollin.yams.feature.user.history.di.featureUserHistoryModule
 import io.github.maximerollin.yams.feature.user.profile.di.featureUserProfileModule
 import io.github.maximerollin.yams.feature.user.users.di.featureUserUsersModule
@@ -28,6 +29,7 @@ val appModule = module {
         featureUserUsersModule,
         featureUserProfileModule,
         featureUserHistoryModule,
+        featurePaywallModule,
     )
 
     single(named("IO")) { Dispatchers.IO }

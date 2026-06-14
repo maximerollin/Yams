@@ -4,7 +4,9 @@
     <string name="users_loading">Spieler werden geladen...</string>
     <string name="users_empty_title">Keine Spieler</string>
     <string name="users_empty_message">Erstelle Spieler über die Partieerstellung.</string>
-    <string name="users_metric_victories">S</string>
-    <string name="users_metric_games">P</string>
-    <string name="users_metric_yams">Y</string>
+    <string name="users_metric_victories">Siege</string>
+    <string name="users_metric_games">Partien</string>
+    <string name="users_metric_yams">Yams</string>
+    <string name="users_metric_highest_score">Bestwert</string>
+    <string name="users_metric_score_points">%1$d Pkt.</string>
 </resources>

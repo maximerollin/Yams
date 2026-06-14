@@ -19,6 +19,8 @@ internal interface PreferenceLocalDataSource {
     suspend fun setIsUserOrderRandomized(isUserOrderRandomized: Boolean)
     fun getGameSettings(): Flow<GameSettings?>
     suspend fun setGameSettings(settings: GameSettings)
+    fun getYamsPlusStatus(): Flow<Boolean>
+    suspend fun setYamsPlusStatus(isSubscribed: Boolean)
 }
 
 internal class PreferencePreferencesDataSource(
@@ -61,10 +63,22 @@ internal class PreferencePreferencesDataSource(
         }
     }
 
+    override fun getYamsPlusStatus(): Flow<Boolean> =
+        dataStore.data.map { preferences ->
+            preferences[YAMS_PLUS_SUBSCRIPTION_STATUS_KEY] ?: false
+        }
+
+    override suspend fun setYamsPlusStatus(isSubscribed: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[YAMS_PLUS_SUBSCRIPTION_STATUS_KEY] = isSubscribed
+        }
+    }
+
     private companion object {
         val LAST_IN_APP_REVIEW_SHOWN_DATE_KEY = longPreferencesKey("last_in_app_review_shown_date")
         val GAME_SETTINGS_KEY = stringPreferencesKey("game_settings")
         val IS_USER_ORDER_RANDOMIZED_KEY = booleanPreferencesKey("is_user_order_randomized")
+        val YAMS_PLUS_SUBSCRIPTION_STATUS_KEY = booleanPreferencesKey("yams_plus_subscription_status")
     }
 
 }

@@ -14,6 +14,8 @@ public interface PreferenceRepository {
     public suspend fun setIsUserOrderRandomized(isUserOrderRandomized: Boolean)
     public fun getGameSettings(): Flow<GameSettings>
     public suspend fun setGameSettings(settings: GameSettings)
+    public fun getYamsPlusStatus(): Flow<Boolean>
+    public suspend fun setYamsPlusStatus(isSubscribed: Boolean)
 }
 
 internal class DefaultPreferenceRepository(
@@ -41,5 +43,13 @@ internal class DefaultPreferenceRepository(
 
     override suspend fun setGameSettings(settings: GameSettings) {
         preferenceLocalDataSource.setGameSettings(settings)
+    }
+
+    override fun getYamsPlusStatus(): Flow<Boolean> {
+        return preferenceLocalDataSource.getYamsPlusStatus()
+    }
+
+    override suspend fun setYamsPlusStatus(isSubscribed: Boolean) {
+        preferenceLocalDataSource.setYamsPlusStatus(isSubscribed)
     }
 }

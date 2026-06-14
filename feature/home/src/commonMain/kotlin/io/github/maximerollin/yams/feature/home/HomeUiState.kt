@@ -11,6 +11,7 @@ internal sealed interface HomeUiState {
         val stats: HomeStatsUiState,
         val recentGames: List<GameSummaryUiState>,
         val activeGame: ActiveGameUiState?,
+        val isPremium: Boolean,
     ) : HomeUiState
 }
 

@@ -5,7 +5,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import io.github.maximerollin.yams.core.model.GameId
 import io.github.maximerollin.yams.core.model.UserId
 import io.github.maximerollin.yams.feature.user.profile.UserProfileRoute as UserProfileScreenRoute
 import kotlinx.serialization.Serializable
@@ -25,7 +24,7 @@ public fun NavGraphBuilder.userProfileScreen(
     onNavigateToUsers: () -> Unit,
     onNavigateToUserEdition: (UserId) -> Unit,
     onNavigateToUserHistory: (UserId) -> Unit,
-    onNavigateToGameResult: (GameId) -> Unit,
+    onNavigateToPaywall: () -> Unit,
 ) {
     composable<UserProfileRoute> {
         UserProfileScreenRoute(
@@ -34,7 +33,7 @@ public fun NavGraphBuilder.userProfileScreen(
             onNavigateToUsers = onNavigateToUsers,
             onNavigateToUserEdition = onNavigateToUserEdition,
             onNavigateToUserHistory = onNavigateToUserHistory,
-            onNavigateToGameResult = onNavigateToGameResult,
+            onNavigateToPaywall = onNavigateToPaywall,
         )
     }
 }

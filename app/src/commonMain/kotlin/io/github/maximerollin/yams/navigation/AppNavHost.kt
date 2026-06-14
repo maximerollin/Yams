@@ -23,6 +23,8 @@ import io.github.maximerollin.yams.feature.game.result.navigation.navigateToGame
 import io.github.maximerollin.yams.feature.home.navigation.HomeRoute
 import io.github.maximerollin.yams.feature.home.navigation.homeScreen
 import io.github.maximerollin.yams.feature.home.navigation.navigateToHome
+import io.github.maximerollin.yams.feature.paywall.navigation.navigateToPaywall
+import io.github.maximerollin.yams.feature.paywall.navigation.paywallScreen
 import io.github.maximerollin.yams.feature.user.edition.navigation.navigateToUserEdition
 import io.github.maximerollin.yams.feature.user.edition.navigation.userEditionScreen
 import io.github.maximerollin.yams.feature.user.history.navigation.navigateToUserHistory
@@ -105,6 +107,9 @@ private fun NavGraphBuilder.screens(navController: NavHostController) {
         onNavigateToUsers = {
             navController.navigateToUsers()
         },
+        onNavigateToPaywall = {
+            navController.navigateToPaywall(fromScreen = "home")
+        },
     )
 
     usersScreen(
@@ -128,8 +133,8 @@ private fun NavGraphBuilder.screens(navController: NavHostController) {
         onNavigateToUserHistory = { userId ->
             navController.navigateToUserHistory(userId)
         },
-        onNavigateToGameResult = { gameId ->
-            navController.navigateToGameResult(gameId)
+        onNavigateToPaywall = {
+            navController.navigateToPaywall(fromScreen = "profile")
         },
     )
 
@@ -137,6 +142,9 @@ private fun NavGraphBuilder.screens(navController: NavHostController) {
         onNavigateBack = navController::navigateUp,
         onNavigateToGameResult = { gameId ->
             navController.navigateToGameResult(gameId)
+        },
+        onNavigateToPaywall = {
+            navController.navigateToPaywall(fromScreen = "history")
         },
     )
 
@@ -217,6 +225,17 @@ private fun NavGraphBuilder.screens(navController: NavHostController) {
         },
         onNavigateToUserProfile = { userId ->
             navController.navigateToUserProfile(userId)
+        },
+    )
+
+    paywallScreen(
+        onNavigateBack = navController::navigateUp,
+        onNavigateHome = {
+            navController.navigateToHome {
+                launchSingleTop = true
+                popUpTo(navController.graph.id) { inclusive = true }
+                navController.graph.setStartDestination(HomeRoute)
+            }
         },
     )
 }

@@ -20,6 +20,7 @@ public fun NavGraphBuilder.homeScreen(
     onNavigateToGamePlay: (GameId) -> Unit,
     onNavigateToGameResult: (GameId) -> Unit,
     onNavigateToUsers: () -> Unit,
+    onNavigateToPaywall: () -> Unit,
 ) {
     composable<HomeRoute> {
         HomeRoute(
@@ -27,6 +28,7 @@ public fun NavGraphBuilder.homeScreen(
             onNavigateToGamePlay = onNavigateToGamePlay,
             onNavigateToGameResult = onNavigateToGameResult,
             onNavigateToUsers = onNavigateToUsers,
+            onNavigateToPaywall = onNavigateToPaywall,
         )
     }
 }

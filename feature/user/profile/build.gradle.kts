@@ -5,6 +5,7 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.data.billing)
             implementation(projects.data.game)
             implementation(projects.data.user)
             implementation(projects.feature.user.common)

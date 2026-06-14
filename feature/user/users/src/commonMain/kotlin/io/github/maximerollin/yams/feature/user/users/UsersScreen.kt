@@ -11,15 +11,19 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -29,6 +33,7 @@ import io.github.maximerollin.yams.core.designsystem.component.AppIconButton
 import io.github.maximerollin.yams.core.designsystem.component.AppTopBar
 import io.github.maximerollin.yams.core.designsystem.icon.ChevronLeft
 import io.github.maximerollin.yams.core.designsystem.icon.Person
+import io.github.maximerollin.yams.core.designsystem.icon.Trophy
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
 import io.github.maximerollin.yams.core.designsystem.preview.YamsStoreScreenshotPreviews
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
@@ -147,52 +152,61 @@ private fun UserCard(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
-        Row(
+        Column(
             modifier = Modifier.padding(14.dp),
-            horizontalArrangement = Arrangement.spacedBy(14.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
-            UserAvatar(
-                user = user.user,
-                size = 56.dp,
-            )
-
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(6.dp),
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
+                UserAvatar(
+                    user = user.user,
+                    size = 56.dp,
+                )
+
                 Text(
                     text = user.user.name,
+                    modifier = Modifier.weight(1f),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    UserMetric(
-                        label = stringResource(Res.string.users_metric_victories),
-                        value = user.stats.victories.toString(),
-                    )
-                    UserMetric(
-                        label = stringResource(Res.string.users_metric_games),
-                        value = user.stats.gamesPlayed.toString(),
-                    )
-                    UserMetric(
-                        label = stringResource(Res.string.users_metric_yams),
-                        value = user.stats.totalYams.toString(),
-                    )
-                }
+
+                UserBestScore(
+                    label = stringResource(Res.string.users_metric_highest_score),
+                    value = if (user.stats.highestScore > 0) {
+                        stringResource(Res.string.users_metric_score_points, user.stats.highestScore)
+                    } else {
+                        "-"
+                    },
+                )
             }
 
-            Text(
-                text = if (user.stats.highestScore > 0) "${user.stats.highestScore}" else "-",
-                style = MaterialTheme.typography.titleMedium,
-                color = YamsTheme.colors.brown,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.size(width = 48.dp, height = 28.dp),
-                textAlign = TextAlign.End,
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                UserMetric(
+                    label = stringResource(Res.string.users_metric_victories),
+                    value = user.stats.victories.toString(),
+                    modifier = Modifier.weight(1f),
+                    leadingIcon = YamsIcons.Trophy,
+                )
+                UserMetric(
+                    label = stringResource(Res.string.users_metric_games),
+                    value = user.stats.gamesPlayed.toString(),
+                    modifier = Modifier.weight(1f),
+                )
+                UserMetric(
+                    label = stringResource(Res.string.users_metric_yams),
+                    value = user.stats.totalYams.toString(),
+                    modifier = Modifier.weight(1f),
+                )
+            }
         }
     }
 }
@@ -201,13 +215,80 @@ private fun UserCard(
 private fun UserMetric(
     label: String,
     value: String,
+    modifier: Modifier = Modifier,
+    leadingIcon: ImageVector? = null,
 ) {
-    Text(
-        text = "$label $value",
-        style = MaterialTheme.typography.labelMedium,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        maxLines = 1,
-    )
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(14.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                leadingIcon?.let { icon ->
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        modifier = Modifier.size(14.dp),
+                        tint = YamsTheme.colors.brown,
+                    )
+                }
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+            Text(
+                text = value,
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+            )
+        }
+    }
+}
+
+@Composable
+private fun UserBestScore(
+    label: String,
+    value: String,
+) {
+    Surface(
+        shape = RoundedCornerShape(16.dp),
+        color = YamsTheme.colors.gold.copy(alpha = 0.16f),
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelSmall,
+                color = YamsTheme.colors.brown,
+                maxLines = 1,
+            )
+            Text(
+                text = value,
+                style = MaterialTheme.typography.titleSmall,
+                color = YamsTheme.colors.brown,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+            )
+        }
+    }
 }
 
 @YamsStoreScreenshotPreviews

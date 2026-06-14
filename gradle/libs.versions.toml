@@ -31,6 +31,7 @@ napier = "2.7.1"
 play-integrity = "1.6.0"
 play-review = "2.0.2"
 reorderable = "3.0.0"
+revenuecat = "3.0.5"
 sqldelight = "2.2.1"
 jetbrainsKotlinJvm = "2.2.21"
 coreKtx = "1.17.0"
@@ -91,6 +92,8 @@ napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 play-integrity = { module = "com.google.android.play:integrity", version.ref = "play-integrity" }
 play-review = { module = "com.google.android.play:review-ktx", version.ref = "play-review" }
 reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
+revenuecat-purchases-core = { module = "com.revenuecat.purchases:purchases-kmp-core", version.ref = "revenuecat" }
+revenuecat-purchases-result = { module = "com.revenuecat.purchases:purchases-kmp-result", version.ref = "revenuecat" }
 sqldelight-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
 sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
 sqldelight-jvm = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }

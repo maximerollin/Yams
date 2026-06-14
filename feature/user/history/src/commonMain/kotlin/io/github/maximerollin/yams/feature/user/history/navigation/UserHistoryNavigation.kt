@@ -23,12 +23,14 @@ public fun NavController.navigateToUserHistory(
 public fun NavGraphBuilder.userHistoryScreen(
     onNavigateBack: () -> Unit,
     onNavigateToGameResult: (GameId) -> Unit,
+    onNavigateToPaywall: () -> Unit,
 ) {
     composable<UserHistoryRoute> {
         UserHistoryScreenRoute(
             userId = UserId(it.toRoute<UserHistoryRoute>().userId),
             onNavigateBack = onNavigateBack,
             onNavigateToGameResult = onNavigateToGameResult,
+            onNavigateToPaywall = onNavigateToPaywall,
         )
     }
 }

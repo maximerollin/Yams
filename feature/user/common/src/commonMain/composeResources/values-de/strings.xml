@@ -13,4 +13,7 @@
     <string name="common_record_score">%1$s - %2$d Pkt.</string>
     <string name="common_victories">Siege</string>
     <string name="common_average_score">Durchschnitt</string>
+    <string name="common_unlock_history_title">Schalte den gesamten Verlauf frei</string>
+    <string name="common_unlock_history_description">Greife ohne Limit auf deinen gesamten Verlauf zu und schalte detaillierte Statistiken frei.</string>
+    <string name="common_unlock_history_button">Yams+ freischalten</string>
 </resources>

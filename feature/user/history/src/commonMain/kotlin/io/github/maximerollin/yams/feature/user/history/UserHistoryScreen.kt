@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -33,7 +32,7 @@ import io.github.maximerollin.yams.core.model.GameId
 import io.github.maximerollin.yams.core.model.UserId
 import io.github.maximerollin.yams.feature.user.common.EmptyState
 import io.github.maximerollin.yams.feature.user.common.GameSummaryUiState
-import io.github.maximerollin.yams.feature.user.common.GameHistoryCard
+import io.github.maximerollin.yams.feature.user.common.gameHistoryItems
 import io.github.maximerollin.yams.feature.user.common.LoadingState
 import io.github.maximerollin.yams.feature.user.common.PlayerSummaryUiState
 import org.jetbrains.compose.resources.stringResource
@@ -48,6 +47,7 @@ internal fun UserHistoryRoute(
     userId: UserId,
     onNavigateBack: () -> Unit,
     onNavigateToGameResult: (GameId) -> Unit,
+    onNavigateToPaywall: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: UserHistoryViewModel = koinViewModel { parametersOf(userId) },
 ) {
@@ -57,6 +57,7 @@ internal fun UserHistoryRoute(
         uiState = uiState,
         onNavigateBack = onNavigateBack,
         onNavigateToGameResult = onNavigateToGameResult,
+        onNavigateToPaywall = onNavigateToPaywall,
         modifier = modifier,
     )
 }
@@ -66,6 +67,7 @@ private fun UserHistoryScreen(
     uiState: UserHistoryUiState,
     onNavigateBack: () -> Unit,
     onNavigateToGameResult: (GameId) -> Unit,
+    onNavigateToPaywall: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -139,15 +141,12 @@ private fun UserHistoryScreen(
                     contentPadding = androidx.compose.foundation.layout.PaddingValues(20.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    items(
-                        items = uiState.games,
-                        key = { it.gameId.value },
-                    ) { game ->
-                        GameHistoryCard(
-                            game = game,
-                            onClick = { onNavigateToGameResult(game.gameId) },
-                        )
-                    }
+                    gameHistoryItems(
+                        games = uiState.games,
+                        isPremium = uiState.isPremium,
+                        onGameClick = onNavigateToGameResult,
+                        onUnlockClick = onNavigateToPaywall,
+                    )
                 }
             }
         }
@@ -169,9 +168,11 @@ public fun UserHistoryStoreScreenshotContent() {
             uiState = UserHistoryUiState.Success(
                 user = UserMocks.users.first(),
                 games = previewHistoryGames(),
+                isPremium = true,
             ),
             onNavigateBack = {},
             onNavigateToGameResult = {},
+            onNavigateToPaywall = {},
         )
     }
 }

@@ -1,5 +1,6 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -60,6 +61,7 @@ kotlin {
             implementation(projects.feature.user.users)
             implementation(projects.feature.user.profile)
             implementation(projects.feature.user.history)
+            implementation(projects.feature.paywall)
 
             implementation(libs.androidx.navigation)
             implementation(libs.koin.compose)
@@ -83,6 +85,10 @@ kotlin {
 
         val mobileMain by creating {
             dependsOn(commonMain.get())
+            dependencies {
+                // RevenueCat (configured on Android in YamsApp)
+                implementation(libs.revenuecat.purchases.core)
+            }
         }
         androidMain.get().dependsOn(mobileMain)
         iosMain.get().dependsOn(mobileMain)
@@ -138,8 +144,19 @@ compose.desktop {
 
 
 
+val localProperties = Properties().apply {
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use { load(it) }
+    }
+}
+
 buildConfig {
     className("YamsBuildConfig")
     packageName("io.github.maximerollin.yams")
     useKotlinOutput { internalVisibility = false }
+
+    // Empty when absent from local.properties -> RevenueCat configuration is skipped.
+    val revenueCatApiKey = localProperties.getProperty("REVENUECAT_PLAY_STORE_API_KEY").orEmpty()
+    buildConfigField("REVENUECAT_PLAY_STORE_API_KEY", revenueCatApiKey)
 }

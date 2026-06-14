@@ -7,8 +7,10 @@ import io.github.maximerollin.yams.core.model.GameId
 import io.github.maximerollin.yams.core.model.User
 import io.github.maximerollin.yams.core.model.UserId
 import io.github.maximerollin.yams.data.game.model.GameResult
+import io.github.maximerollin.yams.data.game.model.PlayerResult
 import io.github.vinceglb.filekit.PlatformFile
 import kotlin.math.round
+import kotlin.math.roundToInt
 import kotlin.time.Instant
 
 public data class HomeStatsUiState(
@@ -61,37 +63,42 @@ public fun List<GameResult>.toGameSummaries(): List<GameSummaryUiState> =
     mapNotNull(GameResult::toGameSummary)
 
 public fun List<GameResult>.toHomeStats(): HomeStatsUiState {
-    val playerResults = flatMap { it.playersResults }
+    val playerStatResults = playerStatResults()
+    val playerResults = playerStatResults.map(PlayerStatResult::playerResult)
     val totalYams = playerResults.sumOf { it.numberOfFiveOfAKind }
-    val highestScoreResult = playerResults.maxByOrNull { it.finalScore }
+    val highestScoreResult = playerStatResults.maxByOrNull { it.score }
 
     return HomeStatsUiState(
         gamesPlayed = size,
         totalYams = totalYams,
         averageYamsPerGame = if (isNotEmpty()) totalYams.toFloat() / size else 0f,
-        highestScore = highestScoreResult?.finalScore ?: 0,
-        highestScorePlayerName = highestScoreResult?.player?.name,
+        highestScore = highestScoreResult?.score?.roundToInt() ?: 0,
+        highestScorePlayerName = highestScoreResult?.playerResult?.player?.name,
     )
 }
 
 public fun List<GameResult>.statsForUser(userId: UserId): UserStatsUiState {
-    val playerResults = flatMap { result ->
-        result.playersResults.filter { playerResult ->
-            playerResult.player.userId == userId
+    val playerStatResults = flatMap { result ->
+        val columnCount = result.game.settings.columnCount.coerceAtLeast(1)
+        result.playersResults.mapNotNull { playerResult ->
+            playerResult
+                .takeIf { it.player.userId == userId }
+                ?.toPlayerStatResult(columnCount)
         }
     }
-    val totalScore = playerResults.sumOf { it.finalScore }
+    val playerResults = playerStatResults.map(PlayerStatResult::playerResult)
+    val totalScore = playerStatResults.sumOf { it.score.toDouble() }
 
     return UserStatsUiState(
         gamesPlayed = playerResults.size,
         victories = playerResults.count { it.isWinner },
         totalYams = playerResults.sumOf { it.numberOfFiveOfAKind },
         averageScore = if (playerResults.isNotEmpty()) {
-            totalScore.toFloat() / playerResults.size
+            (totalScore / playerResults.size).toFloat()
         } else {
             0f
         },
-        highestScore = playerResults.maxOfOrNull { it.finalScore } ?: 0,
+        highestScore = playerStatResults.maxOfOrNull { it.score }?.roundToInt() ?: 0,
     )
 }
 
@@ -107,7 +114,7 @@ public fun Float.formatOneDecimal(): String {
 private fun GameResult.toGameSummary(): GameSummaryUiState? {
     val finishedGame = game as? Game.GameFinished ?: return null
     val sortedPlayers = playersResults.sortedWith(
-        compareBy<io.github.maximerollin.yams.data.game.model.PlayerResult> { it.rank }
+        compareBy<PlayerResult> { it.rank }
             .thenByDescending { it.finalScore }
             .thenBy { it.player.userIndex }
     )
@@ -144,3 +151,22 @@ private fun GameResult.toGameSummary(): GameSummaryUiState? {
         highestScore = sortedPlayers.firstOrNull()?.finalScore ?: 0,
     )
 }
+
+private data class PlayerStatResult(
+    val playerResult: PlayerResult,
+    val score: Float,
+)
+
+private fun List<GameResult>.playerStatResults(): List<PlayerStatResult> =
+    flatMap { result ->
+        val columnCount = result.game.settings.columnCount.coerceAtLeast(1)
+        result.playersResults.map { playerResult ->
+            playerResult.toPlayerStatResult(columnCount)
+        }
+    }
+
+private fun PlayerResult.toPlayerStatResult(columnCount: Int): PlayerStatResult =
+    PlayerStatResult(
+        playerResult = this,
+        score = finalScore.toFloat() / columnCount,
+    )

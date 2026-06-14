@@ -13,4 +13,7 @@
     <string name="common_record_score">%1$s - %2$d pts</string>
     <string name="common_victories">Victorias</string>
     <string name="common_average_score">Puntuación media</string>
+    <string name="common_unlock_history_title">Desbloquea todo el historial</string>
+    <string name="common_unlock_history_description">Accede a todo tu historial sin límite y desbloquea estadísticas detalladas.</string>
+    <string name="common_unlock_history_button">Desbloquear Yams+</string>
 </resources>

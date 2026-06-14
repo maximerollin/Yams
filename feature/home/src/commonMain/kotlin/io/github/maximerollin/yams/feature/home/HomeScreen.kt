@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
@@ -55,7 +54,7 @@ import io.github.maximerollin.yams.core.model.UserId
 import io.github.maximerollin.yams.feature.user.common.EmptyState
 import io.github.maximerollin.yams.feature.user.common.Avatar
 import io.github.maximerollin.yams.feature.user.common.GameSummaryUiState
-import io.github.maximerollin.yams.feature.user.common.GameHistoryCard
+import io.github.maximerollin.yams.feature.user.common.gameHistoryItems
 import io.github.maximerollin.yams.feature.user.common.HomeStatsUiState
 import io.github.maximerollin.yams.feature.user.common.HomeStatsCard
 import io.github.maximerollin.yams.feature.user.common.LoadingState
@@ -75,6 +74,7 @@ internal fun HomeRoute(
     onNavigateToGamePlay: (GameId) -> Unit,
     onNavigateToGameResult: (GameId) -> Unit,
     onNavigateToUsers: () -> Unit,
+    onNavigateToPaywall: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = koinViewModel(),
 ) {
@@ -86,6 +86,7 @@ internal fun HomeRoute(
         onNavigateToGamePlay = onNavigateToGamePlay,
         onNavigateToGameResult = onNavigateToGameResult,
         onNavigateToUsers = onNavigateToUsers,
+        onNavigateToPaywall = onNavigateToPaywall,
         onAbandonGame = viewModel::abandonGame,
         modifier = modifier,
     )
@@ -98,6 +99,7 @@ internal fun HomeScreen(
     onNavigateToGamePlay: (GameId) -> Unit,
     onNavigateToGameResult: (GameId) -> Unit,
     onNavigateToUsers: () -> Unit,
+    onNavigateToPaywall: () -> Unit,
     onAbandonGame: (GameId) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -167,15 +169,12 @@ internal fun HomeScreen(
                             )
                         }
                     } else {
-                        items(
-                            items = uiState.recentGames,
-                            key = { it.gameId.value },
-                        ) { game ->
-                            GameHistoryCard(
-                                game = game,
-                                onClick = { onNavigateToGameResult(game.gameId) },
-                            )
-                        }
+                        gameHistoryItems(
+                            games = uiState.recentGames,
+                            isPremium = uiState.isPremium,
+                            onGameClick = onNavigateToGameResult,
+                            onUnlockClick = onNavigateToPaywall,
+                        )
                     }
                 }
             }
@@ -459,6 +458,7 @@ public fun HomeStoreScreenshotContent() {
             onNavigateToGamePlay = {},
             onNavigateToGameResult = {},
             onNavigateToUsers = {},
+            onNavigateToPaywall = {},
             onAbandonGame = {},
         )
     }
@@ -521,5 +521,6 @@ private fun previewHomeUiState(): HomeUiState.Success {
                 )
             },
         ),
+        isPremium = true,
     )
 }

@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -23,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -32,12 +35,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import io.github.maximerollin.yams.core.designsystem.component.YamsPrimaryButton
 import io.github.maximerollin.yams.core.designsystem.icon.ChevronRight
 import io.github.maximerollin.yams.core.designsystem.icon.History
+import io.github.maximerollin.yams.core.designsystem.icon.Lock
 import io.github.maximerollin.yams.core.designsystem.icon.Trophy
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.designsystem.theme.colors
+import io.github.maximerollin.yams.core.model.GameId
 import io.github.maximerollin.yams.core.model.User
 import io.github.maximerollin.yams.core.ui.utils.appAvatarFor
 import org.jetbrains.compose.resources.painterResource
@@ -53,6 +59,9 @@ import yams.feature.user.common.generated.resources.common_record_score
 import yams.feature.user.common.generated.resources.common_score_points
 import yams.feature.user.common.generated.resources.common_stats_subtitle
 import yams.feature.user.common.generated.resources.common_stats_title
+import yams.feature.user.common.generated.resources.common_unlock_history_button
+import yams.feature.user.common.generated.resources.common_unlock_history_description
+import yams.feature.user.common.generated.resources.common_unlock_history_title
 import yams.feature.user.common.generated.resources.common_victories
 import yams.feature.user.common.generated.resources.common_winner_score
 import yams.feature.user.common.generated.resources.common_yams
@@ -378,6 +387,106 @@ public fun GameHistoryCard(
                     )
                 }
             }
+        }
+    }
+}
+
+/** Number of past games a non-premium user can browse in their history. */
+public const val FREE_HISTORY_LIMIT: Int = 5
+
+/**
+ * Renders a list of [GameHistoryCard]s inside a [LazyColumn], gating it behind Yams+.
+ *
+ * Premium users (or users with [FREE_HISTORY_LIMIT] games or fewer) see every game as a
+ * regular clickable card. Free users see the first [FREE_HISTORY_LIMIT] games, then an
+ * [UnlockHistoryCard], then the remaining games blurred — tapping a blurred card opens the paywall.
+ */
+public fun LazyListScope.gameHistoryItems(
+    games: List<GameSummaryUiState>,
+    isPremium: Boolean,
+    onGameClick: (GameId) -> Unit,
+    onUnlockClick: () -> Unit,
+) {
+    if (isPremium || games.size <= FREE_HISTORY_LIMIT) {
+        items(items = games, key = { it.gameId.value }) { game ->
+            GameHistoryCard(game = game, onClick = { onGameClick(game.gameId) })
+        }
+        return
+    }
+
+    val visibleGames = games.take(FREE_HISTORY_LIMIT)
+    val lockedGames = games.drop(FREE_HISTORY_LIMIT)
+
+    items(items = visibleGames, key = { it.gameId.value }) { game ->
+        GameHistoryCard(game = game, onClick = { onGameClick(game.gameId) })
+    }
+
+    item(key = "unlock_history_card") {
+        UnlockHistoryCard(onUnlockClick = onUnlockClick)
+    }
+
+    items(items = lockedGames, key = { it.gameId.value }) { game ->
+        GameHistoryCard(
+            game = game,
+            onClick = onUnlockClick,
+            modifier = Modifier.blur(10.dp),
+        )
+    }
+}
+
+@Composable
+public fun UnlockHistoryCard(
+    onUnlockClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.primaryContainer,
+        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        tonalElevation = 2.dp,
+        shadowElevation = 4.dp,
+    ) {
+        Column(
+            modifier = Modifier.padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Surface(
+                    modifier = Modifier.size(40.dp),
+                    shape = CircleShape,
+                    color = YamsTheme.colors.gold,
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = YamsIcons.Lock,
+                            contentDescription = null,
+                            modifier = Modifier.size(22.dp),
+                            tint = YamsTheme.colors.onGold,
+                        )
+                    }
+                }
+                Text(
+                    text = stringResource(Res.string.common_unlock_history_title),
+                    modifier = Modifier.weight(1f),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
+
+            Text(
+                text = stringResource(Res.string.common_unlock_history_description),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.78f),
+            )
+
+            YamsPrimaryButton(
+                onClick = onUnlockClick,
+                text = stringResource(Res.string.common_unlock_history_button),
+            )
         }
     }
 }

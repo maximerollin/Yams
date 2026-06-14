@@ -4,7 +4,9 @@
     <string name="users_loading">Caricamento giocatori...</string>
     <string name="users_empty_title">Nessun giocatore</string>
     <string name="users_empty_message">Crea giocatori dalla creazione partita.</string>
-    <string name="users_metric_victories">V</string>
-    <string name="users_metric_games">P</string>
-    <string name="users_metric_yams">Y</string>
+    <string name="users_metric_victories">Vittorie</string>
+    <string name="users_metric_games">Partite</string>
+    <string name="users_metric_yams">Yams</string>
+    <string name="users_metric_highest_score">Miglior punteggio</string>
+    <string name="users_metric_score_points">%1$d pt</string>
 </resources>

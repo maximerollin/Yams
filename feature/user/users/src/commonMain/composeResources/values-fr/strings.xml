@@ -4,7 +4,9 @@
     <string name="users_loading">Chargement des joueurs...</string>
     <string name="users_empty_title">Aucun joueur</string>
     <string name="users_empty_message">Crée des joueurs depuis la création de partie.</string>
-    <string name="users_metric_victories">V</string>
-    <string name="users_metric_games">P</string>
-    <string name="users_metric_yams">Y</string>
+    <string name="users_metric_victories">Victoires</string>
+    <string name="users_metric_games">Parties</string>
+    <string name="users_metric_yams">Yams</string>
+    <string name="users_metric_highest_score">Meilleur score</string>
+    <string name="users_metric_score_points">%1$d pts</string>
 </resources>
