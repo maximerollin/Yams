@@ -21,10 +21,9 @@
     <string name="profile_average_rank">Durchschnittsrang</string>
     <string name="profile_yams_per_game">Yams / Partie</string>
     <string name="profile_points_value">%1$s Pkt.</string>
-    <string name="profile_percent_value">%1$d%%</string>
     <string name="profile_turns_value">%1$s Züge</string>
     <string name="profile_wins_short_value">%1$d S</string>
-    <string name="profile_score_point_value">Partie %1$s - %2$s Pkt.</string>
+    <string name="profile_score_point_value">Rang %1$s - %2$s Pkt./Zug</string>
     <string name="profile_no_score_trend">Noch nicht genug Partien, um das Diagramm anzuzeigen.</string>
     <string name="profile_premium_analysis_title">Yams+-Analyse</string>
     <string name="profile_premium_analysis_subtitle">Form, Serien und Konstanz</string>

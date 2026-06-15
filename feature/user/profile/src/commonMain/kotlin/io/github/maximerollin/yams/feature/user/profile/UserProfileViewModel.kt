@@ -96,7 +96,7 @@ internal data class UserProfileDetailedStatsUiState(
 )
 
 internal data class UserProfileScoreTrendPoint(
-    val label: String,
+    val rank: Int,
     val averagePointsPerTurn: Float,
 )
 
@@ -158,12 +158,12 @@ private fun List<GameResult>.detailedStatsForUser(userId: UserId): UserProfileDe
 private fun List<GameResult>.scoreTrendForUser(userId: UserId): List<UserProfileScoreTrendPoint> =
     asReversed()
         .mapNotNull { result ->
-            val finishedGame = result.game as? Game.GameFinished ?: return@mapNotNull null
+            if (result.game !is Game.GameFinished) return@mapNotNull null
             val playerResult = result.playerResultForUser(userId) ?: return@mapNotNull null
             if (playerResult.scorePerTurn < 0f) return@mapNotNull null
 
             UserProfileScoreTrendPoint(
-                label = finishedGame.gameNumber.toString(),
+                rank = playerResult.rank,
                 averagePointsPerTurn = playerResult.scorePerTurn,
             )
         }

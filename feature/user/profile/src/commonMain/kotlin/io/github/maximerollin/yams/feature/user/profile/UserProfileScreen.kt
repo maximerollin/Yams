@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -107,7 +108,6 @@ import yams.feature.user.profile.generated.resources.profile_no_score_trend
 import yams.feature.user.profile.generated.resources.profile_not_found_message
 import yams.feature.user.profile.generated.resources.profile_not_found_title
 import yams.feature.user.profile.generated.resources.profile_options_cd
-import yams.feature.user.profile.generated.resources.profile_percent_value
 import yams.feature.user.profile.generated.resources.profile_points_value
 import yams.feature.user.profile.generated.resources.profile_premium_analysis_best_streak
 import yams.feature.user.profile.generated.resources.profile_premium_analysis_consistency
@@ -491,10 +491,7 @@ private fun ProfilePremiumAnalysisCard(
         ProfileInsightMetric(
             icon = YamsIcons.Trophy,
             label = stringResource(Res.string.profile_premium_analysis_recent_win_rate),
-            value = stringResource(
-                Res.string.profile_percent_value,
-                detailedStats.recentWinRatePercent,
-            ),
+            value = detailedStats.recentWinRatePercent.formatPercent(),
         ),
         ProfileInsightMetric(
             icon = YamsIcons.AwardStar,
@@ -515,18 +512,12 @@ private fun ProfilePremiumAnalysisCard(
         ProfileInsightMetric(
             icon = YamsIcons.Target,
             label = stringResource(Res.string.profile_premium_analysis_yams_games),
-            value = stringResource(
-                Res.string.profile_percent_value,
-                detailedStats.yamsGameRatePercent,
-            ),
+            value = detailedStats.yamsGameRatePercent.formatPercent(),
         ),
         ProfileInsightMetric(
             icon = YamsIcons.Tactic,
             label = stringResource(Res.string.profile_premium_analysis_podiums),
-            value = stringResource(
-                Res.string.profile_percent_value,
-                detailedStats.podiumRatePercent,
-            ),
+            value = detailedStats.podiumRatePercent.formatPercent(),
         ),
         ProfileInsightMetric(
             icon = YamsIcons.Timer,
@@ -873,7 +864,7 @@ private fun ScoreTrendChart(
             Text(
                 text = stringResource(
                     Res.string.profile_score_point_value,
-                    selectedPoint.label,
+                    selectedPoint.rank.toString(),
                     selectedPoint.averagePointsPerTurn.formatOneDecimal(),
                 ),
                 style = MaterialTheme.typography.labelLarge,
@@ -886,95 +877,175 @@ private fun ScoreTrendChart(
                 .fillMaxWidth()
                 .height(150.dp),
         ) {
-            Canvas(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(122.dp)
-                    .pointerInput(chartPoints) {
-                        detectTapGestures { tapOffset ->
-                            val chartWidth = size.width.toFloat()
-                            if (chartWidth > 0f) {
-                                val stepX = chartWidth / chartPoints.lastIndex.coerceAtLeast(1)
-                                selectedPointIndex = (tapOffset.x / stepX)
-                                    .roundToInt()
-                                    .coerceIn(0, chartPoints.lastIndex)
-                            }
-                        }
-                    },
-            ) {
-                val gridCount = 3
-                repeat(gridCount + 1) { index ->
-                    val y = size.height * index / gridCount
-                    drawLine(
-                        color = gridColor,
-                        start = Offset(0f, y),
-                        end = Offset(size.width, y),
-                        strokeWidth = 1.dp.toPx(),
-                    )
-                }
-
-                val stepX = size.width / (chartPoints.lastIndex).coerceAtLeast(1)
-                val offsets = chartPoints.mapIndexed { index, point ->
-                    val x = stepX * index
-                    val y = size.height -
-                        (point.averagePointsPerTurn.coerceAtLeast(0f) / roundedMaxValue) *
-                        size.height
-                    Offset(x, y)
-                }
-
-                val areaPath = Path().apply {
-                    moveTo(offsets.first().x, size.height)
-                    offsets.forEach { lineTo(it.x, it.y) }
-                    lineTo(offsets.last().x, size.height)
-                    close()
-                }
-                drawPath(path = areaPath, color = fillColor)
-
-                offsets.zipWithNext().forEach { (start, end) ->
-                    drawLine(
-                        color = lineColor,
-                        start = start,
-                        end = end,
-                        strokeWidth = 3.dp.toPx(),
-                        cap = StrokeCap.Round,
-                    )
-                }
-
-                offsets.forEachIndexed { index, offset ->
-                    val isSelected = index == selectedPointIndex
-                    drawCircle(
-                        color = if (isSelected) lineColor else pointColor,
-                        radius = if (isSelected) 6.dp.toPx() else 5.dp.toPx(),
-                        center = offset,
-                    )
-                    drawCircle(
-                        color = lineColor,
-                        radius = if (isSelected) 6.dp.toPx() else 5.dp.toPx(),
-                        center = offset,
-                        style = Stroke(width = 2.dp.toPx()),
-                    )
-                }
-            }
             Row(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(2.dp),
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                chartPoints.forEach { point ->
-                    Text(
-                        text = point.label,
-                        modifier = Modifier.weight(1f),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
+                ScoreTrendYAxisLabels(
+                    maxValue = roundedMaxValue,
+                    modifier = Modifier
+                        .width(42.dp)
+                        .height(114.dp),
+                )
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(150.dp),
+                ) {
+                    Canvas(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(114.dp)
+                            .pointerInput(chartPoints) {
+                                detectTapGestures { tapOffset ->
+                                    val chartWidth = size.width.toFloat()
+                                    if (chartWidth > 0f) {
+                                        val stepX = chartWidth / chartPoints.lastIndex.coerceAtLeast(1)
+                                        selectedPointIndex = (tapOffset.x / stepX)
+                                            .roundToInt()
+                                            .coerceIn(0, chartPoints.lastIndex)
+                                    }
+                                }
+                            },
+                    ) {
+                        val gridCount = 3
+                        repeat(gridCount + 1) { index ->
+                            val y = size.height * index / gridCount
+                            drawLine(
+                                color = gridColor,
+                                start = Offset(0f, y),
+                                end = Offset(size.width, y),
+                                strokeWidth = 1.dp.toPx(),
+                            )
+                        }
+
+                        val stepX = size.width / (chartPoints.lastIndex).coerceAtLeast(1)
+                        val offsets = chartPoints.mapIndexed { index, point ->
+                            val x = stepX * index
+                            val y = size.height -
+                                (point.averagePointsPerTurn.coerceAtLeast(0f) / roundedMaxValue) *
+                                size.height
+                            Offset(x, y)
+                        }
+
+                        val areaPath = Path().apply {
+                            moveTo(offsets.first().x, size.height)
+                            offsets.forEach { lineTo(it.x, it.y) }
+                            lineTo(offsets.last().x, size.height)
+                            close()
+                        }
+                        drawPath(path = areaPath, color = fillColor)
+
+                        offsets.zipWithNext().forEach { (start, end) ->
+                            drawLine(
+                                color = lineColor,
+                                start = start,
+                                end = end,
+                                strokeWidth = 3.dp.toPx(),
+                                cap = StrokeCap.Round,
+                            )
+                        }
+
+                        offsets.forEachIndexed { index, offset ->
+                            val isSelected = index == selectedPointIndex
+                            drawCircle(
+                                color = if (isSelected) lineColor else pointColor,
+                                radius = if (isSelected) 6.dp.toPx() else 5.dp.toPx(),
+                                center = offset,
+                            )
+                            drawCircle(
+                                color = lineColor,
+                                radius = if (isSelected) 6.dp.toPx() else 5.dp.toPx(),
+                                center = offset,
+                                style = Stroke(width = 2.dp.toPx()),
+                            )
+                        }
+                    }
+                    Row(
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(2.dp),
+                    ) {
+                        chartPoints.forEach { point ->
+                            RankAxisLabel(
+                                rank = point.rank,
+                                modifier = Modifier.weight(1f),
+                            )
+                        }
+                    }
                 }
             }
         }
     }
+}
+
+@Composable
+private fun ScoreTrendYAxisLabels(
+    maxValue: Float,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.End,
+    ) {
+        listOf(maxValue, maxValue / 2f, 0f).forEach { value ->
+            Text(
+                text = stringResource(
+                    Res.string.profile_points_value,
+                    value.formatOneDecimal(),
+                ),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+    }
+}
+
+@Composable
+private fun RankAxisLabel(
+    rank: Int,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier.height(30.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        if (rank == 1) {
+            Surface(
+                modifier = Modifier.size(30.dp),
+                shape = RoundedCornerShape(10.dp),
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.24f),
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Text(
+                        text = rankAxisText(rank),
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            }
+        } else {
+            Text(
+                text = rankAxisText(rank),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+    }
+}
+
+private fun rankAxisText(rank: Int): String = when (rank) {
+    1 -> "🥇"
+    2 -> "🥈"
+    3 -> "🥉"
+    else -> rank.toString()
 }
 
 @Composable
@@ -1006,6 +1077,8 @@ private fun UserStatsUiState.winRatePercent(): Int =
     } else {
         0
     }
+
+private fun Int.formatPercent(): String = "$this%"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -1253,11 +1326,11 @@ private fun previewDetailedStats(): UserProfileDetailedStatsUiState =
 
 private fun previewScoreTrend(): List<UserProfileScoreTrendPoint> =
     listOf(
-        UserProfileScoreTrendPoint(label = "18", averagePointsPerTurn = 7.1f),
-        UserProfileScoreTrendPoint(label = "19", averagePointsPerTurn = 8.3f),
-        UserProfileScoreTrendPoint(label = "20", averagePointsPerTurn = 6.9f),
-        UserProfileScoreTrendPoint(label = "21", averagePointsPerTurn = 9.4f),
-        UserProfileScoreTrendPoint(label = "22", averagePointsPerTurn = 8.1f),
-        UserProfileScoreTrendPoint(label = "23", averagePointsPerTurn = 8.8f),
-        UserProfileScoreTrendPoint(label = "24", averagePointsPerTurn = 8.4f),
+        UserProfileScoreTrendPoint(rank = 3, averagePointsPerTurn = 7.1f),
+        UserProfileScoreTrendPoint(rank = 2, averagePointsPerTurn = 8.3f),
+        UserProfileScoreTrendPoint(rank = 4, averagePointsPerTurn = 6.9f),
+        UserProfileScoreTrendPoint(rank = 1, averagePointsPerTurn = 9.4f),
+        UserProfileScoreTrendPoint(rank = 2, averagePointsPerTurn = 8.1f),
+        UserProfileScoreTrendPoint(rank = 5, averagePointsPerTurn = 7.6f),
+        UserProfileScoreTrendPoint(rank = 1, averagePointsPerTurn = 8.8f),
     )

@@ -21,10 +21,9 @@
     <string name="profile_average_rank">Rang moyen</string>
     <string name="profile_yams_per_game">Yams / partie</string>
     <string name="profile_points_value">%1$s pts</string>
-    <string name="profile_percent_value">%1$d%%</string>
     <string name="profile_turns_value">%1$s tours</string>
     <string name="profile_wins_short_value">%1$d V</string>
-    <string name="profile_score_point_value">Partie %1$s - %2$s pts</string>
+    <string name="profile_score_point_value">Rang %1$s - %2$s pts/tour</string>
     <string name="profile_no_score_trend">Pas encore assez de parties pour afficher le graphe.</string>
     <string name="profile_premium_analysis_title">Analyse Yams+</string>
     <string name="profile_premium_analysis_subtitle">Forme, séries et régularité</string>

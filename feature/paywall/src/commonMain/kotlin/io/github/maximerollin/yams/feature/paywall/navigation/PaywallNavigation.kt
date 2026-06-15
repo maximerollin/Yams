@@ -22,14 +22,14 @@ public fun NavController.navigateToPaywall(
 
 public fun NavGraphBuilder.paywallScreen(
     onNavigateBack: () -> Unit,
-    onNavigateHome: () -> Unit,
+    onPurchaseSuccess: () -> Unit,
 ) {
     composable<PaywallRoute> {
         val route = it.toRoute<PaywallRoute>()
         PaywallRoute(
             fromScreen = route.fromScreen,
             onNavigateBack = onNavigateBack,
-            onNavigateHome = onNavigateHome,
+            onPurchaseSuccess = onPurchaseSuccess,
         )
     }
 }

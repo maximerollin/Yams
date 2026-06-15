@@ -21,10 +21,9 @@
     <string name="profile_average_rank">Posizione media</string>
     <string name="profile_yams_per_game">Yams / partita</string>
     <string name="profile_points_value">%1$s pti</string>
-    <string name="profile_percent_value">%1$d%%</string>
     <string name="profile_turns_value">%1$s turni</string>
     <string name="profile_wins_short_value">%1$d V</string>
-    <string name="profile_score_point_value">Partita %1$s - %2$s pti</string>
+    <string name="profile_score_point_value">Posizione %1$s - %2$s pti/turno</string>
     <string name="profile_no_score_trend">Non ci sono ancora abbastanza partite per mostrare il grafico.</string>
     <string name="profile_premium_analysis_title">Analisi Yams+</string>
     <string name="profile_premium_analysis_subtitle">Forma, serie e regolarità</string>

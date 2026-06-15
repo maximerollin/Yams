@@ -9,7 +9,6 @@ kotlin {
             implementation(projects.data.preference)
             implementation(projects.core.review)
             implementation(libs.coil.compose)
-            implementation(libs.confettikit)
         }
     }
 }

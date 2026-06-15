@@ -3,7 +3,13 @@ package io.github.maximerollin.yams.navigation
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
@@ -11,6 +17,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import io.github.maximerollin.yams.AppViewModel
+import io.github.maximerollin.yams.core.designsystem.component.YamsCelebrationConfetti
 import io.github.maximerollin.yams.feature.game.creation.navigation.GameCreationRoute
 import io.github.maximerollin.yams.feature.game.creation.navigation.gameCreationScreen
 import io.github.maximerollin.yams.feature.game.creation.navigation.navigateToGameCreation
@@ -46,25 +53,42 @@ internal fun AppNavHost(
     navController: NavHostController = rememberNavController(),
     appViewModel: AppViewModel = koinInject()
 ) {
-    if (predictiveBackGestureAnimations != null) {
-        NavHost(
-            navController = navController,
-            startDestination = appViewModel.startDestination,
-            modifier = modifier,
-            enterTransition = predictiveBackGestureAnimations.enterTransition,
-            exitTransition = predictiveBackGestureAnimations.exitTransition,
-            popEnterTransition = predictiveBackGestureAnimations.popEnterTransition,
-            popExitTransition = predictiveBackGestureAnimations.popExitTransition,
-        ) {
-            screens(navController)
+    var showYamsPlusConfetti by remember { mutableStateOf(false) }
+
+    Box(modifier = modifier) {
+        if (predictiveBackGestureAnimations != null) {
+            NavHost(
+                navController = navController,
+                startDestination = appViewModel.startDestination,
+                modifier = Modifier.fillMaxSize(),
+                enterTransition = predictiveBackGestureAnimations.enterTransition,
+                exitTransition = predictiveBackGestureAnimations.exitTransition,
+                popEnterTransition = predictiveBackGestureAnimations.popEnterTransition,
+                popExitTransition = predictiveBackGestureAnimations.popExitTransition,
+            ) {
+                screens(
+                    navController = navController,
+                    onShowYamsPlusConfetti = { showYamsPlusConfetti = true },
+                )
+            }
+        } else {
+            NavHost(
+                navController = navController,
+                startDestination = appViewModel.startDestination,
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                screens(
+                    navController = navController,
+                    onShowYamsPlusConfetti = { showYamsPlusConfetti = true },
+                )
+            }
         }
-    } else {
-        NavHost(
-            navController = navController,
-            startDestination = appViewModel.startDestination,
-            modifier = modifier,
-        ) {
-            screens(navController)
+
+        if (showYamsPlusConfetti) {
+            YamsCelebrationConfetti(
+                modifier = Modifier.fillMaxSize(),
+                onFinished = { showYamsPlusConfetti = false },
+            )
         }
     }
 }
@@ -79,7 +103,10 @@ class PredictiveBackGestureAnimations(
 typealias EnterAnimation = @JvmSuppressWildcards (AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition)
 typealias ExitAnimation = @JvmSuppressWildcards (AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition)
 
-private fun NavGraphBuilder.screens(navController: NavHostController) {
+private fun NavGraphBuilder.screens(
+    navController: NavHostController,
+    onShowYamsPlusConfetti: () -> Unit,
+) {
     welcomeScreen(
         onNavigateToNewGame = {
             navController.navigateToGameCreation {
@@ -230,12 +257,15 @@ private fun NavGraphBuilder.screens(navController: NavHostController) {
 
     paywallScreen(
         onNavigateBack = navController::navigateUp,
-        onNavigateHome = {
-            navController.navigateToHome {
-                launchSingleTop = true
-                popUpTo(navController.graph.id) { inclusive = true }
-                navController.graph.setStartDestination(HomeRoute)
+        onPurchaseSuccess = {
+            if (!navController.popBackStack()) {
+                navController.navigateToHome {
+                    launchSingleTop = true
+                    popUpTo(navController.graph.id) { inclusive = true }
+                    navController.graph.setStartDestination(HomeRoute)
+                }
             }
+            onShowYamsPlusConfetti()
         },
     )
 }

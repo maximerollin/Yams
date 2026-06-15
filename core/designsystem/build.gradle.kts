@@ -6,3 +6,11 @@ plugins {
 compose.resources {
     publicResClass = true
 }
+
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation(libs.confettikit)
+        }
+    }
+}

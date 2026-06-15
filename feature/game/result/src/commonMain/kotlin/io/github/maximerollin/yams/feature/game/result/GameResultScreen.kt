@@ -28,9 +28,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Modifier
@@ -44,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import io.github.maximerollin.yams.core.designsystem.component.AppTopBar
+import io.github.maximerollin.yams.core.designsystem.component.YamsCelebrationConfetti
 import io.github.maximerollin.yams.core.designsystem.component.YamsPrimaryButton
 import io.github.maximerollin.yams.core.designsystem.component.YamsSecondaryButton
 import io.github.maximerollin.yams.core.designsystem.icon.ChevronLeft
@@ -62,17 +60,9 @@ import io.github.maximerollin.yams.core.ui.utils.appAvatarFor
 import io.github.maximerollin.yams.data.game.model.Player
 import io.github.maximerollin.yams.feature.game.result.model.GameResultPlayerUiState
 import io.github.maximerollin.yams.feature.game.result.model.GameResultUiState
-import io.github.vinceglb.confettikit.compose.ConfettiKit
-import io.github.vinceglb.confettikit.core.Angle
-import io.github.vinceglb.confettikit.core.Party
-import io.github.vinceglb.confettikit.core.Position
-import io.github.vinceglb.confettikit.core.Spread
-import io.github.vinceglb.confettikit.core.emitter.Emitter
 import kotlin.math.round
 import kotlin.time.Clock
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -238,7 +228,7 @@ private fun GameResultScreen(
                         }
                     }
 
-                    GameResultConfetti(modifier = Modifier.fillMaxSize())
+                    YamsCelebrationConfetti(modifier = Modifier.fillMaxSize())
                 }
             }
         }
@@ -733,53 +723,6 @@ private fun GameResultBottomBar(
             )
         }
     }
-}
-
-@Composable
-private fun GameResultConfetti(
-    modifier: Modifier = Modifier,
-) {
-    var isVisible by remember { mutableStateOf(true) }
-    val parties = remember { gameResultConfettiParties() }
-
-    if (!isVisible) return
-
-    ConfettiKit(
-        modifier = modifier,
-        parties = parties,
-        onParticleSystemEnded = { _, activeSystems ->
-            if (activeSystems == 0) {
-                isVisible = false
-            }
-        },
-    )
-}
-
-private fun gameResultConfettiParties(): List<Party> {
-    val colors = listOf(0xd4af37, 0x50b788, 0x4d96ff, 0xff6b6b, 0xffc857)
-    val rain = Party(
-        speed = 0f,
-        maxSpeed = 16f,
-        damping = 0.92f,
-        angle = Angle.BOTTOM,
-        spread = Spread.ROUND,
-        colors = colors,
-        emitter = Emitter(duration = 3.seconds).perSecond(85),
-        position = Position.Relative(0.0, 0.0).between(Position.Relative(1.0, 0.0)),
-    )
-
-    return listOf(
-        Party(
-            speed = 0f,
-            maxSpeed = 32f,
-            damping = 0.9f,
-            spread = Spread.ROUND,
-            colors = colors,
-            emitter = Emitter(duration = 160.milliseconds).max(130),
-            position = Position.Relative(0.5, 0.25),
-        ),
-        rain.copy(delay = 180),
-    )
 }
 
 @Composable

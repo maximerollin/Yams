@@ -6,10 +6,8 @@ import io.github.maximerollin.yams.data.billing.BillingRepository
 import io.github.maximerollin.yams.data.billing.model.AppPackage
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -17,19 +15,14 @@ internal class PaywallViewModel(
     private val fromScreen: String,
     private val billingRepository: BillingRepository,
 ) : ViewModel() {
-    val isYamsPlusActive: StateFlow<Boolean?> = billingRepository
-        .getYamsPlusStatus()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null,
-        )
-
     private val _yamsPlusResult = MutableStateFlow<Result<AppPackage>?>(null)
     val yamsPlusResult: StateFlow<Result<AppPackage>?> = _yamsPlusResult.asStateFlow()
 
     private val _purchaseLoading = MutableStateFlow(false)
     val purchaseLoading: StateFlow<Boolean> = _purchaseLoading.asStateFlow()
+
+    private val _purchaseSucceeded = MutableStateFlow(false)
+    val purchaseSucceeded: StateFlow<Boolean> = _purchaseSucceeded.asStateFlow()
 
     fun loadProducts() {
         viewModelScope.launch {
@@ -60,6 +53,7 @@ internal class PaywallViewModel(
         viewModelScope.launch {
             _purchaseLoading.value = true
             billingRepository.purchase(pkg, fromScreen)
+                .onSuccess { _purchaseSucceeded.value = true }
             _purchaseLoading.value = false
         }
     }
@@ -68,7 +62,16 @@ internal class PaywallViewModel(
         viewModelScope.launch {
             _purchaseLoading.value = true
             billingRepository.restorePurchases(fromScreen)
+                .onSuccess { isSubscribed ->
+                    if (isSubscribed) {
+                        _purchaseSucceeded.value = true
+                    }
+                }
             _purchaseLoading.value = false
         }
+    }
+
+    fun onPurchaseSucceededHandled() {
+        _purchaseSucceeded.value = false
     }
 }
