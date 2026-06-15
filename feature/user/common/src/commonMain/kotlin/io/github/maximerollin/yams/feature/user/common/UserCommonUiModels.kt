@@ -19,6 +19,7 @@ public data class HomeStatsUiState(
     val averageYamsPerGame: Float,
     val highestScore: Int,
     val highestScorePlayerName: String?,
+    val highestScorePlayerAvatar: PlatformFile?,
 )
 
 public data class UserCardUiState(
@@ -74,6 +75,7 @@ public fun List<GameResult>.toHomeStats(): HomeStatsUiState {
         averageYamsPerGame = if (isNotEmpty()) totalYams.toFloat() / size else 0f,
         highestScore = highestScoreResult?.score?.roundToInt() ?: 0,
         highestScorePlayerName = highestScoreResult?.playerResult?.player?.name,
+        highestScorePlayerAvatar = highestScoreResult?.playerResult?.player?.avatar,
     )
 }
 

@@ -595,7 +595,7 @@ private fun ProfileLockedPremiumStatsContent(
                     shape = RoundedCornerShape(20.dp),
                 )
                 .padding(18.dp),
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.TopCenter,
         ) {
             Surface(
                 modifier = Modifier.fillMaxWidth(),

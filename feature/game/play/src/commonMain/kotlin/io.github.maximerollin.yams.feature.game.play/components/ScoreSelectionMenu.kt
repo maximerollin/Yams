@@ -12,6 +12,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.CornerRadius
@@ -31,6 +36,14 @@ internal fun ScoreSelectionMenu(
     onScoreSelected: (ScoreSelectionOption) -> Unit,
 ) {
     val scrollState = rememberScrollState()
+    var retainedOptions by remember { mutableStateOf(options) }
+    val visibleOptions = if (options.isNotEmpty()) options else retainedOptions
+
+    LaunchedEffect(options) {
+        if (options.isNotEmpty()) {
+            retainedOptions = options
+        }
+    }
 
     MaterialExpressiveTheme(
         colorScheme = MaterialTheme.colorScheme,
@@ -89,7 +102,7 @@ internal fun ScoreSelectionMenu(
                 color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.7f),
             ),
         ) {
-            options.forEach { option ->
+            visibleOptions.forEach { option ->
                 DropdownMenuItem(
                     text = {
                         Text(

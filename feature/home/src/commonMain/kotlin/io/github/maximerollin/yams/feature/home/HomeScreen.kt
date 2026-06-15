@@ -486,6 +486,7 @@ private fun previewHomeUiState(): HomeUiState.Success {
             averageYamsPerGame = 2.1f,
             highestScore = 286,
             highestScorePlayerName = users.first().name,
+            highestScorePlayerAvatar = users.first().avatar,
         ),
         recentGames = listOf(
             GameSummaryUiState(

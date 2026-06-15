@@ -55,7 +55,6 @@ import yams.feature.user.common.generated.resources.common_game_players_many
 import yams.feature.user.common.generated.resources.common_game_players_one
 import yams.feature.user.common.generated.resources.common_games
 import yams.feature.user.common.generated.resources.common_record
-import yams.feature.user.common.generated.resources.common_record_score
 import yams.feature.user.common.generated.resources.common_score_points
 import yams.feature.user.common.generated.resources.common_stats_subtitle
 import yams.feature.user.common.generated.resources.common_stats_title
@@ -241,10 +240,78 @@ public fun HomeStatsCard(
                         value = stats.averageYamsPerGame.formatOneDecimal(),
                         modifier = Modifier.weight(1f),
                     )
-                    StatTile(
+                    RecordStatTile(
                         label = stringResource(Res.string.common_record),
-                        value = recordLabel(stats),
+                        score = stats.highestScore,
+                        playerName = stats.highestScorePlayerName,
+                        playerAvatar = stats.highestScorePlayerAvatar,
                         modifier = Modifier.weight(1f),
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun RecordStatTile(
+    label: String,
+    score: Int,
+    playerName: String?,
+    playerAvatar: Any?,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(14.dp),
+        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.72f),
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            if (score <= 0) {
+                Text(
+                    text = "-",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = YamsTheme.colors.brown,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            } else {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    if (playerName != null) {
+                        Avatar(
+                            name = playerName,
+                            avatar = playerAvatar,
+                            size = 24.dp,
+                        )
+                        Text(
+                            text = "-",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = YamsTheme.colors.brown,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    }
+                    Text(
+                        text = stringResource(Res.string.common_score_points, score),
+                        modifier = Modifier.weight(1f, fill = false),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = YamsTheme.colors.brown,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
             }
@@ -638,18 +705,6 @@ public fun ProfileStatRow(
 
 private fun String.initial(): String =
     trim().firstOrNull()?.uppercase() ?: "?"
-
-@Composable
-private fun recordLabel(stats: HomeStatsUiState): String {
-    if (stats.highestScore <= 0) return "-"
-
-    val playerName = stats.highestScorePlayerName
-    return if (playerName != null) {
-        stringResource(Res.string.common_record_score, playerName, stats.highestScore)
-    } else {
-        stringResource(Res.string.common_score_points, stats.highestScore)
-    }
-}
 
 private fun Instant.toDateLabel(): String =
     toString().take(10)
