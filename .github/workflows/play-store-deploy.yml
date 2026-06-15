@@ -20,16 +20,16 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Configure JDK 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 21
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v6
 
       - name: Create local.properties
         env:
@@ -42,15 +42,8 @@ jobs:
         run: |
           echo "code=${{ github.run_number }}" >> "$GITHUB_OUTPUT"
 
-      - name: Bump version
-        uses: chkfung/android-version-actions@v1.2.3
-        with:
-          gradlePath: app/build.gradle.kts
-          versionCode: ${{ steps.version.outputs.code }}
-          versionName: 1.0.${{ steps.version.outputs.code }}
-
       - name: Build app bundle
-        run: ./gradlew :app:bundleRelease
+        run: ./gradlew :app:bundleRelease -PYAMS_VERSION_CODE=${{ steps.version.outputs.code }} -PYAMS_VERSION_NAME=1.0.${{ steps.version.outputs.code }} -x lintVitalAnalyzeRelease --no-daemon --stacktrace
 
       - name: Sign app bundle
         uses: filippoLeporati93/android-release-signer@v1

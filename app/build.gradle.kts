@@ -11,6 +11,12 @@ plugins {
     alias(libs.plugins.buildConfig)
 }
 
+val yamsVersionCode = providers.gradleProperty("YAMS_VERSION_CODE")
+    .map(String::toInt)
+    .orElse(1)
+val yamsVersionName = providers.gradleProperty("YAMS_VERSION_NAME")
+    .orElse("1.0")
+
 kotlin {
     applyDefaultHierarchyTemplate()
 
@@ -103,8 +109,8 @@ android {
         applicationId = "io.github.maximerollin.yams"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = yamsVersionCode.get()
+        versionName = yamsVersionName.get()
     }
 
     packaging {
