@@ -45,24 +45,35 @@ jobs:
       - name: Build app bundle
         run: ./gradlew :app:bundleRelease -PYAMS_VERSION_CODE=${{ steps.version.outputs.code }} -PYAMS_VERSION_NAME=1.0.${{ steps.version.outputs.code }} -x lintVitalAnalyzeRelease --no-daemon --stacktrace
 
+      - name: Decode signing keystore
+        env:
+          SIGNING_KEYSTORE_BASE64: ${{ secrets.KEYSTORE }}
+        run: |
+          printf '%s' "$SIGNING_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/yams-release.jks"
+
       - name: Sign app bundle
-        uses: filippoLeporati93/android-release-signer@v1
-        id: sign
-        with:
-          releaseDirectory: app/build/outputs/bundle/release
-          signingKeyBase64: ${{ secrets.KEYSTORE }}
-          alias: ${{ secrets.SIGNING_KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.SIGNING_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.SIGNING_KEY_PASSWORD }}
+        env:
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+        run: |
+          jarsigner \
+            -keystore "$RUNNER_TEMP/yams-release.jks" \
+            -storepass "$SIGNING_STORE_PASSWORD" \
+            -keypass "$SIGNING_KEY_PASSWORD" \
+            -signedjar "$RUNNER_TEMP/app-release-signed.aab" \
+            app/build/outputs/bundle/release/app-release.aab \
+            "$SIGNING_KEY_ALIAS"
+          jarsigner -verify "$RUNNER_TEMP/app-release-signed.aab"
 
       - name: Upload signed app bundle
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: signed-app-bundle
-          path: ${{ steps.sign.outputs.signedReleaseFile }}
+          path: ${{ runner.temp }}/app-release-signed.aab
 
       - name: Upload mapping file
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: mapping-file
           path: app/build/outputs/mapping/release/mapping.txt
@@ -74,7 +85,7 @@ jobs:
 
     steps:
       - name: Download all artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           merge-multiple: true
 
@@ -86,3 +97,4 @@ jobs:
           releaseFiles: ${{ github.workspace }}/app-release-signed.aab
           mappingFile: ${{ github.workspace }}/mapping.txt
           tracks: ${{ github.event.inputs.track }}
+          status: draft
