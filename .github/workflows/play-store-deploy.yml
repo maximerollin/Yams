@@ -97,4 +97,3 @@ jobs:
           releaseFiles: ${{ github.workspace }}/app-release-signed.aab
           mappingFile: ${{ github.workspace }}/mapping.txt
           tracks: ${{ github.event.inputs.track }}
-          status: draft
