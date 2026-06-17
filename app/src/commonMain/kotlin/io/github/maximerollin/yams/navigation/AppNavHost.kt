@@ -6,20 +6,17 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import io.github.maximerollin.yams.AppViewModel
-import io.github.maximerollin.yams.core.analytics.AnalyticsTracker
 import io.github.maximerollin.yams.core.designsystem.component.YamsCelebrationConfetti
 import io.github.maximerollin.yams.feature.game.creation.navigation.GameCreationRoute
 import io.github.maximerollin.yams.feature.game.creation.navigation.gameCreationScreen
@@ -55,20 +52,8 @@ internal fun AppNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     appViewModel: AppViewModel = koinInject(),
-    analyticsTracker: AnalyticsTracker = koinInject(),
 ) {
     var showYamsPlusConfetti by remember { mutableStateOf(false) }
-
-    LaunchedEffect(navController) {
-        navController.currentBackStackEntryFlow.collect { backStackEntry ->
-            analyticsTracker.capture(
-                event = "screen viewed",
-                properties = mapOf(
-                    "screen" to backStackEntry.destination.analyticsScreenName(),
-                ),
-            )
-        }
-    }
 
     Box(modifier = modifier) {
         if (predictiveBackGestureAnimations != null) {
@@ -117,24 +102,6 @@ class PredictiveBackGestureAnimations(
 
 typealias EnterAnimation = @JvmSuppressWildcards (AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition)
 typealias ExitAnimation = @JvmSuppressWildcards (AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition)
-
-private fun NavDestination.analyticsScreenName(): String {
-    val routeName = route.orEmpty()
-    return when {
-        routeName.contains("WelcomeRoute") -> "welcome"
-        routeName.contains("HomeRoute") -> "home"
-        routeName.contains("UsersRoute") -> "users"
-        routeName.contains("UserProfileRoute") -> "user_profile"
-        routeName.contains("UserHistoryRoute") -> "user_history"
-        routeName.contains("UserEditionRoute") -> "user_edition"
-        routeName.contains("GameCreationRoute") -> "game_creation"
-        routeName.contains("GamePreparation") -> "game_preparation"
-        routeName.contains("GamePlayRoute") -> "game_play"
-        routeName.contains("GameResult") -> "game_result"
-        routeName.contains("PaywallRoute") -> "paywall"
-        else -> "unknown"
-    }
-}
 
 private fun NavGraphBuilder.screens(
     navController: NavHostController,

@@ -131,7 +131,7 @@ internal class PaywallViewModel(
 
         viewModelScope.launch {
             analyticsTracker.capture(
-                event = "paywall viewed",
+                event = "paywall screen viewed",
                 properties = mapOf(
                     "from_screen" to fromScreen,
                     "finished_games_bucket" to gameRepository
