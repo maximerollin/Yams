@@ -34,8 +34,12 @@ jobs:
       - name: Create local.properties
         env:
           REVENUECAT_PLAY_STORE_API_KEY: ${{ secrets.REVENUECAT_PLAY_STORE_API_KEY }}
+          POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
+          POSTHOG_HOST: ${{ secrets.POSTHOG_HOST }}
         run: |
           printf 'REVENUECAT_PLAY_STORE_API_KEY=%s\n' "$REVENUECAT_PLAY_STORE_API_KEY" > local.properties
+          printf 'POSTHOG_API_KEY=%s\n' "$POSTHOG_API_KEY" >> local.properties
+          printf 'POSTHOG_HOST=%s\n' "${POSTHOG_HOST:-https://eu.i.posthog.com}" >> local.properties
 
       - name: Calculate version
         id: version
