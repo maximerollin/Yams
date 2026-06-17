@@ -2,6 +2,8 @@ package io.github.maximerollin.yams.feature.game.preparation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.maximerollin.yams.core.analytics.AnalyticsTracker
+import io.github.maximerollin.yams.core.analytics.toAnalyticsCountBucket
 import io.github.maximerollin.yams.core.model.GameId
 import io.github.maximerollin.yams.core.model.GameSettings
 import io.github.maximerollin.yams.core.model.User
@@ -25,6 +27,7 @@ internal class GamePreparationViewModel(
     @InjectedParam private val usersIds: Set<UserId>,
     private val gameRepository: GameRepository,
     private val preferenceRepository: PreferenceRepository,
+    private val analyticsTracker: AnalyticsTracker,
     userRepository: UserRepository,
 ) : ViewModel() {
     private val _gamePreparationUiState = MutableStateFlow(GamePreparationUiState())
@@ -85,6 +88,19 @@ internal class GamePreparationViewModel(
                 ),
             )
 
+            analyticsTracker.capture(
+                event = "game created",
+                properties = mapOf(
+                    "rule_set" to gameSettings.ruleSet.name.lowercase(),
+                    "player_count_bucket" to usersIds.size.toAnalyticsCountBucket(),
+                    "column_count_bucket" to gameSettings.columnCount.toAnalyticsCountBucket(),
+                    "is_user_order_randomized" to gamePreparationUiState.value.isUserOrderRandomized,
+                    "custom_rules_enabled" to gameSettings.areCustomRulesEnabled,
+                    "custom_rules_count_bucket" to gameSettings.customGameSettings
+                        .count { it.isEnabled }
+                        .toAnalyticsCountBucket(),
+                ),
+            )
             _gamePreparationUiState.update { it.copy(navigateToGame = gameId) }
         }
     }

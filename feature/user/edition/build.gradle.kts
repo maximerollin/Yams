@@ -5,6 +5,9 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            // Core
+            implementation(projects.core.analytics)
+
             // Data
             implementation(projects.data.user)
 

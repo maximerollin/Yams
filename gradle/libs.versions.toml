@@ -30,6 +30,7 @@ ktor = "3.3.3"
 napier = "2.7.1"
 play-integrity = "1.6.0"
 play-review = "2.0.2"
+posthog = "3.+"
 reorderable = "3.0.0"
 revenuecat = "3.0.5"
 sqldelight = "2.2.1"
@@ -91,6 +92,7 @@ ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "kto
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 play-integrity = { module = "com.google.android.play:integrity", version.ref = "play-integrity" }
 play-review = { module = "com.google.android.play:review-ktx", version.ref = "play-review" }
+posthog-android = { module = "com.posthog:posthog-android", version.ref = "posthog" }
 reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
 revenuecat-purchases-core = { module = "com.revenuecat.purchases:purchases-kmp-core", version.ref = "revenuecat" }
 revenuecat-purchases-result = { module = "com.revenuecat.purchases:purchases-kmp-result", version.ref = "revenuecat" }

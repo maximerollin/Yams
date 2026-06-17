@@ -24,7 +24,7 @@ internal actual class RevenueCatBillingRepository actual constructor(
     private val coroutineScope: CoroutineScope,
 ) : BillingRepository {
     init {
-        Purchases.sharedInstance.delegate = object : PurchasesDelegate {
+        configuredPurchases("init")?.delegate = object : PurchasesDelegate {
             override fun onCustomerInfoUpdated(customerInfo: CustomerInfo) {
                 coroutineScope.launch {
                     Napier.d { "init - onCustomerInfoUpdated" }
@@ -49,7 +49,12 @@ internal actual class RevenueCatBillingRepository actual constructor(
 
     actual override suspend fun fetchYamsPlusStatus() {
         coroutineScope.launch {
-            Purchases.sharedInstance
+            val purchases = configuredPurchases("fetch Yams+ status") ?: run {
+                preferenceRepository.setYamsPlusStatus(false)
+                return@launch
+            }
+
+            purchases
                 .awaitCustomerInfoResult()
                 .onSuccess {
                     Napier.d { "fetch Yams+ status - success" }
@@ -64,7 +69,9 @@ internal actual class RevenueCatBillingRepository actual constructor(
     }
 
     actual override suspend fun fetchPackages(): Result<List<AppPackage>> {
-        return Purchases.sharedInstance
+        val purchases = configuredPurchases("fetchPackages") ?: return Result.success(emptyList())
+
+        return purchases
             .awaitOfferingsResult()
             .onFailure { Napier.w { "fetchPackages - Failed to get offerings: ${it.message}" } }
             .map { offerings ->
@@ -81,7 +88,10 @@ internal actual class RevenueCatBillingRepository actual constructor(
         fromScreen: String,
     ): Result<Unit> {
         return coroutineScope.async {
-            Purchases.sharedInstance
+            val purchases = configuredPurchases("purchase")
+                ?: return@async Result.failure(revenueCatNotConfiguredException())
+
+            purchases
                 .awaitPurchaseResult(packageToPurchase = appPackage.revenueCatPackage)
                 .onSuccess {
                     Napier.i { "purchase - 🎉 Purchase successful: $it" }
@@ -98,7 +108,12 @@ internal actual class RevenueCatBillingRepository actual constructor(
 
     actual override suspend fun restorePurchases(fromScreen: String): Result<Boolean> {
         return coroutineScope.async {
-            Purchases.sharedInstance.awaitRestoreResult()
+            val purchases = configuredPurchases("restorePurchases") ?: run {
+                preferenceRepository.setYamsPlusStatus(false)
+                return@async Result.success(false)
+            }
+
+            purchases.awaitRestoreResult()
                 .onSuccess { customerInfo ->
                     Napier.i { "restorePurchases - success" }
                     val isSubscribed = getYamsPlusStatusFromCustomerInfo(customerInfo)
@@ -120,6 +135,16 @@ internal actual class RevenueCatBillingRepository actual constructor(
         Napier.d { "get Yams+ from ci - Yams+ subscription active: $isSubscribed" }
         return isSubscribed
     }
+
+    private fun configuredPurchases(operation: String): Purchases? =
+        runCatching { Purchases.sharedInstance }
+            .onFailure { exception ->
+                Napier.w { "$operation - RevenueCat is not configured: ${exception.message}" }
+            }
+            .getOrNull()
+
+    private fun revenueCatNotConfiguredException(): IllegalStateException =
+        IllegalStateException("RevenueCat is not configured")
 
     private companion object {
         private const val YAMS_PLUS_ENTITLEMENT_ID = "plus"

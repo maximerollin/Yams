@@ -2,6 +2,8 @@ package io.github.maximerollin.yams.feature.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.maximerollin.yams.core.analytics.AnalyticsTracker
+import io.github.maximerollin.yams.core.analytics.toAnalyticsCountBucket
 import io.github.maximerollin.yams.core.model.GameId
 import io.github.maximerollin.yams.data.billing.BillingRepository
 import io.github.maximerollin.yams.data.game.GameRepository
@@ -11,12 +13,14 @@ import io.github.maximerollin.yams.feature.user.common.toHomeStats
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 internal class HomeViewModel(
     private val gameRepository: GameRepository,
     billingRepository: BillingRepository,
+    private val analyticsTracker: AnalyticsTracker,
 ) : ViewModel() {
     val uiState: StateFlow<HomeUiState> = combine(
         gameRepository.getFinishedGamesResults(),
@@ -38,7 +42,16 @@ internal class HomeViewModel(
 
     fun abandonGame(gameId: GameId) {
         viewModelScope.launch {
+            val state = gameRepository.getGamePlayState(gameId).first()
             gameRepository.abandonGame(gameId)
+            analyticsTracker.capture(
+                event = "game abandoned",
+                properties = mapOf(
+                    "rule_set" to state?.game?.settings?.ruleSet?.name?.lowercase(),
+                    "player_count_bucket" to state?.players?.size?.toAnalyticsCountBucket(),
+                    "score_entries_bucket" to state?.scoreEntries?.size?.toAnalyticsCountBucket(),
+                ),
+            )
         }
     }
 }

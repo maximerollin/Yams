@@ -2,6 +2,9 @@ package io.github.maximerollin.yams.feature.game.result
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.maximerollin.yams.core.analytics.AnalyticsTracker
+import io.github.maximerollin.yams.core.analytics.toAnalyticsAverageBucket
+import io.github.maximerollin.yams.core.analytics.toAnalyticsCountBucket
 import io.github.maximerollin.yams.core.model.Game
 import io.github.maximerollin.yams.core.model.GameId
 import io.github.maximerollin.yams.core.review.InAppReview
@@ -29,6 +32,7 @@ internal class GameResultViewModel(
     private val preferenceRepository: PreferenceRepository,
     private val getGameResultPreviewUseCase: GetGameResultPreviewUseCase,
     private val finishGameUseCase: FinishGameUseCase,
+    private val analyticsTracker: AnalyticsTracker,
 ) : ViewModel() {
 
     val gameResultUiState: StateFlow<GameResultUiState?> =
@@ -54,6 +58,13 @@ internal class GameResultViewModel(
             _isActionInProgress.value = true
             try {
                 gameRepository.undoLastMove(gameId)
+                analyticsTracker.capture(
+                    event = "move undone",
+                    properties = mapOf(
+                        "source" to "game_result",
+                        "rule_set" to state.game.settings.ruleSet.name.lowercase(),
+                    ),
+                )
                 _navigationTarget.value = GameResultNavigationTarget.GAME_PLAY
             } finally {
                 if (_navigationTarget.value == null) {
@@ -71,6 +82,18 @@ internal class GameResultViewModel(
             _isActionInProgress.value = true
             try {
                 finishGameUseCase(gameId, state)
+                analyticsTracker.capture(
+                    event = "game completed",
+                    properties = mapOf(
+                        "rule_set" to state.game.settings.ruleSet.name.lowercase(),
+                        "player_count_bucket" to state.playerResults.size.toAnalyticsCountBucket(),
+                        "winner_count_bucket" to state.winnerResults.size.toAnalyticsCountBucket(),
+                        "total_turns_bucket" to state.totalTurns.toAnalyticsCountBucket(),
+                        "total_yams_bucket" to state.totalYamCount.toAnalyticsCountBucket(),
+                        "average_score_per_turn_bucket" to state.averageScorePerTurn.toAnalyticsAverageBucket(),
+                        "column_count_bucket" to state.game.settings.columnCount.toAnalyticsCountBucket(),
+                    ),
+                )
                 _navigationTarget.value = GameResultNavigationTarget.HOME
             } finally {
                 if (_navigationTarget.value == null) {
@@ -102,6 +125,12 @@ internal class GameResultViewModel(
                 delay(1200.milliseconds)
                 InAppReview.requestReview()
                 preferenceRepository.inAppReviewShown()
+                analyticsTracker.capture(
+                    event = "review prompt shown",
+                    properties = mapOf(
+                        "finished_games_bucket" to numberOfFinishedGames.toAnalyticsCountBucket(),
+                    ),
+                )
             }
         }
     }

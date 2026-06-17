@@ -2,6 +2,7 @@ package io.github.maximerollin.yams.feature.user.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.maximerollin.yams.core.analytics.AnalyticsTracker
 import io.github.maximerollin.yams.core.model.Game
 import io.github.maximerollin.yams.core.model.User
 import io.github.maximerollin.yams.core.model.UserId
@@ -27,6 +28,7 @@ internal class UserProfileViewModel(
     private val userRepository: UserRepository,
     gameRepository: GameRepository,
     billingRepository: BillingRepository,
+    private val analyticsTracker: AnalyticsTracker,
 ) : ViewModel() {
     val uiState: StateFlow<UserProfileUiState> = combine(
         userRepository.getUserById(userId),
@@ -56,6 +58,7 @@ internal class UserProfileViewModel(
     fun deleteUser() {
         viewModelScope.launch {
             userRepository.deleteUser(userId)
+            analyticsTracker.capture(event = "player deleted")
             _navigationTarget.value = UserProfileNavigationTarget.USERS
         }
     }

@@ -56,6 +56,7 @@ kotlin {
             implementation(libs.jetbrains.compose.components.resources)
             implementation(libs.jetbrains.compose.uiToolingPreview)
 
+            implementation(projects.core.analytics)
             implementation(projects.core.designsystem)
             implementation(projects.feature.welcome)
             implementation(projects.feature.home)
@@ -165,4 +166,10 @@ buildConfig {
     // Empty when absent from local.properties -> RevenueCat configuration is skipped.
     val revenueCatApiKey = localProperties.getProperty("REVENUECAT_PLAY_STORE_API_KEY").orEmpty()
     buildConfigField("REVENUECAT_PLAY_STORE_API_KEY", revenueCatApiKey)
+
+    // Empty when absent from local.properties -> PostHog configuration is skipped.
+    val postHogApiKey = localProperties.getProperty("POSTHOG_API_KEY").orEmpty()
+    val postHogHost = localProperties.getProperty("POSTHOG_HOST", "https://eu.i.posthog.com")
+    buildConfigField("POSTHOG_API_KEY", postHogApiKey)
+    buildConfigField("POSTHOG_HOST", postHogHost)
 }
