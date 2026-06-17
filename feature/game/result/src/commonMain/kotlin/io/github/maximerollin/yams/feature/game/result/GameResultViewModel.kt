@@ -58,13 +58,6 @@ internal class GameResultViewModel(
             _isActionInProgress.value = true
             try {
                 gameRepository.undoLastMove(gameId)
-                analyticsTracker.capture(
-                    event = "move undone",
-                    properties = mapOf(
-                        "source" to "game_result",
-                        "rule_set" to state.game.settings.ruleSet.name.lowercase(),
-                    ),
-                )
                 _navigationTarget.value = GameResultNavigationTarget.GAME_PLAY
             } finally {
                 if (_navigationTarget.value == null) {
