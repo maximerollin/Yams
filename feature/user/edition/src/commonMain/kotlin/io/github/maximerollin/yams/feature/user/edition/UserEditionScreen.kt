@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -131,10 +132,6 @@ private fun UserEditionScreen(
             UserEditionContent(
                 uiState = uiState,
                 onAction = onAction,
-                onDeleteUser = {},
-                onDismissRequest = {},
-                isEdit = true,
-                showActions = false,
                 modifier = Modifier.fillMaxWidth(),
             )
         }
@@ -170,13 +167,45 @@ public fun UserEditionBottomSheet(
         onDismissRequest = onDismissRequest,
         containerColor = MaterialTheme.colorScheme.background,
     ) {
-        UserEditionContent(
+        UserEditionSheetContent(
             uiState = uiState,
             onAction = onAction,
             onDeleteUser = onDeleteUser,
             onDismissRequest = ::dismissSheet,
             isEdit = isEdit,
-            modifier = modifier,
+        )
+    }
+}
+
+@Composable
+private fun UserEditionSheetContent(
+    uiState: UserEditionUiState,
+    onAction: (UserEditionAction) -> Unit,
+    onDeleteUser: (UserId) -> Unit,
+    onDismissRequest: () -> Unit,
+    isEdit: Boolean = false,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .imePadding(),
+    ) {
+        UserEditionContent(
+            uiState = uiState,
+            onAction = onAction,
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f, fill = false),
+        )
+
+        UserEditionActions(
+            uiState = uiState,
+            onAction = onAction,
+            onDeleteUser = onDeleteUser,
+            onDismissRequest = onDismissRequest,
+            isEdit = isEdit,
+            modifier = Modifier.fillMaxWidth(),
         )
     }
 }
@@ -185,10 +214,6 @@ public fun UserEditionBottomSheet(
 private fun UserEditionContent(
     uiState: UserEditionUiState,
     onAction: (UserEditionAction) -> Unit,
-    onDeleteUser: (UserId) -> Unit,
-    onDismissRequest: () -> Unit,
-    isEdit: Boolean = false,
-    showActions: Boolean = true,
     modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
@@ -197,7 +222,6 @@ private fun UserEditionContent(
         verticalArrangement = Arrangement.spacedBy(24.dp),
         modifier = modifier
             .verticalScroll(scrollState)
-            .navigationBarsPadding()
             .padding(16.dp),
     ) {
         UserEditionAvatar(
@@ -209,30 +233,45 @@ private fun UserEditionContent(
             name = uiState.name,
             onChangeName = { onAction(UserEditionAction.EditName(it)) },
         )
+    }
+}
 
-        if (showActions) {
-            YamsPrimaryButton(
-                enabled = uiState.name.isNotBlank(),
-                text = if (isEdit) {
-                    stringResource(Res.string.edition_save)
-                } else {
-                    stringResource(Res.string.edition_create)
-                },
+@Composable
+private fun UserEditionActions(
+    uiState: UserEditionUiState,
+    onAction: (UserEditionAction) -> Unit,
+    onDeleteUser: (UserId) -> Unit,
+    onDismissRequest: () -> Unit,
+    isEdit: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .navigationBarsPadding()
+            .padding(horizontal = 16.dp, vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp),
+    ) {
+        YamsPrimaryButton(
+            enabled = uiState.name.isNotBlank(),
+            text = if (isEdit) {
+                stringResource(Res.string.edition_save)
+            } else {
+                stringResource(Res.string.edition_create)
+            },
+            onClick = {
+                onDismissRequest()
+                onAction(UserEditionAction.SaveUser)
+            }
+        )
+
+        if (isEdit && uiState.userId != null) {
+            YamsDestructiveButton(
+                text = stringResource(Res.string.edition_delete),
                 onClick = {
                     onDismissRequest()
-                    onAction(UserEditionAction.SaveUser)
+                    onDeleteUser(uiState.userId)
                 }
             )
-
-            if (isEdit && uiState.userId != null) {
-                YamsDestructiveButton(
-                    text = stringResource(Res.string.edition_delete),
-                    onClick = {
-                        onDismissRequest()
-                        onDeleteUser(uiState.userId)
-                    }
-                )
-            }
         }
     }
 }
@@ -241,6 +280,23 @@ private fun UserEditionContent(
 @Composable
 private fun UserEditionScreenPreview() {
     UserEditionStoreScreenshotContent()
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun UserEditionSheetContentPreview() {
+    YamsTheme {
+        UserEditionSheetContent(
+            uiState = UserEditionUiState(
+                name = "Camille",
+                avatar = Avatar.Drawable(AppAvatars[1]),
+            ),
+            onAction = {},
+            onDeleteUser = {},
+            onDismissRequest = {},
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
 }
 
 @Composable
