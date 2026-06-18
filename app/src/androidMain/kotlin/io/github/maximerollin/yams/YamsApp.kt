@@ -28,6 +28,7 @@ class YamsApp : Application(), KoinStartup {
                 context = this,
                 apiKey = apiKey,
                 host = YamsBuildConfig.POSTHOG_HOST,
+                releaseChannel = YamsBuildConfig.ANALYTICS_RELEASE_CHANNEL,
             )
         }
     }

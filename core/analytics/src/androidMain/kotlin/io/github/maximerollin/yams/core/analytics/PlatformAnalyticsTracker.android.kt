@@ -12,6 +12,7 @@ internal actual class PlatformAnalyticsTracker actual constructor() : AnalyticsT
                 event = event.withAnalyticsPlatformPrefix(ANDROID_ANALYTICS_PLATFORM),
                 properties = properties
                     .withAnalyticsPlatform(ANDROID_ANALYTICS_PLATFORM)
+                    .withAnalyticsReleaseChannel(AnalyticsRuntimeConfig.releaseChannel)
                     .toPostHogProperties(),
             )
         }

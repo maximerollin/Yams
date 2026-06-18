@@ -170,6 +170,8 @@ buildConfig {
     // Empty when absent from local.properties -> PostHog configuration is skipped.
     val postHogApiKey = localProperties.getProperty("POSTHOG_API_KEY").orEmpty()
     val postHogHost = localProperties.getProperty("POSTHOG_HOST", "https://eu.i.posthog.com")
+    val analyticsReleaseChannel = localProperties.getProperty("ANALYTICS_RELEASE_CHANNEL", "local")
     buildConfigField("POSTHOG_API_KEY", postHogApiKey)
     buildConfigField("POSTHOG_HOST", postHogHost)
+    buildConfigField("ANALYTICS_RELEASE_CHANNEL", analyticsReleaseChannel)
 }

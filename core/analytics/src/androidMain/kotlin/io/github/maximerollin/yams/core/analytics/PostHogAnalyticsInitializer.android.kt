@@ -15,9 +15,11 @@ public object PostHogAnalyticsInitializer {
         context: Context,
         apiKey: String,
         host: String,
+        releaseChannel: String = DEFAULT_RELEASE_CHANNEL,
     ) {
         if (apiKey.isBlank() || isConfigured) return
 
+        AnalyticsRuntimeConfig.releaseChannel = releaseChannel.trim().ifBlank { DEFAULT_RELEASE_CHANNEL }
         val config = PostHogAndroidConfig(
             apiKey = apiKey,
             host = host,
@@ -78,4 +80,5 @@ public object PostHogAnalyticsInitializer {
 
     private const val ANALYTICS_PREFERENCES_NAME = "yams_analytics"
     private const val APPLICATION_INSTALLED_TRACKED_KEY = "application_installed_tracked"
+    private const val DEFAULT_RELEASE_CHANNEL = "local"
 }
