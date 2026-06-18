@@ -7,6 +7,7 @@ import io.github.maximerollin.yams.data.game.GameRepository
 import io.github.maximerollin.yams.data.game.ScoreEntryRepository
 import io.github.maximerollin.yams.data.game.model.CreateScoreEntry
 import io.github.maximerollin.yams.data.game.model.ScoreCellRef
+import io.github.maximerollin.yams.data.preference.PreferenceRepository
 import io.github.maximerollin.yams.feature.game.play.domain.GetGamePlayStateUseCase
 import io.github.maximerollin.yams.feature.game.play.model.GamePlayStateUi
 import io.github.maximerollin.yams.feature.game.play.model.GameStatus
@@ -22,6 +23,7 @@ internal class GamePlayViewModel(
     private val gameRepository: GameRepository,
     private val scoreEntryRepository: ScoreEntryRepository,
     private val getGetGamePlayStateUseCase: GetGamePlayStateUseCase,
+    preferenceRepository: PreferenceRepository,
 ) : ViewModel() {
 
     val gamePlayStateUi: StateFlow<GamePlayStateUi?> =
@@ -30,6 +32,14 @@ internal class GamePlayViewModel(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
                 initialValue = null,
+            )
+
+    val isHapticFeedbackEnabled: StateFlow<Boolean> =
+        preferenceRepository.getIsHapticFeedbackEnabled()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = true,
             )
 
     private val _navigateToGameResult: MutableStateFlow<Boolean> = MutableStateFlow(false)

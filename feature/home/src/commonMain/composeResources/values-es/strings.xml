@@ -19,6 +19,10 @@
     <string name="home_info_cd">Mostrar información</string>
     <string name="home_info_title">Información</string>
     <string name="home_info_subtitle">Reglas del juego, bibliotecas usadas y versión de la app.</string>
+    <string name="home_settings_title">Ajustes</string>
+    <string name="home_settings_subtitle">Por ahora solo se puede configurar la respuesta háptica.</string>
+    <string name="home_settings_haptic_label">Respuesta háptica</string>
+    <string name="home_settings_haptic_supporting_text">Vibra suavemente cuando se introduce una puntuación o se confirma una acción importante.</string>
     <string name="home_info_rules_button">Ver reglas de Yams / Yahtzee</string>
     <string name="home_info_licenses_button">Ver bibliotecas</string>
     <string name="home_info_licenses_title">Bibliotecas y licencias</string>

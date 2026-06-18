@@ -94,6 +94,7 @@
     <string name="play_no_active_rule">Keine aktive Regel</string>
     <string name="play_standard_rules_only">Diese Partie verwendet nur Standardregeln.</string>
     <string name="play_turn_current">Aktueller Zug</string>
+    <string name="play_current_player_avatar_cd">Avatar von %1$s, aktueller Spieler</string>
     <string name="play_previous_sheet_cd">Vorheriges Blatt anzeigen</string>
     <string name="play_next_sheet_cd">Nächstes Blatt anzeigen</string>
     <string name="play_active_player_cd">Aktiver Spieler</string>

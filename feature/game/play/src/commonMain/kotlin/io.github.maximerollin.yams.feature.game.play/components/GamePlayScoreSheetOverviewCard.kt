@@ -3,9 +3,14 @@ package io.github.maximerollin.yams.feature.game.play.components
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
@@ -30,8 +35,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import io.github.maximerollin.yams.core.designsystem.icon.ChevronLeft
 import io.github.maximerollin.yams.core.designsystem.icon.ChevronRight
 import io.github.maximerollin.yams.core.designsystem.icon.Crown
@@ -40,8 +48,10 @@ import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.designsystem.theme.colors
 import io.github.maximerollin.yams.core.model.User
+import io.github.maximerollin.yams.core.ui.utils.appAvatarFor
 import io.github.maximerollin.yams.feature.game.play.model.GamePlayColumnSummary
 import io.github.maximerollin.yams.feature.game.play.model.PlayerState
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import yams.feature.game.play.generated.resources.*
 
@@ -78,15 +88,24 @@ internal fun GamePlayScoreSheetOverviewCard(
                     targetState = currentTurnPlayer.player.user,
                     modifier = Modifier.weight(1f),
                     transitionSpec = {
-                        (slideInVertically { fullHeight -> fullHeight / 2 } + fadeIn())
-                            .togetherWith(slideOutVertically { fullHeight -> -fullHeight / 2 } + fadeOut())
+                        (slideInHorizontally(
+                            animationSpec = tween(280),
+                            initialOffsetX = { fullWidth -> fullWidth },
+                        ) + fadeIn(animationSpec = tween(220)) + scaleIn(initialScale = 0.94f))
+                            .togetherWith(
+                                slideOutHorizontally(
+                                    animationSpec = tween(220),
+                                    targetOffsetX = { fullWidth -> -fullWidth },
+                                ) + fadeOut(animationSpec = tween(180)) + scaleOut(targetScale = 0.94f)
+                            )
                     },
+                    contentKey = { user -> user.id },
                     label = "currentTurnPlayer",
                 ) { currentUser ->
                     TurnStatusPill(
                         icon = YamsIcons.PersonRaisedHand,
                         label = stringResource(Res.string.play_turn_current),
-                        value = currentUser.name,
+                        user = currentUser,
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }
@@ -116,8 +135,16 @@ internal fun GamePlayScoreSheetOverviewCard(
                     targetState = selectedPlayer,
                     modifier = Modifier.weight(1f),
                     transitionSpec = {
-                        (slideInVertically { fullHeight -> fullHeight / 3 } + fadeIn())
-                            .togetherWith(slideOutVertically { fullHeight -> -fullHeight / 3 } + fadeOut())
+                        (slideInVertically(
+                            animationSpec = tween(260),
+                            initialOffsetY = { fullHeight -> fullHeight },
+                        ) + fadeIn(animationSpec = tween(220)) + scaleIn(initialScale = 0.96f))
+                            .togetherWith(
+                                slideOutVertically(
+                                    animationSpec = tween(220),
+                                    targetOffsetY = { fullHeight -> -fullHeight },
+                                ) + fadeOut(animationSpec = tween(180)) + scaleOut(targetScale = 0.96f)
+                            )
                     },
                     contentKey = { playerState -> playerState.player.userId },
                     label = "selectedPlayerSheet",
@@ -285,7 +312,7 @@ private fun ColumnSummaryRow(
 private fun TurnStatusPill(
     icon: ImageVector,
     label: String,
-    value: String,
+    user: User,
     modifier: Modifier = Modifier,
 ) {
     Surface(
@@ -298,26 +325,61 @@ private fun TurnStatusPill(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(18.dp),
-            )
+            PlayerAvatar(user = user, size = 42.dp)
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(16.dp),
+                    )
+                    Text(
+                        text = label,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = YamsTheme.colors.brown,
+                    )
+                }
                 Text(
-                    text = label,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = YamsTheme.colors.brown,
-                )
-                Text(
-                    text = value,
+                    text = user.name,
                     style = MaterialTheme.typography.bodyMedium,
                     color = YamsTheme.colors.brown,
                     fontWeight = FontWeight.SemiBold,
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun PlayerAvatar(
+    user: User,
+    size: Dp,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier
+            .size(size)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.primaryContainer),
+        contentAlignment = Alignment.Center,
+    ) {
+        val fallbackAvatar = painterResource(appAvatarFor(user.name))
+        AsyncImage(
+            model = user.avatar,
+            contentDescription = stringResource(Res.string.play_current_player_avatar_cd, user.name),
+            placeholder = fallbackAvatar,
+            error = fallbackAvatar,
+            fallback = fallbackAvatar,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(size)
+                .padding(2.dp)
+                .clip(CircleShape),
+        )
     }
 }
 

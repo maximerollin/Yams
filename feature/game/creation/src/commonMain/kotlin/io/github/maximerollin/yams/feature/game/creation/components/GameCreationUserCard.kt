@@ -46,6 +46,7 @@ public fun GameCreationUserCard(
     onClick: () -> Unit,
     onLongClick: (UserId) -> Unit,
     modifier: Modifier = Modifier,
+    isHapticFeedbackEnabled: Boolean = true,
 ) {
     val haptics = LocalHapticFeedback.current
 
@@ -67,7 +68,9 @@ public fun GameCreationUserCard(
                 onClick = onClick,
                 onLongClickLabel = stringResource(Res.string.creation_context_menu),
                 onLongClick = {
-                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                    if (isHapticFeedbackEnabled) {
+                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                    }
                     onLongClick(user.id)
                 },
             )

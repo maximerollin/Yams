@@ -82,16 +82,19 @@ internal fun HomeRoute(
     viewModel: HomeViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isHapticFeedbackEnabled by viewModel.isHapticFeedbackEnabled.collectAsStateWithLifecycle()
 
     HomeScreen(
         uiState = uiState,
         appVersionName = appVersionName,
+        isHapticFeedbackEnabled = isHapticFeedbackEnabled,
         onNavigateToGameCreation = onNavigateToGameCreation,
         onNavigateToGamePlay = onNavigateToGamePlay,
         onNavigateToGameResult = onNavigateToGameResult,
         onNavigateToUsers = onNavigateToUsers,
         onNavigateToPaywall = onNavigateToPaywall,
         onAbandonGame = viewModel::abandonGame,
+        onHapticFeedbackEnabledChange = viewModel::setIsHapticFeedbackEnabled,
         modifier = modifier,
     )
 }
@@ -100,12 +103,14 @@ internal fun HomeRoute(
 internal fun HomeScreen(
     uiState: HomeUiState,
     appVersionName: String,
+    isHapticFeedbackEnabled: Boolean,
     onNavigateToGameCreation: () -> Unit,
     onNavigateToGamePlay: (GameId) -> Unit,
     onNavigateToGameResult: (GameId) -> Unit,
     onNavigateToUsers: () -> Unit,
     onNavigateToPaywall: () -> Unit,
     onAbandonGame: (GameId) -> Unit,
+    onHapticFeedbackEnabledChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var pendingAbandonGameId by remember { mutableStateOf<GameId?>(null) }
@@ -208,6 +213,8 @@ internal fun HomeScreen(
     if (showInformationSheet) {
         HomeInformationBottomSheet(
             appVersionName = appVersionName,
+            isHapticFeedbackEnabled = isHapticFeedbackEnabled,
+            onHapticFeedbackEnabledChange = onHapticFeedbackEnabledChange,
             onDismiss = { showInformationSheet = false },
         )
     }
@@ -475,12 +482,14 @@ public fun HomeStoreScreenshotContent() {
         HomeScreen(
             uiState = previewHomeUiState(),
             appVersionName = "1.0.0",
+            isHapticFeedbackEnabled = true,
             onNavigateToGameCreation = {},
             onNavigateToGamePlay = {},
             onNavigateToGameResult = {},
             onNavigateToUsers = {},
             onNavigateToPaywall = {},
             onAbandonGame = {},
+            onHapticFeedbackEnabledChange = {},
         )
     }
 }

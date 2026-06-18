@@ -94,6 +94,7 @@
     <string name="play_no_active_rule">No active rule</string>
     <string name="play_standard_rules_only">This game only uses standard rules.</string>
     <string name="play_turn_current">Current turn</string>
+    <string name="play_current_player_avatar_cd">%1$s avatar, current player</string>
     <string name="play_previous_sheet_cd">View previous sheet</string>
     <string name="play_next_sheet_cd">View next sheet</string>
     <string name="play_active_player_cd">Active player</string>

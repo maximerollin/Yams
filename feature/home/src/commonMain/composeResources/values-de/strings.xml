@@ -19,6 +19,10 @@
     <string name="home_info_cd">Informationen anzeigen</string>
     <string name="home_info_title">Informationen</string>
     <string name="home_info_subtitle">Spielregeln, verwendete Bibliotheken und App-Version.</string>
+    <string name="home_settings_title">Einstellungen</string>
+    <string name="home_settings_subtitle">Aktuell lassen sich nur haptische Rückmeldungen einstellen.</string>
+    <string name="home_settings_haptic_label">Haptisches Feedback</string>
+    <string name="home_settings_haptic_supporting_text">Vibriert leicht, wenn ein Ergebnis eingetragen oder eine wichtige Aktion bestätigt wird.</string>
     <string name="home_info_rules_button">Yams- / Yahtzee-Regeln ansehen</string>
     <string name="home_info_licenses_button">Bibliotheken ansehen</string>
     <string name="home_info_licenses_title">Bibliotheken und Lizenzen</string>

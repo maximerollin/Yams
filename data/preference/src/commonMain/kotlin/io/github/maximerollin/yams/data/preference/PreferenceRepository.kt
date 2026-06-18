@@ -14,6 +14,8 @@ public interface PreferenceRepository {
     public suspend fun setIsUserOrderRandomized(isUserOrderRandomized: Boolean)
     public fun getGameSettings(): Flow<GameSettings>
     public suspend fun setGameSettings(settings: GameSettings)
+    public fun getIsHapticFeedbackEnabled(): Flow<Boolean>
+    public suspend fun setIsHapticFeedbackEnabled(isEnabled: Boolean)
     public fun getYamsPlusStatus(): Flow<Boolean>
     public suspend fun setYamsPlusStatus(isSubscribed: Boolean)
 }
@@ -43,6 +45,14 @@ internal class DefaultPreferenceRepository(
 
     override suspend fun setGameSettings(settings: GameSettings) {
         preferenceLocalDataSource.setGameSettings(settings)
+    }
+
+    override fun getIsHapticFeedbackEnabled(): Flow<Boolean> {
+        return preferenceLocalDataSource.getIsHapticFeedbackEnabled()
+    }
+
+    override suspend fun setIsHapticFeedbackEnabled(isEnabled: Boolean) {
+        preferenceLocalDataSource.setIsHapticFeedbackEnabled(isEnabled)
     }
 
     override fun getYamsPlusStatus(): Flow<Boolean> {

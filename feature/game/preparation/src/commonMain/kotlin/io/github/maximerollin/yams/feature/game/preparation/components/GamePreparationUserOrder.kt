@@ -34,6 +34,7 @@ import yams.feature.game.preparation.generated.resources.*
 public fun GamePreparationUserOrder(
     users: List<User>,
     isUserOrderRandomized: Boolean,
+    isHapticFeedbackEnabled: Boolean = true,
     onToggleIsUserOrderRandomized: (Boolean) -> Unit,
     onOrderUser: (Int, Int) -> Unit,
     modifier: Modifier = Modifier,
@@ -76,7 +77,9 @@ public fun GamePreparationUserOrder(
                     list = users,
                     onSettle = { from, to ->
                         onOrderUser(from, to)
-                        hapticFeedback.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
+                        if (isHapticFeedbackEnabled) {
+                            hapticFeedback.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -107,10 +110,16 @@ public fun GamePreparationUserOrder(
                                     }
                                     .draggableHandle(
                                         onDragStarted = {
-                                            hapticFeedback.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate)
+                                            if (isHapticFeedbackEnabled) {
+                                                hapticFeedback.performHapticFeedback(
+                                                    HapticFeedbackType.GestureThresholdActivate,
+                                                )
+                                            }
                                         },
                                         onDragStopped = {
-                                            hapticFeedback.performHapticFeedback(HapticFeedbackType.GestureEnd)
+                                            if (isHapticFeedbackEnabled) {
+                                                hapticFeedback.performHapticFeedback(HapticFeedbackType.GestureEnd)
+                                            }
                                         }
                                     )
                             )

@@ -46,6 +46,14 @@ internal class GamePreparationViewModel(
         initialValue = emptyList()
     )
 
+    val isHapticFeedbackEnabled: StateFlow<Boolean> =
+        preferenceRepository.getIsHapticFeedbackEnabled()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = true,
+            )
+
     init {
         initStateFromPreferences()
     }

@@ -54,13 +54,16 @@ internal fun GameCreationRoute(
     val userUiState by viewModel.usersUiState.collectAsStateWithLifecycle()
     val userEditionUiState by userEditionViewModel.uiState.collectAsStateWithLifecycle()
     val gamesNumber by viewModel.gamesNumber.collectAsStateWithLifecycle()
+    val isHapticFeedbackEnabled by viewModel.isHapticFeedbackEnabled.collectAsStateWithLifecycle()
     val hapticFeedback = LocalHapticFeedback.current
 
     val savedNewUserId = userEditionUiState.savedNewUserId
     LaunchedEffect(savedNewUserId) {
         if (savedNewUserId != null) {
             viewModel.selectUser(savedNewUserId)
-            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+            if (isHapticFeedbackEnabled) {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+            }
         }
     }
 
@@ -68,6 +71,7 @@ internal fun GameCreationRoute(
         gameCreationUiState = newGameUiState,
         userUiState = userUiState,
         userEditionUiState = userEditionUiState,
+        isHapticFeedbackEnabled = isHapticFeedbackEnabled,
         onUserEditionAction = userEditionViewModel::onAction,
         onNavigateHome = {
             when {
@@ -77,7 +81,7 @@ internal fun GameCreationRoute(
         },
         onSelectUser = {
             viewModel.toggleUser(it)
-            if (it !in newGameUiState.selectedUsersIds) {
+            if (isHapticFeedbackEnabled && it !in newGameUiState.selectedUsersIds) {
                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
             }
         },
@@ -91,6 +95,7 @@ internal fun GameCreationScreen(
     gameCreationUiState: GameCreationUiState,
     userUiState: UserUiState,
     userEditionUiState: UserEditionUiState,
+    isHapticFeedbackEnabled: Boolean = true,
     onUserEditionAction: (UserEditionAction) -> Unit,
     onNavigateHome: () -> Unit,
     onSelectUser: (UserId) -> Unit,
@@ -176,7 +181,8 @@ internal fun GameCreationScreen(
                                             onUserEditionAction(UserEditionAction.StartEdition(it))
                                             editUserSelected = user
                                             showBottomSheet = true
-                                        }
+                                        },
+                                        isHapticFeedbackEnabled = isHapticFeedbackEnabled,
                                     )
                                 }
                             }

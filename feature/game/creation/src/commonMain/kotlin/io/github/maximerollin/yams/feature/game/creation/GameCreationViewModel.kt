@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import io.github.maximerollin.yams.core.model.User
 import io.github.maximerollin.yams.core.model.UserId
 import io.github.maximerollin.yams.data.game.GameRepository
+import io.github.maximerollin.yams.data.preference.PreferenceRepository
 import io.github.maximerollin.yams.data.user.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,6 +18,7 @@ import kotlinx.coroutines.launch
 
 internal class GameCreationViewModel(
     gameRepository: GameRepository,
+    preferenceRepository: PreferenceRepository,
     private val userRepository: UserRepository,
 ) : ViewModel() {
     val usersUiState: StateFlow<UserUiState> = userRepository.getUsers()
@@ -34,6 +36,14 @@ internal class GameCreationViewModel(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = 0,
         )
+
+    val isHapticFeedbackEnabled: StateFlow<Boolean> =
+        preferenceRepository.getIsHapticFeedbackEnabled()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = true,
+            )
 
     private val _gameCreationUiState = MutableStateFlow(GameCreationUiState())
     val gameCreationUiState = _gameCreationUiState.asStateFlow()

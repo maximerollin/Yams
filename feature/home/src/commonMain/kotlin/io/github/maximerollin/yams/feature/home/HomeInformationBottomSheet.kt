@@ -18,6 +18,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -46,6 +48,8 @@ import yams.feature.home.generated.resources.*
 @Composable
 internal fun HomeInformationBottomSheet(
     appVersionName: String,
+    isHapticFeedbackEnabled: Boolean,
+    onHapticFeedbackEnabledChange: (Boolean) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -58,6 +62,8 @@ internal fun HomeInformationBottomSheet(
         when (page) {
             HomeInformationPage.Overview -> HomeInformationOverview(
                 appVersionName = appVersionName,
+                isHapticFeedbackEnabled = isHapticFeedbackEnabled,
+                onHapticFeedbackEnabledChange = onHapticFeedbackEnabledChange,
                 onShowRules = { page = HomeInformationPage.Rules },
                 onShowLicenses = { page = HomeInformationPage.Licenses },
                 modifier = modifier
@@ -85,6 +91,8 @@ internal fun HomeInformationBottomSheet(
 @Composable
 private fun HomeInformationOverview(
     appVersionName: String,
+    isHapticFeedbackEnabled: Boolean,
+    onHapticFeedbackEnabledChange: (Boolean) -> Unit,
     onShowRules: () -> Unit,
     onShowLicenses: () -> Unit,
     modifier: Modifier = Modifier,
@@ -106,6 +114,18 @@ private fun HomeInformationOverview(
                 text = stringResource(Res.string.home_info_subtitle),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+
+        HomeInformationSection(
+            title = stringResource(Res.string.home_settings_title),
+            subtitle = stringResource(Res.string.home_settings_subtitle),
+        ) {
+            HomeSettingsToggleRow(
+                label = stringResource(Res.string.home_settings_haptic_label),
+                supportingText = stringResource(Res.string.home_settings_haptic_supporting_text),
+                checked = isHapticFeedbackEnabled,
+                onCheckedChange = onHapticFeedbackEnabledChange,
             )
         }
 
@@ -132,6 +152,48 @@ private fun HomeInformationOverview(
         }
 
         HomeVersionText(appVersionName = appVersionName)
+    }
+}
+
+@Composable
+private fun HomeSettingsToggleRow(
+    label: String,
+    supportingText: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.Medium,
+            )
+            Text(
+                text = supportingText,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = MaterialTheme.colorScheme.primary,
+                checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
+                uncheckedThumbColor = MaterialTheme.colorScheme.outline,
+                uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
+            ),
+        )
     }
 }
 

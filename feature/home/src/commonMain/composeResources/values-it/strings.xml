@@ -19,6 +19,10 @@
     <string name="home_info_cd">Mostra informazioni</string>
     <string name="home_info_title">Informazioni</string>
     <string name="home_info_subtitle">Regole del gioco, librerie usate e versione dell'app.</string>
+    <string name="home_settings_title">Impostazioni</string>
+    <string name="home_settings_subtitle">Per ora si può configurare solo il feedback aptico.</string>
+    <string name="home_settings_haptic_label">Feedback aptico</string>
+    <string name="home_settings_haptic_supporting_text">Vibra leggermente quando viene inserito un punteggio o confermata un'azione importante.</string>
     <string name="home_info_rules_button">Vedi regole Yams / Yahtzee</string>
     <string name="home_info_licenses_button">Vedi librerie</string>
     <string name="home_info_licenses_title">Librerie e licenze</string>

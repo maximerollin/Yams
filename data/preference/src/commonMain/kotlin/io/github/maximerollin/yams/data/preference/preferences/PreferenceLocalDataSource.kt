@@ -19,6 +19,8 @@ internal interface PreferenceLocalDataSource {
     suspend fun setIsUserOrderRandomized(isUserOrderRandomized: Boolean)
     fun getGameSettings(): Flow<GameSettings?>
     suspend fun setGameSettings(settings: GameSettings)
+    fun getIsHapticFeedbackEnabled(): Flow<Boolean>
+    suspend fun setIsHapticFeedbackEnabled(isEnabled: Boolean)
     fun getYamsPlusStatus(): Flow<Boolean>
     suspend fun setYamsPlusStatus(isSubscribed: Boolean)
 }
@@ -63,6 +65,17 @@ internal class PreferencePreferencesDataSource(
         }
     }
 
+    override fun getIsHapticFeedbackEnabled(): Flow<Boolean> =
+        dataStore.data.map { preferences ->
+            preferences[IS_HAPTIC_FEEDBACK_ENABLED_KEY] ?: true
+        }
+
+    override suspend fun setIsHapticFeedbackEnabled(isEnabled: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[IS_HAPTIC_FEEDBACK_ENABLED_KEY] = isEnabled
+        }
+    }
+
     override fun getYamsPlusStatus(): Flow<Boolean> =
         dataStore.data.map { preferences ->
             preferences[YAMS_PLUS_SUBSCRIPTION_STATUS_KEY] ?: false
@@ -78,10 +91,10 @@ internal class PreferencePreferencesDataSource(
         val LAST_IN_APP_REVIEW_SHOWN_DATE_KEY = longPreferencesKey("last_in_app_review_shown_date")
         val GAME_SETTINGS_KEY = stringPreferencesKey("game_settings")
         val IS_USER_ORDER_RANDOMIZED_KEY = booleanPreferencesKey("is_user_order_randomized")
+        val IS_HAPTIC_FEEDBACK_ENABLED_KEY = booleanPreferencesKey("is_haptic_feedback_enabled")
         val YAMS_PLUS_SUBSCRIPTION_STATUS_KEY = booleanPreferencesKey("yams_plus_subscription_status")
     }
 
 }
-
 
 

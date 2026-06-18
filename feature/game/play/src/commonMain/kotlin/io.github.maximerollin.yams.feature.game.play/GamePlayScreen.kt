@@ -27,6 +27,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -67,6 +69,7 @@ internal fun GamePlayRoute(
 ) {
     val uiState by viewModel.gamePlayStateUi.collectAsStateWithLifecycle()
     val navigateToGameResult by viewModel.navigateToGameResult.collectAsStateWithLifecycle()
+    val isHapticFeedbackEnabled by viewModel.isHapticFeedbackEnabled.collectAsStateWithLifecycle()
 
     LaunchedEffect(navigateToGameResult) {
         if (navigateToGameResult) {
@@ -77,6 +80,7 @@ internal fun GamePlayRoute(
 
     GamePlayScreen(
         uiState = uiState,
+        isHapticFeedbackEnabled = isHapticFeedbackEnabled,
         onNavigateHome = onNavigateHome,
         onScore = viewModel::onScore,
         onUndo = viewModel::onUndo,
@@ -87,6 +91,7 @@ internal fun GamePlayRoute(
 @Composable
 private fun GamePlayScreen(
     uiState: GamePlayStateUi?,
+    isHapticFeedbackEnabled: Boolean = true,
     onNavigateHome: () -> Unit = {},
     onScore: (Int, ScoreCellRef, Boolean) -> Unit = { _, _, _ -> },
     onUndo: () -> Unit = {},
@@ -96,6 +101,7 @@ private fun GamePlayScreen(
     var isInfoSheetVisible by rememberSaveable { mutableStateOf(false) }
     var scoreSelectionRequest by remember { mutableStateOf<ScoreSelectionRequest?>(null) }
     val snackbarHostState = remember { SnackbarHostState() }
+    val hapticFeedback = LocalHapticFeedback.current
 
     if (uiState == null) {
         GamePlayMessageState(
@@ -197,6 +203,9 @@ private fun GamePlayScreen(
     fun submitScore(option: ScoreSelectionOption, cell: ScoreCellRef) {
         if (!isEditable) return
         scoreSelectionRequest = null
+        if (isHapticFeedbackEnabled) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+        }
         coroutineScope.launch {
             onScore(
                 option.score,

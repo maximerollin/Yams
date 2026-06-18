@@ -7,6 +7,7 @@ kotlin {
         commonMain.dependencies {
             // Data
             implementation(projects.data.game)
+            implementation(projects.data.preference)
             implementation(projects.data.user)
             implementation(projects.feature.user.edition)
 
@@ -18,5 +19,4 @@ kotlin {
         }
     }
 }
-
 

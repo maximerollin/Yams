@@ -66,6 +66,7 @@ internal fun GamePreparationRoute(
 ) {
     val gamePreparationUiState by viewModel.gamePreparationUiState.collectAsStateWithLifecycle()
     val usersState by viewModel.usersState.collectAsStateWithLifecycle()
+    val isHapticFeedbackEnabled by viewModel.isHapticFeedbackEnabled.collectAsStateWithLifecycle()
 
     LaunchedEffect(gamePreparationUiState.navigateToGame) {
         gamePreparationUiState.navigateToGame?.let { gameId ->
@@ -76,6 +77,7 @@ internal fun GamePreparationRoute(
     GamePreparationScreen(
         gamePreparationUiState = gamePreparationUiState,
         usersState = usersState,
+        isHapticFeedbackEnabled = isHapticFeedbackEnabled,
         onNavigateBack = onNavigateBack,
         onCreateGame = viewModel::createGame,
         onToggleIsUserOrderRandomized = viewModel::onToggleIsUserOrderRandomized,
@@ -89,6 +91,7 @@ internal fun GamePreparationRoute(
 private fun GamePreparationScreen(
     gamePreparationUiState: GamePreparationUiState,
     usersState: List<User>,
+    isHapticFeedbackEnabled: Boolean = true,
     onNavigateBack: () -> Unit,
     onCreateGame: () -> Unit,
     onToggleIsUserOrderRandomized: (Boolean) -> Unit,
@@ -124,6 +127,7 @@ private fun GamePreparationScreen(
             GamePreparationUserOrder(
                 users = usersState,
                 isUserOrderRandomized = gamePreparationUiState.isUserOrderRandomized,
+                isHapticFeedbackEnabled = isHapticFeedbackEnabled,
                 onToggleIsUserOrderRandomized = onToggleIsUserOrderRandomized,
                 onOrderUser = onOrderUser,
             )
