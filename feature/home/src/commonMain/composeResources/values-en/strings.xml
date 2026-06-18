@@ -16,4 +16,25 @@
     <string name="home_abandon_message">This game will disappear from the resume panel. It will not be shown in history.</string>
     <string name="home_abandon_cancel">Keep</string>
     <string name="home_abandon_confirm">Abandon</string>
+    <string name="home_info_cd">Show information</string>
+    <string name="home_info_title">Information</string>
+    <string name="home_info_subtitle">Game rules, third-party libraries, and app version.</string>
+    <string name="home_info_rules_button">View Yams / Yahtzee rules</string>
+    <string name="home_info_licenses_button">View libraries</string>
+    <string name="home_info_licenses_title">Libraries and licenses</string>
+    <string name="home_info_licenses_subtitle">Open source libraries used by the app.</string>
+    <string name="home_info_license_version">v%1$s - %2$s</string>
+    <string name="home_info_license_link">Link: %1$s</string>
+    <string name="home_info_version">Version %1$s</string>
+    <string name="home_info_back">Back</string>
+    <string name="home_info_back_cd">Back to information</string>
+    <string name="home_rules_title">Yams / Yahtzee rules</string>
+    <string name="home_rules_common_title">Common flow</string>
+    <string name="home_rules_common_body">Each player rolls 5 dice and has up to 3 rolls per turn. After the first roll, they may keep some dice and reroll the others. The final result is written in an open score sheet category. A filled category cannot be played again.</string>
+    <string name="home_rules_yahtzee_title">Yahtzee</string>
+    <string name="home_rules_yahtzee_body">The upper section scores Ones to Sixes and gives a 35-point bonus from 63 points. The lower section contains Three of a Kind, Four of a Kind, Full House, Small Straight, Large Straight, Yahtzee, and Chance. A Yahtzee is worth 50 points, with a possible 100-point bonus for each extra Yahtzee under the official rules.</string>
+    <string name="home_rules_yams_title">Yams</string>
+    <string name="home_rules_yams_body">The French variant often uses two columns: Free, chosen after the rolls, and Announced, chosen before rolling. The main categories are Ones to Sixes, Chance, Three of a Kind, Four of a Kind, Full House, Small Straight, Large Straight, and Yams. Some combination values can vary by table.</string>
+    <string name="home_rules_end_title">End of game</string>
+    <string name="home_rules_end_body">When every required category is filled or scratched, add the scores, apply active bonuses, and compare totals. The highest score wins.</string>
 </resources>

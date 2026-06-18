@@ -16,4 +16,25 @@
     <string name="home_abandon_message">Cette partie disparaîtra de l'encart de reprise. Elle ne sera pas affichée dans l'historique.</string>
     <string name="home_abandon_cancel">Garder</string>
     <string name="home_abandon_confirm">Abandonner</string>
+    <string name="home_info_cd">Afficher les informations</string>
+    <string name="home_info_title">Informations</string>
+    <string name="home_info_subtitle">Règles du jeu, bibliothèques utilisées et version de l'application.</string>
+    <string name="home_info_rules_button">Voir les règles Yams / Yahtzee</string>
+    <string name="home_info_licenses_button">Voir les bibliothèques</string>
+    <string name="home_info_licenses_title">Bibliothèques et licences</string>
+    <string name="home_info_licenses_subtitle">Bibliothèques open source utilisées par l'application.</string>
+    <string name="home_info_license_version">v%1$s - %2$s</string>
+    <string name="home_info_license_link">Lien : %1$s</string>
+    <string name="home_info_version">Version %1$s</string>
+    <string name="home_info_back">Retour</string>
+    <string name="home_info_back_cd">Revenir aux informations</string>
+    <string name="home_rules_title">Règles Yams / Yahtzee</string>
+    <string name="home_rules_common_title">Déroulé commun</string>
+    <string name="home_rules_common_body">Chaque joueur lance 5 dés et dispose de 3 lancers maximum par tour. Après le premier lancer, il peut garder certains dés et relancer les autres. Le résultat est ensuite inscrit dans une case libre de la feuille de score. Une case remplie ne peut plus être rejouée.</string>
+    <string name="home_rules_yahtzee_title">Yahtzee</string>
+    <string name="home_rules_yahtzee_body">La section supérieure score les As à Six et donne un bonus de 35 points à partir de 63 points. La section inférieure contient Brelan, Carré, Full, Petite suite, Grande suite, Yahtzee et Chance. Un Yahtzee vaut 50 points, avec un bonus possible de 100 points pour chaque Yahtzee supplémentaire selon les règles officielles.</string>
+    <string name="home_rules_yams_title">Yams</string>
+    <string name="home_rules_yams_body">La variante francophone utilise souvent deux colonnes : Libre, choisie après les lancers, et Annonce, choisie avant de lancer. Les catégories principales sont As à Six, Chance, Brelan, Carré, Full, Petite suite, Grande suite et Yam. Les valeurs de certaines combinaisons peuvent varier selon la table.</string>
+    <string name="home_rules_end_title">Fin de partie</string>
+    <string name="home_rules_end_body">Quand toutes les cases requises sont remplies ou barrées, additionnez les scores, appliquez les bonus actifs et comparez les totaux. Le meilleur score gagne la partie.</string>
 </resources>

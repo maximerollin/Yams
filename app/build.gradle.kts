@@ -15,7 +15,7 @@ val yamsVersionCode = providers.gradleProperty("YAMS_VERSION_CODE")
     .map(String::toInt)
     .orElse(1)
 val yamsVersionName = providers.gradleProperty("YAMS_VERSION_NAME")
-    .orElse("1.0")
+    .orElse("1.0.0")
 
 kotlin {
     applyDefaultHierarchyTemplate()
@@ -171,6 +171,7 @@ buildConfig {
     val postHogApiKey = localProperties.getProperty("POSTHOG_API_KEY").orEmpty()
     val postHogHost = localProperties.getProperty("POSTHOG_HOST", "https://eu.i.posthog.com")
     val analyticsReleaseChannel = localProperties.getProperty("ANALYTICS_RELEASE_CHANNEL", "local")
+    buildConfigField("VERSION_NAME", yamsVersionName.get())
     buildConfigField("POSTHOG_API_KEY", postHogApiKey)
     buildConfigField("POSTHOG_HOST", postHogHost)
     buildConfigField("ANALYTICS_RELEASE_CHANNEL", analyticsReleaseChannel)

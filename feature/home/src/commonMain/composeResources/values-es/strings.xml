@@ -16,4 +16,25 @@
     <string name="home_abandon_message">Esta partida desaparecerá del panel de reanudación. No se mostrará en el historial.</string>
     <string name="home_abandon_cancel">Conservar</string>
     <string name="home_abandon_confirm">Abandonar</string>
+    <string name="home_info_cd">Mostrar información</string>
+    <string name="home_info_title">Información</string>
+    <string name="home_info_subtitle">Reglas del juego, bibliotecas usadas y versión de la app.</string>
+    <string name="home_info_rules_button">Ver reglas de Yams / Yahtzee</string>
+    <string name="home_info_licenses_button">Ver bibliotecas</string>
+    <string name="home_info_licenses_title">Bibliotecas y licencias</string>
+    <string name="home_info_licenses_subtitle">Bibliotecas de código abierto usadas por la app.</string>
+    <string name="home_info_license_version">v%1$s - %2$s</string>
+    <string name="home_info_license_link">Enlace: %1$s</string>
+    <string name="home_info_version">Versión %1$s</string>
+    <string name="home_info_back">Volver</string>
+    <string name="home_info_back_cd">Volver a la información</string>
+    <string name="home_rules_title">Reglas de Yams / Yahtzee</string>
+    <string name="home_rules_common_title">Turno común</string>
+    <string name="home_rules_common_body">Cada jugador tira 5 dados y tiene hasta 3 tiradas por turno. Después de la primera tirada puede guardar algunos dados y volver a tirar los demás. El resultado final se anota en una categoría libre de la hoja de puntuación. Una categoría completada no se puede volver a jugar.</string>
+    <string name="home_rules_yahtzee_title">Yahtzee</string>
+    <string name="home_rules_yahtzee_body">La sección superior puntúa del uno al seis y da un bonus de 35 puntos a partir de 63 puntos. La sección inferior contiene trío, póker, full, escalera pequeña, escalera grande, Yahtzee y chance. Un Yahtzee vale 50 puntos, con un posible bonus de 100 puntos por cada Yahtzee adicional según las reglas oficiales.</string>
+    <string name="home_rules_yams_title">Yams</string>
+    <string name="home_rules_yams_body">La variante francófona suele usar dos columnas: Libre, elegida después de las tiradas, y Anunciada, elegida antes de tirar. Las categorías principales son unos a seis, chance, trío, póker, full, escalera pequeña, escalera grande y Yams. Algunos valores pueden variar según la mesa.</string>
+    <string name="home_rules_end_title">Fin de la partida</string>
+    <string name="home_rules_end_body">Cuando todas las categorías requeridas están completadas o tachadas, suma las puntuaciones, aplica los bonus activos y compara los totales. Gana la puntuación más alta.</string>
 </resources>

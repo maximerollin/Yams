@@ -16,4 +16,25 @@
     <string name="home_abandon_message">Diese Partie verschwindet aus dem Fortsetzen-Bereich. Sie wird nicht im Verlauf angezeigt.</string>
     <string name="home_abandon_cancel">Behalten</string>
     <string name="home_abandon_confirm">Abbrechen</string>
+    <string name="home_info_cd">Informationen anzeigen</string>
+    <string name="home_info_title">Informationen</string>
+    <string name="home_info_subtitle">Spielregeln, verwendete Bibliotheken und App-Version.</string>
+    <string name="home_info_rules_button">Yams- / Yahtzee-Regeln ansehen</string>
+    <string name="home_info_licenses_button">Bibliotheken ansehen</string>
+    <string name="home_info_licenses_title">Bibliotheken und Lizenzen</string>
+    <string name="home_info_licenses_subtitle">Open-Source-Bibliotheken, die von der App verwendet werden.</string>
+    <string name="home_info_license_version">v%1$s - %2$s</string>
+    <string name="home_info_license_link">Link: %1$s</string>
+    <string name="home_info_version">Version %1$s</string>
+    <string name="home_info_back">Zurück</string>
+    <string name="home_info_back_cd">Zurück zu den Informationen</string>
+    <string name="home_rules_title">Yams- / Yahtzee-Regeln</string>
+    <string name="home_rules_common_title">Gemeinsamer Ablauf</string>
+    <string name="home_rules_common_body">Jeder Spieler wirft 5 Würfel und hat pro Zug bis zu 3 Würfe. Nach dem ersten Wurf kann er einige Würfel behalten und die anderen erneut werfen. Das Ergebnis wird danach in eine freie Kategorie des Wertungsblatts eingetragen. Eine ausgefüllte Kategorie kann nicht erneut gespielt werden.</string>
+    <string name="home_rules_yahtzee_title">Yahtzee</string>
+    <string name="home_rules_yahtzee_body">Der obere Bereich wertet Einsen bis Sechsen und gibt ab 63 Punkten einen Bonus von 35 Punkten. Der untere Bereich enthält Dreierpasch, Viererpasch, Full House, Kleine Straße, Große Straße, Yahtzee und Chance. Ein Yahtzee zählt 50 Punkte, mit einem möglichen Bonus von 100 Punkten für jedes zusätzliche Yahtzee nach den offiziellen Regeln.</string>
+    <string name="home_rules_yams_title">Yams</string>
+    <string name="home_rules_yams_body">Die französische Variante nutzt oft zwei Spalten: Frei, gewählt nach den Würfen, und Angesagt, gewählt vor dem Würfeln. Die wichtigsten Kategorien sind Einsen bis Sechsen, Chance, Dreierpasch, Viererpasch, Full House, Kleine Straße, Große Straße und Yams. Manche Werte können je nach Tisch variieren.</string>
+    <string name="home_rules_end_title">Spielende</string>
+    <string name="home_rules_end_body">Wenn alle erforderlichen Kategorien ausgefüllt oder gestrichen sind, werden die Punkte addiert, aktive Boni angewendet und die Gesamtwerte verglichen. Die höchste Punktzahl gewinnt.</string>
 </resources>

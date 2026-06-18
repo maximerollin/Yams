@@ -16,6 +16,7 @@ public fun NavController.navigateToHome(builder: NavOptionsBuilder.() -> Unit) {
 }
 
 public fun NavGraphBuilder.homeScreen(
+    appVersionName: String,
     onNavigateToGameCreation: () -> Unit,
     onNavigateToGamePlay: (GameId) -> Unit,
     onNavigateToGameResult: (GameId) -> Unit,
@@ -24,6 +25,7 @@ public fun NavGraphBuilder.homeScreen(
 ) {
     composable<HomeRoute> {
         HomeRoute(
+            appVersionName = appVersionName,
             onNavigateToGameCreation = onNavigateToGameCreation,
             onNavigateToGamePlay = onNavigateToGamePlay,
             onNavigateToGameResult = onNavigateToGameResult,

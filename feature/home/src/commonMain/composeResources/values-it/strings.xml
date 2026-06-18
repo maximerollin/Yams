@@ -16,4 +16,25 @@
     <string name="home_abandon_message">Questa partita scomparirà dal riquadro di ripresa. Non verrà mostrata nella cronologia.</string>
     <string name="home_abandon_cancel">Mantieni</string>
     <string name="home_abandon_confirm">Abbandona</string>
+    <string name="home_info_cd">Mostra informazioni</string>
+    <string name="home_info_title">Informazioni</string>
+    <string name="home_info_subtitle">Regole del gioco, librerie usate e versione dell'app.</string>
+    <string name="home_info_rules_button">Vedi regole Yams / Yahtzee</string>
+    <string name="home_info_licenses_button">Vedi librerie</string>
+    <string name="home_info_licenses_title">Librerie e licenze</string>
+    <string name="home_info_licenses_subtitle">Librerie open source usate dall'app.</string>
+    <string name="home_info_license_version">v%1$s - %2$s</string>
+    <string name="home_info_license_link">Link: %1$s</string>
+    <string name="home_info_version">Versione %1$s</string>
+    <string name="home_info_back">Indietro</string>
+    <string name="home_info_back_cd">Torna alle informazioni</string>
+    <string name="home_rules_title">Regole Yams / Yahtzee</string>
+    <string name="home_rules_common_title">Turno comune</string>
+    <string name="home_rules_common_body">Ogni giocatore lancia 5 dadi e ha fino a 3 lanci per turno. Dopo il primo lancio può tenere alcuni dadi e rilanciare gli altri. Il risultato finale viene segnato in una categoria libera del foglio punti. Una categoria compilata non può essere giocata di nuovo.</string>
+    <string name="home_rules_yahtzee_title">Yahtzee</string>
+    <string name="home_rules_yahtzee_body">La sezione superiore assegna punti da uno a sei e dà un bonus di 35 punti a partire da 63 punti. La sezione inferiore contiene tris, poker, full, scala piccola, scala grande, Yahtzee e chance. Uno Yahtzee vale 50 punti, con un possibile bonus di 100 punti per ogni Yahtzee aggiuntivo secondo le regole ufficiali.</string>
+    <string name="home_rules_yams_title">Yams</string>
+    <string name="home_rules_yams_body">La variante francofona usa spesso due colonne: Libera, scelta dopo i lanci, e Dichiarata, scelta prima di lanciare. Le categorie principali sono uno a sei, chance, tris, poker, full, scala piccola, scala grande e Yams. Alcuni valori possono variare in base al tavolo.</string>
+    <string name="home_rules_end_title">Fine partita</string>
+    <string name="home_rules_end_body">Quando tutte le categorie richieste sono compilate o barrate, somma i punteggi, applica i bonus attivi e confronta i totali. Vince il punteggio più alto.</string>
 </resources>

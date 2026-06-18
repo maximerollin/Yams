@@ -17,6 +17,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import io.github.maximerollin.yams.AppViewModel
+import io.github.maximerollin.yams.YamsBuildConfig
 import io.github.maximerollin.yams.core.designsystem.component.YamsCelebrationConfetti
 import io.github.maximerollin.yams.feature.game.creation.navigation.GameCreationRoute
 import io.github.maximerollin.yams.feature.game.creation.navigation.gameCreationScreen
@@ -68,6 +69,7 @@ internal fun AppNavHost(
             ) {
                 screens(
                     navController = navController,
+                    appVersionName = YamsBuildConfig.VERSION_NAME,
                     onShowYamsPlusConfetti = { showYamsPlusConfetti = true },
                 )
             }
@@ -79,6 +81,7 @@ internal fun AppNavHost(
             ) {
                 screens(
                     navController = navController,
+                    appVersionName = YamsBuildConfig.VERSION_NAME,
                     onShowYamsPlusConfetti = { showYamsPlusConfetti = true },
                 )
             }
@@ -105,6 +108,7 @@ typealias ExitAnimation = @JvmSuppressWildcards (AnimatedContentTransitionScope<
 
 private fun NavGraphBuilder.screens(
     navController: NavHostController,
+    appVersionName: String,
     onShowYamsPlusConfetti: () -> Unit,
 ) {
     welcomeScreen(
@@ -118,6 +122,7 @@ private fun NavGraphBuilder.screens(
     )
 
     homeScreen(
+        appVersionName = appVersionName,
         onNavigateToGameCreation = {
             navController.navigateToGameCreation {
                 launchSingleTop = true

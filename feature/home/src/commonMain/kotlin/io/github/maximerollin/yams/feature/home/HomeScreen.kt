@@ -37,10 +37,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.maximerollin.yams.core.designsystem.component.AppIconButton
 import io.github.maximerollin.yams.core.designsystem.component.AppTopBar
 import io.github.maximerollin.yams.core.designsystem.component.YamsPrimaryButton
 import io.github.maximerollin.yams.core.designsystem.component.YamsPrimarySmallButton
 import io.github.maximerollin.yams.core.designsystem.icon.Delete
+import io.github.maximerollin.yams.core.designsystem.icon.Info
 import io.github.maximerollin.yams.core.designsystem.icon.RocketLaunch
 import io.github.maximerollin.yams.core.designsystem.icon.Timer
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
@@ -70,6 +72,7 @@ import yams.core.ui.generated.resources.Res as CoreUiRes
 
 @Composable
 internal fun HomeRoute(
+    appVersionName: String,
     onNavigateToGameCreation: () -> Unit,
     onNavigateToGamePlay: (GameId) -> Unit,
     onNavigateToGameResult: (GameId) -> Unit,
@@ -82,6 +85,7 @@ internal fun HomeRoute(
 
     HomeScreen(
         uiState = uiState,
+        appVersionName = appVersionName,
         onNavigateToGameCreation = onNavigateToGameCreation,
         onNavigateToGamePlay = onNavigateToGamePlay,
         onNavigateToGameResult = onNavigateToGameResult,
@@ -95,6 +99,7 @@ internal fun HomeRoute(
 @Composable
 internal fun HomeScreen(
     uiState: HomeUiState,
+    appVersionName: String,
     onNavigateToGameCreation: () -> Unit,
     onNavigateToGamePlay: (GameId) -> Unit,
     onNavigateToGameResult: (GameId) -> Unit,
@@ -104,6 +109,7 @@ internal fun HomeScreen(
     modifier: Modifier = Modifier,
 ) {
     var pendingAbandonGameId by remember { mutableStateOf<GameId?>(null) }
+    var showInformationSheet by remember { mutableStateOf(false) }
     val activeGame = (uiState as? HomeUiState.Success)?.activeGame
 
     Scaffold(
@@ -114,6 +120,13 @@ internal fun HomeScreen(
                 isDividerVisible = false,
                 center = {
                     HomeBrandTitle()
+                },
+                end = {
+                    AppIconButton(
+                        icon = YamsIcons.Info,
+                        contentDescription = stringResource(Res.string.home_info_cd),
+                        onClick = { showInformationSheet = true },
+                    )
                 },
             )
         },
@@ -189,6 +202,13 @@ internal fun HomeScreen(
                 pendingAbandonGameId = null
                 onAbandonGame(gameIdToAbandon)
             },
+        )
+    }
+
+    if (showInformationSheet) {
+        HomeInformationBottomSheet(
+            appVersionName = appVersionName,
+            onDismiss = { showInformationSheet = false },
         )
     }
 }
@@ -454,6 +474,7 @@ public fun HomeStoreScreenshotContent() {
     YamsTheme {
         HomeScreen(
             uiState = previewHomeUiState(),
+            appVersionName = "1.0.0",
             onNavigateToGameCreation = {},
             onNavigateToGamePlay = {},
             onNavigateToGameResult = {},
