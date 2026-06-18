@@ -1,5 +1,6 @@
 package io.github.maximerollin.yams.feature.game.play
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,6 +43,7 @@ import io.github.maximerollin.yams.core.model.ScoreKey
 import io.github.maximerollin.yams.core.designsystem.icon.Undo
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
 import io.github.maximerollin.yams.data.game.model.ScoreCellRef
+import io.github.maximerollin.yams.data.preference.GamePlayUiDensity
 import io.github.maximerollin.yams.feature.game.play.components.GamePlayCombinationSection
 import io.github.maximerollin.yams.feature.game.play.components.GamePlayCustomRulesSection
 import io.github.maximerollin.yams.feature.game.play.components.GamePlayFinishedDialog
@@ -70,6 +72,7 @@ internal fun GamePlayRoute(
     val uiState by viewModel.gamePlayStateUi.collectAsStateWithLifecycle()
     val navigateToGameResult by viewModel.navigateToGameResult.collectAsStateWithLifecycle()
     val isHapticFeedbackEnabled by viewModel.isHapticFeedbackEnabled.collectAsStateWithLifecycle()
+    val gamePlayUiDensity by viewModel.gamePlayUiDensity.collectAsStateWithLifecycle()
 
     LaunchedEffect(navigateToGameResult) {
         if (navigateToGameResult) {
@@ -81,7 +84,9 @@ internal fun GamePlayRoute(
     GamePlayScreen(
         uiState = uiState,
         isHapticFeedbackEnabled = isHapticFeedbackEnabled,
+        gamePlayUiDensity = gamePlayUiDensity,
         onNavigateHome = onNavigateHome,
+        onGamePlayUiDensityChange = viewModel::onGamePlayUiDensityChange,
         onScore = viewModel::onScore,
         onUndo = viewModel::onUndo,
         onGoToResults = viewModel::onGoToResults,
@@ -92,7 +97,9 @@ internal fun GamePlayRoute(
 private fun GamePlayScreen(
     uiState: GamePlayStateUi?,
     isHapticFeedbackEnabled: Boolean = true,
+    gamePlayUiDensity: GamePlayUiDensity = GamePlayUiDensity.NORMAL,
     onNavigateHome: () -> Unit = {},
+    onGamePlayUiDensityChange: (GamePlayUiDensity) -> Unit = {},
     onScore: (Int, ScoreCellRef, Boolean) -> Unit = { _, _, _ -> },
     onUndo: () -> Unit = {},
     onGoToResults: () -> Unit = {},
@@ -102,6 +109,19 @@ private fun GamePlayScreen(
     var scoreSelectionRequest by remember { mutableStateOf<ScoreSelectionRequest?>(null) }
     val snackbarHostState = remember { SnackbarHostState() }
     val hapticFeedback = LocalHapticFeedback.current
+    val isCompactUi = gamePlayUiDensity == GamePlayUiDensity.COMPACT
+    val screenHorizontalPadding by animateDpAsState(
+        targetValue = if (isCompactUi) 10.dp else 20.dp,
+        label = "screenHorizontalPadding",
+    )
+    val screenVerticalPadding by animateDpAsState(
+        targetValue = if (isCompactUi) 8.dp else 16.dp,
+        label = "screenVerticalPadding",
+    )
+    val screenItemSpacing by animateDpAsState(
+        targetValue = if (isCompactUi) 8.dp else 16.dp,
+        label = "screenItemSpacing",
+    )
 
     if (uiState == null) {
         GamePlayMessageState(
@@ -124,6 +144,8 @@ private fun GamePlayScreen(
         if (isInfoSheetVisible) {
             GamePlayInformationBottomSheet(
                 settings = settings,
+                gamePlayUiDensity = gamePlayUiDensity,
+                onGamePlayUiDensityChange = onGamePlayUiDensityChange,
                 onDismiss = { isInfoSheetVisible = false },
             )
         }
@@ -271,8 +293,11 @@ private fun GamePlayScreen(
                     .fillMaxSize()
                     .padding(innerPadding)
                     .verticalScroll(screenScrollState)
-                    .padding(horizontal = 20.dp, vertical = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                    .padding(
+                        horizontal = screenHorizontalPadding,
+                        vertical = screenVerticalPadding,
+                    ),
+                verticalArrangement = Arrangement.spacedBy(screenItemSpacing),
             ) {
                 GamePlayScoreSheetOverviewCard(
                     selectedPlayer = selectedPlayer,
@@ -283,6 +308,7 @@ private fun GamePlayScreen(
                     overallTotal = overallTotal,
                     selectedIndex = selectedPlayerIndex,
                     playerCount = uiState.playerStates.size,
+                    isCompactUi = isCompactUi,
                     onPreviousPlayer = {
                         selectedPlayerIndex = if (selectedPlayerIndex == 0) {
                             uiState.playerStates.lastIndex
@@ -310,6 +336,7 @@ private fun GamePlayScreen(
                     scoreSelectionRequest = scoreSelectionRequest,
                     onDismissScoreSelection = { scoreSelectionRequest = null },
                     onSelectScore = ::submitScore,
+                    isCompactUi = isCompactUi,
                 )
 
                 GamePlayCombinationSection(
@@ -324,6 +351,7 @@ private fun GamePlayScreen(
                     scoreSelectionRequest = scoreSelectionRequest,
                     onDismissScoreSelection = { scoreSelectionRequest = null },
                     onSelectScore = ::submitScore,
+                    isCompactUi = isCompactUi,
                 )
 
                 GamePlayCustomRulesSection(
@@ -338,6 +366,7 @@ private fun GamePlayScreen(
                     scoreSelectionRequest = scoreSelectionRequest,
                     onDismissScoreSelection = { scoreSelectionRequest = null },
                     onSelectScore = ::submitScore,
+                    isCompactUi = isCompactUi,
                 )
             }
         }
@@ -364,6 +393,8 @@ private fun GamePlayScreen(
     if (isInfoSheetVisible) {
         GamePlayInformationBottomSheet(
             settings = settings,
+            gamePlayUiDensity = gamePlayUiDensity,
+            onGamePlayUiDensityChange = onGamePlayUiDensityChange,
             onDismiss = { isInfoSheetVisible = false },
         )
     }

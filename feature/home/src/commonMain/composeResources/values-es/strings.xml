@@ -20,7 +20,12 @@
     <string name="home_info_title">Información</string>
     <string name="home_info_subtitle">Reglas del juego, bibliotecas usadas y versión de la app.</string>
     <string name="home_settings_title">Ajustes</string>
-    <string name="home_settings_subtitle">Por ahora solo se puede configurar la respuesta háptica.</string>
+    <string name="home_settings_button">Ajustes</string>
+    <string name="home_settings_subtitle">Visualización del juego y respuesta háptica.</string>
+    <string name="home_settings_gameplay_density_title">Visualización de juego predeterminada</string>
+    <string name="home_settings_gameplay_density_supporting_text">Normal conserva los detalles. Compacta reduce textos y espaciados para anotar más rápido.</string>
+    <string name="home_settings_density_normal">Normal</string>
+    <string name="home_settings_density_compact">Compacta</string>
     <string name="home_settings_haptic_label">Respuesta háptica</string>
     <string name="home_settings_haptic_supporting_text">Vibra suavemente cuando se introduce una puntuación o se confirma una acción importante.</string>
     <string name="home_info_rules_button">Ver reglas de Yams / Yahtzee</string>

@@ -1,7 +1,7 @@
 package io.github.maximerollin.yams.feature.home
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,8 +29,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -52,22 +52,40 @@ import io.github.maximerollin.yams.core.designsystem.theme.colors
 import io.github.maximerollin.yams.core.designsystem.util.IconInfo
 import io.github.maximerollin.yams.core.mocks.UserMocks
 import io.github.maximerollin.yams.core.model.GameId
-import io.github.maximerollin.yams.core.model.UserId
-import io.github.maximerollin.yams.feature.user.common.EmptyState
+import io.github.maximerollin.yams.data.preference.GamePlayUiDensity
 import io.github.maximerollin.yams.feature.user.common.Avatar
+import io.github.maximerollin.yams.feature.user.common.EmptyState
 import io.github.maximerollin.yams.feature.user.common.GameSummaryUiState
-import io.github.maximerollin.yams.feature.user.common.gameHistoryItems
-import io.github.maximerollin.yams.feature.user.common.HomeStatsUiState
 import io.github.maximerollin.yams.feature.user.common.HomeStatsCard
+import io.github.maximerollin.yams.feature.user.common.HomeStatsUiState
 import io.github.maximerollin.yams.feature.user.common.LoadingState
 import io.github.maximerollin.yams.feature.user.common.PlayerSummaryUiState
+import io.github.maximerollin.yams.feature.user.common.gameHistoryItems
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import yams.core.ui.generated.resources.app_icon
+import yams.feature.home.generated.resources.Res
+import yams.feature.home.generated.resources.home_abandon_cancel
+import yams.feature.home.generated.resources.home_abandon_confirm
+import yams.feature.home.generated.resources.home_abandon_game
+import yams.feature.home.generated.resources.home_abandon_message
+import yams.feature.home.generated.resources.home_abandon_title
+import yams.feature.home.generated.resources.home_active_game_players_many
+import yams.feature.home.generated.resources.home_active_game_players_one
+import yams.feature.home.generated.resources.home_active_game_title
+import yams.feature.home.generated.resources.home_app_name
+import yams.feature.home.generated.resources.home_create_game_cd
+import yams.feature.home.generated.resources.home_info_cd
+import yams.feature.home.generated.resources.home_loading
+import yams.feature.home.generated.resources.home_logo_cd
+import yams.feature.home.generated.resources.home_new_game
+import yams.feature.home.generated.resources.home_no_finished_games_message
+import yams.feature.home.generated.resources.home_no_finished_games_title
+import yams.feature.home.generated.resources.home_recent_games_title
+import yams.feature.home.generated.resources.home_resume_game
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
-import yams.feature.home.generated.resources.*
-import yams.core.ui.generated.resources.app_icon
 import yams.core.ui.generated.resources.Res as CoreUiRes
 
 @Composable
@@ -83,11 +101,13 @@ internal fun HomeRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isHapticFeedbackEnabled by viewModel.isHapticFeedbackEnabled.collectAsStateWithLifecycle()
+    val gamePlayUiDensity by viewModel.gamePlayUiDensity.collectAsStateWithLifecycle()
 
     HomeScreen(
         uiState = uiState,
         appVersionName = appVersionName,
         isHapticFeedbackEnabled = isHapticFeedbackEnabled,
+        gamePlayUiDensity = gamePlayUiDensity,
         onNavigateToGameCreation = onNavigateToGameCreation,
         onNavigateToGamePlay = onNavigateToGamePlay,
         onNavigateToGameResult = onNavigateToGameResult,
@@ -95,6 +115,7 @@ internal fun HomeRoute(
         onNavigateToPaywall = onNavigateToPaywall,
         onAbandonGame = viewModel::abandonGame,
         onHapticFeedbackEnabledChange = viewModel::setIsHapticFeedbackEnabled,
+        onGamePlayUiDensityChange = viewModel::setGamePlayUiDensity,
         modifier = modifier,
     )
 }
@@ -104,6 +125,7 @@ internal fun HomeScreen(
     uiState: HomeUiState,
     appVersionName: String,
     isHapticFeedbackEnabled: Boolean,
+    gamePlayUiDensity: GamePlayUiDensity,
     onNavigateToGameCreation: () -> Unit,
     onNavigateToGamePlay: (GameId) -> Unit,
     onNavigateToGameResult: (GameId) -> Unit,
@@ -111,6 +133,7 @@ internal fun HomeScreen(
     onNavigateToPaywall: () -> Unit,
     onAbandonGame: (GameId) -> Unit,
     onHapticFeedbackEnabledChange: (Boolean) -> Unit,
+    onGamePlayUiDensityChange: (GamePlayUiDensity) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var pendingAbandonGameId by remember { mutableStateOf<GameId?>(null) }
@@ -214,7 +237,9 @@ internal fun HomeScreen(
         HomeInformationBottomSheet(
             appVersionName = appVersionName,
             isHapticFeedbackEnabled = isHapticFeedbackEnabled,
+            gamePlayUiDensity = gamePlayUiDensity,
             onHapticFeedbackEnabledChange = onHapticFeedbackEnabledChange,
+            onGamePlayUiDensityChange = onGamePlayUiDensityChange,
             onDismiss = { showInformationSheet = false },
         )
     }
@@ -483,6 +508,7 @@ public fun HomeStoreScreenshotContent() {
             uiState = previewHomeUiState(),
             appVersionName = "1.0.0",
             isHapticFeedbackEnabled = true,
+            gamePlayUiDensity = GamePlayUiDensity.NORMAL,
             onNavigateToGameCreation = {},
             onNavigateToGamePlay = {},
             onNavigateToGameResult = {},
@@ -490,6 +516,7 @@ public fun HomeStoreScreenshotContent() {
             onNavigateToPaywall = {},
             onAbandonGame = {},
             onHapticFeedbackEnabledChange = {},
+            onGamePlayUiDensityChange = {},
         )
     }
 }

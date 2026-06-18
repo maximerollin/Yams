@@ -5,6 +5,11 @@
     <string name="play_home_cd">Accueil</string>
     <string name="play_title">Feuille de score</string>
     <string name="play_info_cd">Informations</string>
+    <string name="play_density_switch_compact_cd">Passer en affichage condensé</string>
+    <string name="play_density_switch_normal_cd">Passer en affichage normal</string>
+    <string name="play_info_display">Affichage</string>
+    <string name="play_compact_display">Mode condensé</string>
+    <string name="play_compact_display_help">Réduit la hauteur de la feuille pour saisir les scores plus vite.</string>
     <string name="play_undo_last_move">Annuler le dernier coup</string>
     <string name="play_points_suffix">pts</string>
     <string name="play_points_value">%1$d pts</string>
@@ -101,6 +106,7 @@
     <string name="play_active_sheet">Feuille active</string>
     <string name="play_read_only">Lecture seule</string>
     <string name="play_player_position">Joueur %1$d/%2$d</string>
+    <string name="play_player_position_compact">%1$d/%2$d</string>
     <string name="play_editable_multi_help">Tu peux remplir n'importe quelle case vide, dans la colonne que tu veux, sans ordre imposé.</string>
     <string name="play_editable_single_help">Tu peux utiliser cette feuille pour saisir les points du joueur en cours.</string>
     <string name="play_read_only_help">La feuille de %1$s reste visible, mais elle n'est pas modifiable pendant le tour de %2$s.</string>

@@ -20,7 +20,12 @@
     <string name="home_info_title">Information</string>
     <string name="home_info_subtitle">Game rules, third-party libraries, and app version.</string>
     <string name="home_settings_title">Settings</string>
-    <string name="home_settings_subtitle">For now, only haptic feedback can be configured.</string>
+    <string name="home_settings_button">Settings</string>
+    <string name="home_settings_subtitle">Gameplay display and haptic feedback.</string>
+    <string name="home_settings_gameplay_density_title">Default gameplay display</string>
+    <string name="home_settings_gameplay_density_supporting_text">Normal keeps the details. Compact reduces text and spacing for faster scoring.</string>
+    <string name="home_settings_density_normal">Normal</string>
+    <string name="home_settings_density_compact">Compact</string>
     <string name="home_settings_haptic_label">Haptic feedback</string>
     <string name="home_settings_haptic_supporting_text">Vibrates lightly when a score is entered or an important action is confirmed.</string>
     <string name="home_info_rules_button">View Yams / Yahtzee rules</string>

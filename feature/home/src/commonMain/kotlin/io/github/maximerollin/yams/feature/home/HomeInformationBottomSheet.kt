@@ -1,5 +1,7 @@
 package io.github.maximerollin.yams.feature.home
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -37,10 +39,12 @@ import io.github.maximerollin.yams.core.designsystem.component.YamsTextButton
 import io.github.maximerollin.yams.core.designsystem.icon.BookOpen
 import io.github.maximerollin.yams.core.designsystem.icon.ChevronLeft
 import io.github.maximerollin.yams.core.designsystem.icon.Info
+import io.github.maximerollin.yams.core.designsystem.icon.Tune
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.designsystem.theme.colors
 import io.github.maximerollin.yams.core.designsystem.util.IconInfo
+import io.github.maximerollin.yams.data.preference.GamePlayUiDensity
 import org.jetbrains.compose.resources.stringResource
 import yams.feature.home.generated.resources.*
 
@@ -49,7 +53,9 @@ import yams.feature.home.generated.resources.*
 internal fun HomeInformationBottomSheet(
     appVersionName: String,
     isHapticFeedbackEnabled: Boolean,
+    gamePlayUiDensity: GamePlayUiDensity,
     onHapticFeedbackEnabledChange: (Boolean) -> Unit,
+    onGamePlayUiDensityChange: (GamePlayUiDensity) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -62,9 +68,8 @@ internal fun HomeInformationBottomSheet(
         when (page) {
             HomeInformationPage.Overview -> HomeInformationOverview(
                 appVersionName = appVersionName,
-                isHapticFeedbackEnabled = isHapticFeedbackEnabled,
-                onHapticFeedbackEnabledChange = onHapticFeedbackEnabledChange,
                 onShowRules = { page = HomeInformationPage.Rules },
+                onShowSettings = { page = HomeInformationPage.Settings },
                 onShowLicenses = { page = HomeInformationPage.Licenses },
                 modifier = modifier
                     .navigationBarsPadding()
@@ -72,6 +77,17 @@ internal fun HomeInformationBottomSheet(
             )
 
             HomeInformationPage.Rules -> HomeRulesContent(
+                onBack = { page = HomeInformationPage.Overview },
+                modifier = modifier
+                    .navigationBarsPadding()
+                    .padding(horizontal = 20.dp, vertical = 16.dp),
+            )
+
+            HomeInformationPage.Settings -> HomeSettingsContent(
+                isHapticFeedbackEnabled = isHapticFeedbackEnabled,
+                gamePlayUiDensity = gamePlayUiDensity,
+                onHapticFeedbackEnabledChange = onHapticFeedbackEnabledChange,
+                onGamePlayUiDensityChange = onGamePlayUiDensityChange,
                 onBack = { page = HomeInformationPage.Overview },
                 modifier = modifier
                     .navigationBarsPadding()
@@ -91,9 +107,8 @@ internal fun HomeInformationBottomSheet(
 @Composable
 private fun HomeInformationOverview(
     appVersionName: String,
-    isHapticFeedbackEnabled: Boolean,
-    onHapticFeedbackEnabledChange: (Boolean) -> Unit,
     onShowRules: () -> Unit,
+    onShowSettings: () -> Unit,
     onShowLicenses: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -117,18 +132,6 @@ private fun HomeInformationOverview(
             )
         }
 
-        HomeInformationSection(
-            title = stringResource(Res.string.home_settings_title),
-            subtitle = stringResource(Res.string.home_settings_subtitle),
-        ) {
-            HomeSettingsToggleRow(
-                label = stringResource(Res.string.home_settings_haptic_label),
-                supportingText = stringResource(Res.string.home_settings_haptic_supporting_text),
-                checked = isHapticFeedbackEnabled,
-                onCheckedChange = onHapticFeedbackEnabledChange,
-            )
-        }
-
         YamsPrimaryButton(
             onClick = onShowRules,
             text = stringResource(Res.string.home_info_rules_button),
@@ -137,6 +140,19 @@ private fun HomeInformationOverview(
                 contentDescription = stringResource(Res.string.home_info_rules_button),
             ),
         )
+
+        YamsSecondaryButton(
+            onClick = onShowSettings,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Icon(
+                imageVector = YamsIcons.Tune,
+                contentDescription = stringResource(Res.string.home_settings_button),
+                modifier = Modifier.size(18.dp),
+            )
+            Spacer(modifier = Modifier.size(8.dp))
+            Text(text = stringResource(Res.string.home_settings_button))
+        }
 
         YamsSecondaryButton(
             onClick = onShowLicenses,
@@ -152,6 +168,135 @@ private fun HomeInformationOverview(
         }
 
         HomeVersionText(appVersionName = appVersionName)
+    }
+}
+
+@Composable
+private fun HomeSettingsContent(
+    isHapticFeedbackEnabled: Boolean,
+    gamePlayUiDensity: GamePlayUiDensity,
+    onHapticFeedbackEnabledChange: (Boolean) -> Unit,
+    onGamePlayUiDensityChange: (GamePlayUiDensity) -> Unit,
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        YamsTextButton(onClick = onBack) {
+            Icon(
+                imageVector = YamsIcons.ChevronLeft,
+                contentDescription = stringResource(Res.string.home_info_back_cd),
+                modifier = Modifier.size(18.dp),
+            )
+            Text(text = stringResource(Res.string.home_info_back))
+        }
+
+        HomeInformationSection(
+            title = stringResource(Res.string.home_settings_title),
+            subtitle = stringResource(Res.string.home_settings_subtitle),
+        ) {
+            HomeSettingsSegmentedRow(
+                title = stringResource(Res.string.home_settings_gameplay_density_title),
+                supportingText = stringResource(Res.string.home_settings_gameplay_density_supporting_text),
+                selectedDensity = gamePlayUiDensity,
+                onDensitySelected = onGamePlayUiDensityChange,
+            )
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+            )
+            HomeSettingsToggleRow(
+                label = stringResource(Res.string.home_settings_haptic_label),
+                supportingText = stringResource(Res.string.home_settings_haptic_supporting_text),
+                checked = isHapticFeedbackEnabled,
+                onCheckedChange = onHapticFeedbackEnabledChange,
+            )
+        }
+    }
+}
+
+@Composable
+private fun HomeSettingsSegmentedRow(
+    title: String,
+    supportingText: String,
+    selectedDensity: GamePlayUiDensity,
+    onDensitySelected: (GamePlayUiDensity) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.Medium,
+            )
+            Text(
+                text = supportingText,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            GamePlayUiDensity.entries.forEach { density ->
+                HomeDensityOption(
+                    label = when (density) {
+                        GamePlayUiDensity.NORMAL -> stringResource(Res.string.home_settings_density_normal)
+                        GamePlayUiDensity.COMPACT -> stringResource(Res.string.home_settings_density_compact)
+                    },
+                    selected = selectedDensity == density,
+                    onClick = { onDensitySelected(density) },
+                    modifier = Modifier.weight(1f),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun HomeDensityOption(
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier.clickable(onClick = onClick),
+        shape = RoundedCornerShape(14.dp),
+        color = if (selected) {
+            MaterialTheme.colorScheme.primaryContainer
+        } else {
+            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.58f)
+        },
+        border = BorderStroke(
+            width = 1.dp,
+            color = if (selected) {
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)
+            } else {
+                MaterialTheme.colorScheme.outline.copy(alpha = 0.16f)
+            },
+        ),
+    ) {
+        Text(
+            text = label,
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+            style = MaterialTheme.typography.labelLarge,
+            color = if (selected) {
+                MaterialTheme.colorScheme.onPrimaryContainer
+            } else {
+                MaterialTheme.colorScheme.onSurfaceVariant
+            },
+            textAlign = TextAlign.Center,
+        )
     }
 }
 
@@ -410,6 +555,7 @@ private fun displayVersion(versionName: String): String {
 private enum class HomeInformationPage {
     Overview,
     Rules,
+    Settings,
     Licenses,
 }
 

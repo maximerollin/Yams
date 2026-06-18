@@ -5,6 +5,11 @@
     <string name="play_home_cd">Inicio</string>
     <string name="play_title">Hoja de puntuación</string>
     <string name="play_info_cd">Información</string>
+    <string name="play_density_switch_compact_cd">Cambiar a vista compacta</string>
+    <string name="play_density_switch_normal_cd">Cambiar a vista normal</string>
+    <string name="play_info_display">Visualización</string>
+    <string name="play_compact_display">Modo compacto</string>
+    <string name="play_compact_display_help">Reduce la altura de la hoja para introducir puntuaciones más rápido.</string>
     <string name="play_undo_last_move">Deshacer último movimiento</string>
     <string name="play_points_suffix">pts</string>
     <string name="play_points_value">%1$d pts</string>
@@ -101,6 +106,7 @@
     <string name="play_active_sheet">Hoja activa</string>
     <string name="play_read_only">Solo lectura</string>
     <string name="play_player_position">Jugador %1$d/%2$d</string>
+    <string name="play_player_position_compact">%1$d/%2$d</string>
     <string name="play_editable_multi_help">Puedes rellenar cualquier casilla vacía, en la columna que quieras, sin orden obligatorio.</string>
     <string name="play_editable_single_help">Puedes usar esta hoja para introducir los puntos del jugador en turno.</string>
     <string name="play_read_only_help">La hoja de %1$s sigue visible, pero no se puede modificar durante el turno de %2$s.</string>

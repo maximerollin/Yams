@@ -5,6 +5,11 @@
     <string name="play_home_cd">Home</string>
     <string name="play_title">Scheda punti</string>
     <string name="play_info_cd">Informazioni</string>
+    <string name="play_density_switch_compact_cd">Passa alla visualizzazione compatta</string>
+    <string name="play_density_switch_normal_cd">Passa alla visualizzazione normale</string>
+    <string name="play_info_display">Visualizzazione</string>
+    <string name="play_compact_display">Modalità compatta</string>
+    <string name="play_compact_display_help">Riduce l'altezza della scheda per inserire i punteggi più velocemente.</string>
     <string name="play_undo_last_move">Annulla ultima mossa</string>
     <string name="play_points_suffix">pt</string>
     <string name="play_points_value">%1$d pt</string>
@@ -101,6 +106,7 @@
     <string name="play_active_sheet">Scheda attiva</string>
     <string name="play_read_only">Sola lettura</string>
     <string name="play_player_position">Giocatore %1$d/%2$d</string>
+    <string name="play_player_position_compact">%1$d/%2$d</string>
     <string name="play_editable_multi_help">Puoi compilare qualsiasi casella vuota, nella colonna che vuoi, senza ordine imposto.</string>
     <string name="play_editable_single_help">Puoi usare questa scheda per inserire i punti del giocatore di turno.</string>
     <string name="play_read_only_help">La scheda di %1$s resta visibile, ma non è modificabile durante il turno di %2$s.</string>

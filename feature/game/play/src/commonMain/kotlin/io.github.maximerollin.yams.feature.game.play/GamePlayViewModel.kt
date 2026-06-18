@@ -7,6 +7,7 @@ import io.github.maximerollin.yams.data.game.GameRepository
 import io.github.maximerollin.yams.data.game.ScoreEntryRepository
 import io.github.maximerollin.yams.data.game.model.CreateScoreEntry
 import io.github.maximerollin.yams.data.game.model.ScoreCellRef
+import io.github.maximerollin.yams.data.preference.GamePlayUiDensity
 import io.github.maximerollin.yams.data.preference.PreferenceRepository
 import io.github.maximerollin.yams.feature.game.play.domain.GetGamePlayStateUseCase
 import io.github.maximerollin.yams.feature.game.play.model.GamePlayStateUi
@@ -23,7 +24,7 @@ internal class GamePlayViewModel(
     private val gameRepository: GameRepository,
     private val scoreEntryRepository: ScoreEntryRepository,
     private val getGetGamePlayStateUseCase: GetGamePlayStateUseCase,
-    preferenceRepository: PreferenceRepository,
+    private val preferenceRepository: PreferenceRepository,
 ) : ViewModel() {
 
     val gamePlayStateUi: StateFlow<GamePlayStateUi?> =
@@ -42,8 +43,22 @@ internal class GamePlayViewModel(
                 initialValue = true,
             )
 
+    val gamePlayUiDensity: StateFlow<GamePlayUiDensity> =
+        preferenceRepository.getGamePlayUiDensity()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = GamePlayUiDensity.NORMAL,
+            )
+
     private val _navigateToGameResult: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val navigateToGameResult: StateFlow<Boolean> = _navigateToGameResult
+
+    fun onGamePlayUiDensityChange(density: GamePlayUiDensity) {
+        viewModelScope.launch {
+            preferenceRepository.setGamePlayUiDensity(density)
+        }
+    }
 
     fun onScore(
         score: Int,

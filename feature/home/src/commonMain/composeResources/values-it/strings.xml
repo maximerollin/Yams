@@ -20,7 +20,12 @@
     <string name="home_info_title">Informazioni</string>
     <string name="home_info_subtitle">Regole del gioco, librerie usate e versione dell'app.</string>
     <string name="home_settings_title">Impostazioni</string>
-    <string name="home_settings_subtitle">Per ora si può configurare solo il feedback aptico.</string>
+    <string name="home_settings_button">Impostazioni</string>
+    <string name="home_settings_subtitle">Visualizzazione del gameplay e feedback aptico.</string>
+    <string name="home_settings_gameplay_density_title">Visualizzazione gameplay predefinita</string>
+    <string name="home_settings_gameplay_density_supporting_text">Normale mantiene i dettagli. Compatta riduce testi e spazi per inserire i punti più rapidamente.</string>
+    <string name="home_settings_density_normal">Normale</string>
+    <string name="home_settings_density_compact">Compatta</string>
     <string name="home_settings_haptic_label">Feedback aptico</string>
     <string name="home_settings_haptic_supporting_text">Vibra leggermente quando viene inserito un punteggio o confermata un'azione importante.</string>
     <string name="home_info_rules_button">Vedi regole Yams / Yahtzee</string>

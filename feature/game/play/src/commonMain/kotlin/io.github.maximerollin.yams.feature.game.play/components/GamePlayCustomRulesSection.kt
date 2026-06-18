@@ -30,6 +30,7 @@ internal fun GamePlayCustomRulesSection(
     scoreSelectionRequest: ScoreSelectionRequest?,
     onDismissScoreSelection: () -> Unit,
     onSelectScore: (ScoreSelectionOption, ScoreCellRef) -> Unit,
+    isCompactUi: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
     if (rows.isEmpty()) {
@@ -50,12 +51,14 @@ internal fun GamePlayCustomRulesSection(
         } else {
             customTotals.firstOrNull()?.toString().orEmpty()
         },
+        isCompactUi = isCompactUi,
         modifier = modifier,
     ) {
         if (isMultiColumn) {
             ScoreColumnHeader(
                 columnCount = columnCount,
                 scrollState = scrollState,
+                isCompactUi = isCompactUi,
             )
             HorizontalDivider(color = MaterialTheme.colorScheme.surface)
         }
@@ -78,6 +81,7 @@ internal fun GamePlayCustomRulesSection(
                     onCellClick = { columnIndex ->
                         onScoreCellClick(row, columnIndex)
                     },
+                    isCompactUi = isCompactUi,
                 )
                 if (index < rows.lastIndex) {
                     HorizontalDivider(color = MaterialTheme.colorScheme.surface)
@@ -92,6 +96,7 @@ internal fun GamePlayCustomRulesSection(
                 values = customTotals.map(Int::toString),
                 scrollState = scrollState,
                 emphasize = true,
+                isCompactUi = isCompactUi,
             )
         } else {
             rows.forEachIndexed { index, row ->
@@ -110,6 +115,7 @@ internal fun GamePlayCustomRulesSection(
                     onMenuItemClick = { option ->
                         rowScoreSelection?.let { onSelectScore(option, it.cell) }
                     },
+                    isCompactUi = isCompactUi,
                 )
                 if (index < rows.lastIndex) {
                     HorizontalDivider(color = MaterialTheme.colorScheme.surface)

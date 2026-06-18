@@ -8,6 +8,7 @@ import io.github.maximerollin.yams.core.model.GameId
 import io.github.maximerollin.yams.data.billing.BillingRepository
 import io.github.maximerollin.yams.data.game.GameRepository
 import io.github.maximerollin.yams.data.game.model.GamePlayState
+import io.github.maximerollin.yams.data.preference.GamePlayUiDensity
 import io.github.maximerollin.yams.data.preference.PreferenceRepository
 import io.github.maximerollin.yams.feature.user.common.toGameSummaries
 import io.github.maximerollin.yams.feature.user.common.toHomeStats
@@ -50,9 +51,23 @@ internal class HomeViewModel(
                 initialValue = true,
             )
 
+    val gamePlayUiDensity: StateFlow<GamePlayUiDensity> =
+        preferenceRepository.getGamePlayUiDensity()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = GamePlayUiDensity.NORMAL,
+            )
+
     fun setIsHapticFeedbackEnabled(isEnabled: Boolean) {
         viewModelScope.launch {
             preferenceRepository.setIsHapticFeedbackEnabled(isEnabled)
+        }
+    }
+
+    fun setGamePlayUiDensity(density: GamePlayUiDensity) {
+        viewModelScope.launch {
+            preferenceRepository.setGamePlayUiDensity(density)
         }
     }
 

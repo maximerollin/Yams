@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import io.github.maximerollin.yams.core.model.GameSettings
+import io.github.maximerollin.yams.data.preference.GamePlayUiDensity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
@@ -21,6 +22,8 @@ internal interface PreferenceLocalDataSource {
     suspend fun setGameSettings(settings: GameSettings)
     fun getIsHapticFeedbackEnabled(): Flow<Boolean>
     suspend fun setIsHapticFeedbackEnabled(isEnabled: Boolean)
+    fun getGamePlayUiDensity(): Flow<GamePlayUiDensity>
+    suspend fun setGamePlayUiDensity(density: GamePlayUiDensity)
     fun getYamsPlusStatus(): Flow<Boolean>
     suspend fun setYamsPlusStatus(isSubscribed: Boolean)
 }
@@ -76,6 +79,21 @@ internal class PreferencePreferencesDataSource(
         }
     }
 
+    override fun getGamePlayUiDensity(): Flow<GamePlayUiDensity> =
+        dataStore.data.map { preferences ->
+            preferences[GAME_PLAY_UI_DENSITY_KEY]
+                ?.let { value ->
+                    runCatching { GamePlayUiDensity.valueOf(value) }.getOrNull()
+                }
+                ?: GamePlayUiDensity.NORMAL
+        }
+
+    override suspend fun setGamePlayUiDensity(density: GamePlayUiDensity) {
+        dataStore.edit { preferences ->
+            preferences[GAME_PLAY_UI_DENSITY_KEY] = density.name
+        }
+    }
+
     override fun getYamsPlusStatus(): Flow<Boolean> =
         dataStore.data.map { preferences ->
             preferences[YAMS_PLUS_SUBSCRIPTION_STATUS_KEY] ?: false
@@ -92,9 +110,9 @@ internal class PreferencePreferencesDataSource(
         val GAME_SETTINGS_KEY = stringPreferencesKey("game_settings")
         val IS_USER_ORDER_RANDOMIZED_KEY = booleanPreferencesKey("is_user_order_randomized")
         val IS_HAPTIC_FEEDBACK_ENABLED_KEY = booleanPreferencesKey("is_haptic_feedback_enabled")
+        val GAME_PLAY_UI_DENSITY_KEY = stringPreferencesKey("game_play_ui_density")
         val YAMS_PLUS_SUBSCRIPTION_STATUS_KEY = booleanPreferencesKey("yams_plus_subscription_status")
     }
 
 }
-
 

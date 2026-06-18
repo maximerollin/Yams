@@ -20,7 +20,12 @@
     <string name="home_info_title">Informationen</string>
     <string name="home_info_subtitle">Spielregeln, verwendete Bibliotheken und App-Version.</string>
     <string name="home_settings_title">Einstellungen</string>
-    <string name="home_settings_subtitle">Aktuell lassen sich nur haptische Rückmeldungen einstellen.</string>
+    <string name="home_settings_button">Einstellungen</string>
+    <string name="home_settings_subtitle">Spielansicht und haptische Rückmeldungen.</string>
+    <string name="home_settings_gameplay_density_title">Standard-Spielansicht</string>
+    <string name="home_settings_gameplay_density_supporting_text">Normal behält Details. Kompakt reduziert Texte und Abstände für schnellere Eingaben.</string>
+    <string name="home_settings_density_normal">Normal</string>
+    <string name="home_settings_density_compact">Kompakt</string>
     <string name="home_settings_haptic_label">Haptisches Feedback</string>
     <string name="home_settings_haptic_supporting_text">Vibriert leicht, wenn ein Ergebnis eingetragen oder eine wichtige Aktion bestätigt wird.</string>
     <string name="home_info_rules_button">Yams- / Yahtzee-Regeln ansehen</string>

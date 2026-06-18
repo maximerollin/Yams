@@ -15,15 +15,19 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.model.GameSettings
+import io.github.maximerollin.yams.data.preference.GamePlayUiDensity
 import org.jetbrains.compose.resources.stringResource
 import yams.feature.game.play.generated.resources.*
 
@@ -31,6 +35,8 @@ import yams.feature.game.play.generated.resources.*
 @Composable
 internal fun GamePlayInformationBottomSheet(
     settings: GameSettings,
+    gamePlayUiDensity: GamePlayUiDensity,
+    onGamePlayUiDensityChange: (GamePlayUiDensity) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -40,6 +46,8 @@ internal fun GamePlayInformationBottomSheet(
     ) {
         GamePlayInformationContent(
             settings = settings,
+            gamePlayUiDensity = gamePlayUiDensity,
+            onGamePlayUiDensityChange = onGamePlayUiDensityChange,
             modifier = modifier
                 .navigationBarsPadding()
                 .padding(horizontal = 20.dp, vertical = 16.dp),
@@ -50,9 +58,12 @@ internal fun GamePlayInformationBottomSheet(
 @Composable
 private fun GamePlayInformationContent(
     settings: GameSettings,
+    gamePlayUiDensity: GamePlayUiDensity = GamePlayUiDensity.NORMAL,
+    onGamePlayUiDensityChange: (GamePlayUiDensity) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val customRules = settings.customGameSettings.filter { it.isEnabled }
+    val isCompactUi = gamePlayUiDensity == GamePlayUiDensity.COMPACT
 
     Column(
         modifier = modifier
@@ -70,6 +81,23 @@ private fun GamePlayInformationContent(
                 text = stringResource(Res.string.play_info_subtitle),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+
+        GameInformationSection(title = stringResource(Res.string.play_info_display)) {
+            GameInformationToggleRow(
+                label = stringResource(Res.string.play_compact_display),
+                supportingText = stringResource(Res.string.play_compact_display_help),
+                checked = isCompactUi,
+                onCheckedChange = { isChecked ->
+                    onGamePlayUiDensityChange(
+                        if (isChecked) {
+                            GamePlayUiDensity.COMPACT
+                        } else {
+                            GamePlayUiDensity.NORMAL
+                        },
+                    )
+                },
             )
         }
 
@@ -237,6 +265,47 @@ private fun GameInformationSection(
             )
             content()
         }
+    }
+}
+
+@Composable
+private fun GameInformationToggleRow(
+    label: String,
+    supportingText: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.Medium,
+            )
+            Text(
+                text = supportingText,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = MaterialTheme.colorScheme.primary,
+                checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
+                uncheckedThumbColor = MaterialTheme.colorScheme.outline,
+                uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
+            ),
+        )
     }
 }
 

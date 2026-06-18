@@ -5,6 +5,11 @@
     <string name="play_home_cd">Startseite</string>
     <string name="play_title">Punkteblatt</string>
     <string name="play_info_cd">Informationen</string>
+    <string name="play_density_switch_compact_cd">Zur kompakten Ansicht wechseln</string>
+    <string name="play_density_switch_normal_cd">Zur normalen Ansicht wechseln</string>
+    <string name="play_info_display">Anzeige</string>
+    <string name="play_compact_display">Kompaktmodus</string>
+    <string name="play_compact_display_help">Reduziert die Höhe des Punkteblatts, damit Punkte schneller eingetragen werden.</string>
     <string name="play_undo_last_move">Letzten Zug rückgängig machen</string>
     <string name="play_points_suffix">Pkt.</string>
     <string name="play_points_value">%1$d Pkt.</string>
@@ -101,6 +106,7 @@
     <string name="play_active_sheet">Aktives Blatt</string>
     <string name="play_read_only">Nur Lesen</string>
     <string name="play_player_position">Spieler %1$d/%2$d</string>
+    <string name="play_player_position_compact">%1$d/%2$d</string>
     <string name="play_editable_multi_help">Du kannst jedes leere Feld in jeder Spalte ausfüllen, ohne feste Reihenfolge.</string>
     <string name="play_editable_single_help">Du kannst dieses Blatt nutzen, um die Punkte des aktuellen Spielers einzutragen.</string>
     <string name="play_read_only_help">Das Blatt von %1$s bleibt sichtbar, kann aber während des Zugs von %2$s nicht bearbeitet werden.</string>

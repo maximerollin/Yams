@@ -1,6 +1,8 @@
 package io.github.maximerollin.yams.feature.game.play.components
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -10,7 +12,6 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
@@ -31,12 +32,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -53,7 +56,23 @@ import io.github.maximerollin.yams.feature.game.play.model.GamePlayColumnSummary
 import io.github.maximerollin.yams.feature.game.play.model.PlayerState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import yams.feature.game.play.generated.resources.*
+import yams.feature.game.play.generated.resources.Res
+import yams.feature.game.play.generated.resources.play_active_player_cd
+import yams.feature.game.play.generated.resources.play_active_sheet
+import yams.feature.game.play.generated.resources.play_column_label
+import yams.feature.game.play.generated.resources.play_current_player_avatar_cd
+import yams.feature.game.play.generated.resources.play_editable_multi_help
+import yams.feature.game.play.generated.resources.play_editable_single_help
+import yams.feature.game.play.generated.resources.play_filled_cells
+import yams.feature.game.play.generated.resources.play_next_sheet_cd
+import yams.feature.game.play.generated.resources.play_player_position
+import yams.feature.game.play.generated.resources.play_player_position_compact
+import yams.feature.game.play.generated.resources.play_points_suffix
+import yams.feature.game.play.generated.resources.play_points_value
+import yams.feature.game.play.generated.resources.play_previous_sheet_cd
+import yams.feature.game.play.generated.resources.play_read_only
+import yams.feature.game.play.generated.resources.play_read_only_help
+import yams.feature.game.play.generated.resources.play_turn_current
 
 @Composable
 internal fun GamePlayScoreSheetOverviewCard(
@@ -65,189 +84,406 @@ internal fun GamePlayScoreSheetOverviewCard(
     overallTotal: Int,
     selectedIndex: Int,
     playerCount: Int,
+    isCompactUi: Boolean = false,
     onPreviousPlayer: () -> Unit,
     onNextPlayer: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val cornerRadius by animateDpAsState(
+        targetValue = if (isCompactUi) 18.dp else 24.dp,
+        label = "overviewCornerRadius",
+    )
+    val contentPadding by animateDpAsState(
+        targetValue = if (isCompactUi) 8.dp else 16.dp,
+        label = "overviewContentPadding",
+    )
+    val contentSpacing by animateDpAsState(
+        targetValue = if (isCompactUi) 6.dp else 16.dp,
+        label = "overviewContentSpacing",
+    )
+
     Card(
-        shape = RoundedCornerShape(24.dp),
+        shape = RoundedCornerShape(cornerRadius),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(contentPadding),
         ) {
-            Row(
+            AnimatedContent(
+                targetState = isCompactUi,
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                AnimatedContent(
-                    targetState = currentTurnPlayer.player.user,
-                    modifier = Modifier.weight(1f),
-                    transitionSpec = {
-                        (slideInHorizontally(
-                            animationSpec = tween(280),
-                            initialOffsetX = { fullWidth -> fullWidth },
-                        ) + fadeIn(animationSpec = tween(220)) + scaleIn(initialScale = 0.94f))
-                            .togetherWith(
-                                slideOutHorizontally(
-                                    animationSpec = tween(220),
-                                    targetOffsetX = { fullWidth -> -fullWidth },
-                                ) + fadeOut(animationSpec = tween(180)) + scaleOut(targetScale = 0.94f)
-                            )
-                    },
-                    contentKey = { user -> user.id },
-                    label = "currentTurnPlayer",
-                ) { currentUser ->
-                    TurnStatusPill(
-                        icon = YamsIcons.PersonRaisedHand,
-                        label = stringResource(Res.string.play_turn_current),
-                        user = currentUser,
-                        modifier = Modifier.fillMaxWidth(),
+                transitionSpec = {
+                    (fadeIn(animationSpec = tween(180)) + scaleIn(initialScale = 0.98f))
+                        .togetherWith(
+                            fadeOut(animationSpec = tween(120)) + scaleOut(targetScale = 0.98f)
+                        )
+                },
+                label = "scoreSheetDensity",
+            ) { compact ->
+                if (compact) {
+                    CompactScoreSheetOverviewRow(
+                        selectedPlayer = selectedPlayer,
+                        currentTurnPlayer = currentTurnPlayer,
+                        overallTotal = overallTotal,
+                        selectedIndex = selectedIndex,
+                        playerCount = playerCount,
+                        onPreviousPlayer = onPreviousPlayer,
+                        onNextPlayer = onNextPlayer,
+                    )
+                } else {
+                    NormalScoreSheetOverviewContent(
+                        selectedPlayer = selectedPlayer,
+                        currentTurnPlayer = currentTurnPlayer,
+                        columnSummaries = columnSummaries,
+                        showColumnSummaries = showColumnSummaries,
+                        isEditable = isEditable,
+                        overallTotal = overallTotal,
+                        selectedIndex = selectedIndex,
+                        playerCount = playerCount,
+                        contentSpacing = contentSpacing,
+                        onPreviousPlayer = onPreviousPlayer,
+                        onNextPlayer = onNextPlayer,
                     )
                 }
-                ScorePill(
-                    value = overallTotal.toString(),
-                    suffix = stringResource(Res.string.play_points_suffix),
-                    emphasize = true,
+            }
+        }
+    }
+}
+
+@Composable
+private fun NormalScoreSheetOverviewContent(
+    selectedPlayer: PlayerState,
+    currentTurnPlayer: PlayerState,
+    columnSummaries: List<GamePlayColumnSummary>,
+    showColumnSummaries: Boolean,
+    isEditable: Boolean,
+    overallTotal: Int,
+    selectedIndex: Int,
+    playerCount: Int,
+    contentSpacing: Dp,
+    onPreviousPlayer: () -> Unit,
+    onNextPlayer: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(contentSpacing),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            AnimatedContent(
+                targetState = currentTurnPlayer.player.user,
+                modifier = Modifier.weight(1f),
+                transitionSpec = {
+                    (slideInHorizontally(
+                        animationSpec = tween(280),
+                        initialOffsetX = { fullWidth -> fullWidth },
+                    ) + fadeIn(animationSpec = tween(220)) + scaleIn(initialScale = 0.94f))
+                        .togetherWith(
+                            slideOutHorizontally(
+                                animationSpec = tween(220),
+                                targetOffsetX = { fullWidth -> -fullWidth },
+                            ) + fadeOut(animationSpec = tween(180)) + scaleOut(targetScale = 0.94f)
+                        )
+                },
+                contentKey = { user -> user.id },
+                label = "currentTurnPlayer",
+            ) { currentUser ->
+                TurnStatusPill(
+                    icon = YamsIcons.PersonRaisedHand,
+                    label = stringResource(Res.string.play_turn_current),
+                    user = currentUser,
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
+            ScorePill(
+                value = overallTotal.toString(),
+                suffix = stringResource(Res.string.play_points_suffix),
+                emphasize = true,
+            )
+        }
 
-            if (showColumnSummaries) {
-                ColumnSummaryRow(columnSummaries = columnSummaries)
-            }
+        if (showColumnSummaries) {
+            ColumnSummaryRow(columnSummaries = columnSummaries)
+        }
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                PlayerPagerButton(
-                    onClick = onPreviousPlayer,
-                    icon = YamsIcons.ChevronLeft,
-                    contentDescription = stringResource(Res.string.play_previous_sheet_cd),
-                )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            PlayerPagerButton(
+                onClick = onPreviousPlayer,
+                icon = YamsIcons.ChevronLeft,
+                contentDescription = stringResource(Res.string.play_previous_sheet_cd),
+            )
 
-                AnimatedContent(
-                    targetState = selectedPlayer,
-                    modifier = Modifier.weight(1f),
-                    transitionSpec = {
-                        (slideInVertically(
-                            animationSpec = tween(260),
-                            initialOffsetY = { fullHeight -> fullHeight },
-                        ) + fadeIn(animationSpec = tween(220)) + scaleIn(initialScale = 0.96f))
-                            .togetherWith(
-                                slideOutVertically(
-                                    animationSpec = tween(220),
-                                    targetOffsetY = { fullHeight -> -fullHeight },
-                                ) + fadeOut(animationSpec = tween(180)) + scaleOut(targetScale = 0.96f)
-                            )
+            AnimatedContent(
+                targetState = selectedPlayer,
+                modifier = Modifier.weight(1f),
+                transitionSpec = {
+                    (slideInVertically(
+                        animationSpec = tween(260),
+                        initialOffsetY = { fullHeight -> fullHeight },
+                    ) + fadeIn(animationSpec = tween(220)) + scaleIn(initialScale = 0.96f))
+                        .togetherWith(
+                            slideOutVertically(
+                                animationSpec = tween(220),
+                                targetOffsetY = { fullHeight -> -fullHeight },
+                            ) + fadeOut(animationSpec = tween(180)) + scaleOut(targetScale = 0.96f)
+                        )
+                },
+                contentKey = { playerState -> playerState.player.userId },
+                label = "selectedPlayerSheet",
+            ) { animatedSelectedPlayer ->
+                val isAnimatedSelectedPlayerActive =
+                    animatedSelectedPlayer.player.userId == currentTurnPlayer.player.userId
+
+                Surface(
+                    shape = RoundedCornerShape(20.dp),
+                    color = if (isAnimatedSelectedPlayerActive) {
+                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.8f)
+                    } else {
+                        MaterialTheme.colorScheme.surface
                     },
-                    contentKey = { playerState -> playerState.player.userId },
-                    label = "selectedPlayerSheet",
-                ) { animatedSelectedPlayer ->
-                    val isAnimatedSelectedPlayerActive =
-                        animatedSelectedPlayer.player.userId == currentTurnPlayer.player.userId
-
-                    Surface(
-                        shape = RoundedCornerShape(20.dp),
+                    border = BorderStroke(
+                        width = 1.dp,
                         color = if (isAnimatedSelectedPlayerActive) {
-                            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.8f)
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.25f)
                         } else {
-                            MaterialTheme.colorScheme.surface
+                            MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
                         },
-                        border = BorderStroke(
-                            width = 1.dp,
-                            color = if (isAnimatedSelectedPlayerActive) {
-                                MaterialTheme.colorScheme.primary.copy(alpha = 0.25f)
-                            } else {
-                                MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
-                            }
-                        ),
-                        modifier = Modifier.fillMaxWidth(),
+                    ),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 14.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(6.dp),
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 14.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(6.dp),
-                        ) {
+                        if (animatedSelectedPlayer.player.user.avatar != null) {
+                            PlayerAvatar(
+                                user = animatedSelectedPlayer.player.user,
+                                size = 48.dp,
+                            )
+                        } else {
                             PlayerInitialBadge(
                                 user = animatedSelectedPlayer.player.user,
                                 highlight = isAnimatedSelectedPlayerActive,
                             )
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                Text(
-                                    text = animatedSelectedPlayer.player.user.name,
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                )
-                                if (isAnimatedSelectedPlayerActive) {
-                                    Icon(
-                                        imageVector = YamsIcons.Crown,
-                                        contentDescription = stringResource(Res.string.play_active_player_cd),
-                                        tint = MaterialTheme.colorScheme.primary,
-                                        modifier = Modifier.size(18.dp),
-                                    )
-                                }
-                            }
-                            Text(
-                                text = if (isAnimatedSelectedPlayerActive) {
-                                    stringResource(Res.string.play_active_sheet)
-                                } else {
-                                    stringResource(Res.string.play_read_only)
-                                },
-                                style = MaterialTheme.typography.labelLarge,
-                                color = if (isAnimatedSelectedPlayerActive) {
-                                    MaterialTheme.colorScheme.onPrimaryContainer
-                                } else {
-                                    MaterialTheme.colorScheme.onSurfaceVariant
-                                },
-                            )
-                            Text(
-                                text = stringResource(
-                                    Res.string.play_player_position,
-                                    selectedIndex + 1,
-                                    playerCount,
-                                ),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
                         }
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                text = animatedSelectedPlayer.player.user.name,
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                            if (isAnimatedSelectedPlayerActive) {
+                                Icon(
+                                    imageVector = YamsIcons.Crown,
+                                    contentDescription = stringResource(Res.string.play_active_player_cd),
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(18.dp),
+                                )
+                            }
+                        }
+                        Text(
+                            text = if (isAnimatedSelectedPlayerActive) {
+                                stringResource(Res.string.play_active_sheet)
+                            } else {
+                                stringResource(Res.string.play_read_only)
+                            },
+                            style = MaterialTheme.typography.labelLarge,
+                            color = if (isAnimatedSelectedPlayerActive) {
+                                MaterialTheme.colorScheme.onPrimaryContainer
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            },
+                        )
+                        Text(
+                            text = stringResource(
+                                Res.string.play_player_position,
+                                selectedIndex + 1,
+                                playerCount,
+                            ),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
                     }
                 }
-
-                PlayerPagerButton(
-                    onClick = onNextPlayer,
-                    icon = YamsIcons.ChevronRight,
-                    contentDescription = stringResource(Res.string.play_next_sheet_cd),
-                )
             }
 
-            Text(
-                text = if (isEditable) {
-                    if (showColumnSummaries) {
-                        stringResource(Res.string.play_editable_multi_help)
-                    } else {
-                        stringResource(Res.string.play_editable_single_help)
-                    }
-                } else {
-                    stringResource(
-                        Res.string.play_read_only_help,
-                        selectedPlayer.player.user.name,
-                        currentTurnPlayer.player.user.name,
-                    )
-                },
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            PlayerPagerButton(
+                onClick = onNextPlayer,
+                icon = YamsIcons.ChevronRight,
+                contentDescription = stringResource(Res.string.play_next_sheet_cd),
             )
+        }
+
+        Text(
+            text = if (isEditable) {
+                if (showColumnSummaries) {
+                    stringResource(Res.string.play_editable_multi_help)
+                } else {
+                    stringResource(Res.string.play_editable_single_help)
+                }
+            } else {
+                stringResource(
+                    Res.string.play_read_only_help,
+                    selectedPlayer.player.user.name,
+                    currentTurnPlayer.player.user.name,
+                )
+            },
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+@Composable
+private fun CompactScoreSheetOverviewRow(
+    selectedPlayer: PlayerState,
+    currentTurnPlayer: PlayerState,
+    overallTotal: Int,
+    selectedIndex: Int,
+    playerCount: Int,
+    onPreviousPlayer: () -> Unit,
+    onNextPlayer: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        PlayerPagerButton(
+            onClick = onPreviousPlayer,
+            icon = YamsIcons.ChevronLeft,
+            contentDescription = stringResource(Res.string.play_previous_sheet_cd),
+            size = 38.dp,
+        )
+
+        AnimatedContent(
+            targetState = selectedPlayer,
+            modifier = Modifier.weight(1f),
+            transitionSpec = {
+                (slideInHorizontally(
+                    animationSpec = tween(240),
+                    initialOffsetX = { fullWidth -> fullWidth / 2 },
+                ) + fadeIn(animationSpec = tween(180)) + scaleIn(initialScale = 0.96f))
+                    .togetherWith(
+                        slideOutHorizontally(
+                            animationSpec = tween(180),
+                            targetOffsetX = { fullWidth -> -fullWidth / 2 },
+                        ) + fadeOut(animationSpec = tween(140)) + scaleOut(targetScale = 0.96f)
+                    )
+            },
+            contentKey = { playerState -> playerState.player.userId },
+            label = "compactSelectedPlayer",
+        ) { animatedSelectedPlayer ->
+            val isActivePlayer =
+                animatedSelectedPlayer.player.userId == currentTurnPlayer.player.userId
+            CompactPlayerPill(
+                user = animatedSelectedPlayer.player.user,
+                status = if (isActivePlayer) {
+                    stringResource(Res.string.play_turn_current)
+                } else {
+                    stringResource(Res.string.play_read_only)
+                },
+                position = stringResource(
+                    Res.string.play_player_position_compact,
+                    selectedIndex + 1,
+                    playerCount,
+                ),
+                highlight = isActivePlayer,
+            )
+        }
+
+        ScorePill(
+            value = overallTotal.toString(),
+            suffix = null,
+            emphasize = true,
+            fixedWidth = 58.dp,
+            isCompactUi = true,
+        )
+
+        PlayerPagerButton(
+            onClick = onNextPlayer,
+            icon = YamsIcons.ChevronRight,
+            contentDescription = stringResource(Res.string.play_next_sheet_cd),
+            size = 38.dp,
+        )
+    }
+}
+
+@Composable
+private fun CompactPlayerPill(
+    user: User,
+    status: String,
+    position: String,
+    highlight: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        shape = RoundedCornerShape(16.dp),
+        color = if (highlight) {
+            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.86f)
+        } else {
+            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.58f)
+        },
+        border = BorderStroke(
+            width = 1.dp,
+            color = if (highlight) {
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.28f)
+            } else {
+                MaterialTheme.colorScheme.outline.copy(alpha = 0.16f)
+            },
+        ),
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 9.dp, vertical = 7.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            PlayerAvatar(user = user, size = 34.dp)
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(1.dp),
+            ) {
+                Text(
+                    text = user.name,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Text(
+                    text = "$status · $position",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = if (highlight) {
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
         }
     }
 }
@@ -370,7 +606,10 @@ private fun PlayerAvatar(
         val fallbackAvatar = painterResource(appAvatarFor(user.name))
         AsyncImage(
             model = user.avatar,
-            contentDescription = stringResource(Res.string.play_current_player_avatar_cd, user.name),
+            contentDescription = stringResource(
+                Res.string.play_current_player_avatar_cd,
+                user.name
+            ),
             placeholder = fallbackAvatar,
             error = fallbackAvatar,
             fallback = fallbackAvatar,
@@ -388,11 +627,12 @@ private fun PlayerPagerButton(
     onClick: () -> Unit,
     icon: ImageVector,
     contentDescription: String,
+    size: Dp = 44.dp,
     modifier: Modifier = Modifier,
 ) {
     androidx.compose.material3.FilledTonalIconButton(
         onClick = onClick,
-        modifier = modifier.size(44.dp),
+        modifier = modifier.size(size),
     ) {
         Icon(
             imageVector = icon,

@@ -20,7 +20,12 @@
     <string name="home_info_title">Informations</string>
     <string name="home_info_subtitle">Règles du jeu, bibliothèques utilisées et version de l'application.</string>
     <string name="home_settings_title">Réglages</string>
-    <string name="home_settings_subtitle">Pour l'instant, seuls les retours haptiques sont configurables.</string>
+    <string name="home_settings_button">Réglages</string>
+    <string name="home_settings_subtitle">Affichage du gameplay et retours haptiques.</string>
+    <string name="home_settings_gameplay_density_title">Affichage gameplay par défaut</string>
+    <string name="home_settings_gameplay_density_supporting_text">Normal garde les détails. Condensé réduit les textes et les espacements pour saisir plus vite.</string>
+    <string name="home_settings_density_normal">Normal</string>
+    <string name="home_settings_density_compact">Condensé</string>
     <string name="home_settings_haptic_label">Retour haptique</string>
     <string name="home_settings_haptic_supporting_text">Vibre légèrement quand un score est saisi ou qu'une action importante est confirmée.</string>
     <string name="home_info_rules_button">Voir les règles Yams / Yahtzee</string>

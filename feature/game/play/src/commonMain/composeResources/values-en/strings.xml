@@ -5,6 +5,11 @@
     <string name="play_home_cd">Home</string>
     <string name="play_title">Score sheet</string>
     <string name="play_info_cd">Information</string>
+    <string name="play_density_switch_compact_cd">Switch to compact display</string>
+    <string name="play_density_switch_normal_cd">Switch to normal display</string>
+    <string name="play_info_display">Display</string>
+    <string name="play_compact_display">Compact mode</string>
+    <string name="play_compact_display_help">Reduces the score sheet height so scores are faster to enter.</string>
     <string name="play_undo_last_move">Undo last move</string>
     <string name="play_points_suffix">pts</string>
     <string name="play_points_value">%1$d pts</string>
@@ -101,6 +106,7 @@
     <string name="play_active_sheet">Active sheet</string>
     <string name="play_read_only">Read only</string>
     <string name="play_player_position">Player %1$d/%2$d</string>
+    <string name="play_player_position_compact">%1$d/%2$d</string>
     <string name="play_editable_multi_help">You can fill any empty cell in any column, with no required order.</string>
     <string name="play_editable_single_help">You can use this sheet to enter the current player's points.</string>
     <string name="play_read_only_help">%1$s's sheet stays visible, but it cannot be edited during %2$s's turn.</string>

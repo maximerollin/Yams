@@ -1,10 +1,14 @@
 package io.github.maximerollin.yams.feature.game.play.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import io.github.maximerollin.yams.core.designsystem.icon.Target
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
@@ -37,6 +41,7 @@ internal fun GamePlayUpperScoreSection(
     scoreSelectionRequest: ScoreSelectionRequest?,
     onDismissScoreSelection: () -> Unit,
     onSelectScore: (ScoreSelectionOption, ScoreCellRef) -> Unit,
+    isCompactUi: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
     ScoreSection(
@@ -53,12 +58,14 @@ internal fun GamePlayUpperScoreSection(
         } else {
             upperTotals.firstOrNull()?.toString().orEmpty()
         },
+        isCompactUi = isCompactUi,
         modifier = modifier,
     ) {
         if (isMultiColumn) {
             ScoreColumnHeader(
                 columnCount = columnCount,
                 scrollState = scrollState,
+                isCompactUi = isCompactUi,
             )
             HorizontalDivider(color = MaterialTheme.colorScheme.surface)
         }
@@ -81,6 +88,7 @@ internal fun GamePlayUpperScoreSection(
                     onCellClick = { columnIndex ->
                         onScoreCellClick(row, columnIndex)
                     },
+                    isCompactUi = isCompactUi,
                 )
                 if (index < rows.lastIndex) {
                     HorizontalDivider(color = MaterialTheme.colorScheme.surface)
@@ -89,36 +97,41 @@ internal fun GamePlayUpperScoreSection(
 
             HorizontalDivider(color = MaterialTheme.colorScheme.surface)
 
-            SummaryGridRow(
-                label = stringResource(Res.string.play_subtotal),
-                supportingText = stringResource(Res.string.play_subtotal_by_column),
-                values = upperSubtotals.map(Int::toString),
-                scrollState = scrollState,
-            )
-            SummaryGridRow(
-                label = stringResource(Res.string.play_bonus_threshold),
-                supportingText = stringResource(Res.string.play_bonus_threshold_by_column),
-                values = List(columnCount) { settings.upperBonusThreshold.toString() },
-                scrollState = scrollState,
-            )
-            SummaryGridRow(
-                label = stringResource(Res.string.play_bonus_value),
-                supportingText = stringResource(Res.string.play_bonus_value_awarded),
-                values = List(columnCount) { settings.upperBonusValue.toString() },
-                scrollState = scrollState,
-            )
-            SummaryGridRow(
-                label = stringResource(Res.string.play_bonus_applied),
-                supportingText = stringResource(Res.string.play_bonus_by_column),
-                values = upperBonuses.map(Int::toString),
-                scrollState = scrollState,
-            )
+            AnimatedVisibility(visible = !isCompactUi) {
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    SummaryGridRow(
+                        label = stringResource(Res.string.play_subtotal),
+                        supportingText = stringResource(Res.string.play_subtotal_by_column),
+                        values = upperSubtotals.map(Int::toString),
+                        scrollState = scrollState,
+                    )
+                    SummaryGridRow(
+                        label = stringResource(Res.string.play_bonus_threshold),
+                        supportingText = stringResource(Res.string.play_bonus_threshold_by_column),
+                        values = List(columnCount) { settings.upperBonusThreshold.toString() },
+                        scrollState = scrollState,
+                    )
+                    SummaryGridRow(
+                        label = stringResource(Res.string.play_bonus_value),
+                        supportingText = stringResource(Res.string.play_bonus_value_awarded),
+                        values = List(columnCount) { settings.upperBonusValue.toString() },
+                        scrollState = scrollState,
+                    )
+                    SummaryGridRow(
+                        label = stringResource(Res.string.play_bonus_applied),
+                        supportingText = stringResource(Res.string.play_bonus_by_column),
+                        values = upperBonuses.map(Int::toString),
+                        scrollState = scrollState,
+                    )
+                }
+            }
             SummaryGridRow(
                 label = stringResource(Res.string.play_upper_total),
                 supportingText = stringResource(Res.string.play_upper_total_by_column),
                 values = upperTotals.map(Int::toString),
                 scrollState = scrollState,
                 emphasize = true,
+                isCompactUi = isCompactUi,
             )
         } else {
             rows.forEachIndexed { index, row ->
@@ -137,6 +150,7 @@ internal fun GamePlayUpperScoreSection(
                     onMenuItemClick = { option ->
                         rowScoreSelection?.let { onSelectScore(option, it.cell) }
                     },
+                    isCompactUi = isCompactUi,
                 )
                 if (index < rows.lastIndex) {
                     HorizontalDivider(color = MaterialTheme.colorScheme.surface)
@@ -145,25 +159,29 @@ internal fun GamePlayUpperScoreSection(
 
             HorizontalDivider(color = MaterialTheme.colorScheme.surface)
 
-            SummaryRow(
-                label = stringResource(Res.string.play_subtotal),
-                value = upperSubtotals.firstOrNull()?.toString().orEmpty(),
-                supportingText = stringResource(Res.string.play_upper_subtotal_single),
-            )
-            SummaryRow(
-                label = stringResource(Res.string.play_bonus_threshold),
-                value = settings.upperBonusThreshold.toString(),
-                supportingText = stringResource(Res.string.play_bonus_starts_at),
-            )
-            SummaryRow(
-                label = stringResource(Res.string.play_bonus_value),
-                value = settings.upperBonusValue.toString(),
-                supportingText = if (settings.isUpperBonusEnabled) {
-                    stringResource(Res.string.play_bonus_value_enabled)
-                } else {
-                    stringResource(Res.string.play_bonus_disabled)
-                },
-            )
+            AnimatedVisibility(visible = !isCompactUi) {
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    SummaryRow(
+                        label = stringResource(Res.string.play_subtotal),
+                        value = upperSubtotals.firstOrNull()?.toString().orEmpty(),
+                        supportingText = stringResource(Res.string.play_upper_subtotal_single),
+                    )
+                    SummaryRow(
+                        label = stringResource(Res.string.play_bonus_threshold),
+                        value = settings.upperBonusThreshold.toString(),
+                        supportingText = stringResource(Res.string.play_bonus_starts_at),
+                    )
+                    SummaryRow(
+                        label = stringResource(Res.string.play_bonus_value),
+                        value = settings.upperBonusValue.toString(),
+                        supportingText = if (settings.isUpperBonusEnabled) {
+                            stringResource(Res.string.play_bonus_value_enabled)
+                        } else {
+                            stringResource(Res.string.play_bonus_disabled)
+                        },
+                    )
+                }
+            }
             SummaryRow(
                 label = stringResource(Res.string.play_upper_total),
                 value = upperTotals.firstOrNull()?.toString().orEmpty(),
@@ -176,6 +194,7 @@ internal fun GamePlayUpperScoreSection(
                     stringResource(Res.string.play_no_bonus_calculation)
                 },
                 emphasize = true,
+                isCompactUi = isCompactUi,
             )
         }
     }

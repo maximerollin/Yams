@@ -33,8 +33,13 @@ internal fun GamePlayCombinationSection(
     scoreSelectionRequest: ScoreSelectionRequest?,
     onDismissScoreSelection: () -> Unit,
     onSelectScore: (ScoreSelectionOption, ScoreCellRef) -> Unit,
+    isCompactUi: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
+    if (rows.isEmpty()) {
+        return
+    }
+
     ScoreSection(
         title = stringResource(Res.string.play_combinations_title),
         subtitle = if (isMultiColumn) {
@@ -49,12 +54,14 @@ internal fun GamePlayCombinationSection(
         } else {
             lowerTotals.firstOrNull()?.toString().orEmpty()
         },
+        isCompactUi = isCompactUi,
         modifier = modifier,
     ) {
         if (isMultiColumn) {
             ScoreColumnHeader(
                 columnCount = columnCount,
                 scrollState = scrollState,
+                isCompactUi = isCompactUi,
             )
             HorizontalDivider(color = MaterialTheme.colorScheme.surface)
         }
@@ -70,6 +77,7 @@ internal fun GamePlayCombinationSection(
                         values = selectedPlayer.valuesFor(row.key, columnCount).map { (it ?: 0).toString() },
                         scrollState = scrollState,
                         emphasize = true,
+                        isCompactUi = isCompactUi,
                     )
                 } else {
                     ScoreGridRow(
@@ -86,6 +94,7 @@ internal fun GamePlayCombinationSection(
                         onCellClick = { columnIndex ->
                             onScoreCellClick(row, columnIndex)
                         },
+                        isCompactUi = isCompactUi,
                     )
                 }
                 if (index < rows.lastIndex) {
@@ -101,6 +110,7 @@ internal fun GamePlayCombinationSection(
                 values = lowerTotals.map(Int::toString),
                 scrollState = scrollState,
                 emphasize = true,
+                isCompactUi = isCompactUi,
             )
         } else {
             rows.forEachIndexed { index, row ->
@@ -114,6 +124,7 @@ internal fun GamePlayCombinationSection(
                         value = (selectedPlayer.valueFor(row.key) ?: 0).toString(),
                         supportingText = row.supportingText,
                         emphasize = true,
+                        isCompactUi = isCompactUi,
                     )
                 } else {
                     ScoreRow(
@@ -127,6 +138,7 @@ internal fun GamePlayCombinationSection(
                         onMenuItemClick = { option ->
                             rowScoreSelection?.let { onSelectScore(option, it.cell) }
                         },
+                        isCompactUi = isCompactUi,
                     )
                 }
                 if (index < rows.lastIndex) {
