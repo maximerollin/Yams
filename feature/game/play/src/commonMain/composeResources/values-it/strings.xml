@@ -2,6 +2,9 @@
     <string name="play_loading">Caricamento scheda punti...</string>
     <string name="play_empty">Nessuna scheda punti disponibile per ora.</string>
     <string name="play_yam_bonus_snackbar">Bonus Yam: %1$d punti extra!</string>
+    <string name="play_celebration_yams_title">YAMS!</string>
+    <string name="play_celebration_big_score_title">Grande punteggio!</string>
+    <string name="play_celebration_score_message">%1$s ha appena segnato</string>
     <string name="play_home_cd">Home</string>
     <string name="play_title">Scheda punti</string>
     <string name="play_info_cd">Informazioni</string>

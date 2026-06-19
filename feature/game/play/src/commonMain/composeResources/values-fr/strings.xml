@@ -2,6 +2,9 @@
     <string name="play_loading">Chargement de la feuille de score...</string>
     <string name="play_empty">Aucune feuille de score disponible pour le moment.</string>
     <string name="play_yam_bonus_snackbar">Yam bonus : %1$d points supplémentaires !</string>
+    <string name="play_celebration_yams_title">YAMS !</string>
+    <string name="play_celebration_big_score_title">Gros score !</string>
+    <string name="play_celebration_score_message">%1$s vient de marquer</string>
     <string name="play_home_cd">Accueil</string>
     <string name="play_title">Feuille de score</string>
     <string name="play_info_cd">Informations</string>
