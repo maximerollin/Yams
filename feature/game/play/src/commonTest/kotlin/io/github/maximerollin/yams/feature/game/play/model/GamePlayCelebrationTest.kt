@@ -1,9 +1,12 @@
 package io.github.maximerollin.yams.feature.game.play.model
 
+import io.github.alexzhirkevich.compottie.LottieComposition
+import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertSame
+import yams.feature.game.play.generated.resources.Res
 
 class GamePlayCelebrationTest {
     @Test
@@ -50,6 +53,24 @@ class GamePlayCelebrationTest {
         val celebration = celebration(id = 8)
 
         assertSame(celebration, celebration.clearIfCompleted(completedId = 7))
+    }
+
+    @Test
+    fun bundledYamsAssetParsesWithCompottie() = runTest {
+        val composition = LottieComposition.parse(
+            Res.readBytes("files/celebration_yams.json").decodeToString(),
+        )
+
+        assertEquals(108f, composition.endFrame)
+    }
+
+    @Test
+    fun bundledBigScoreAssetParsesWithCompottie() = runTest {
+        val composition = LottieComposition.parse(
+            Res.readBytes("files/celebration_big_score.json").decodeToString(),
+        )
+
+        assertEquals(72f, composition.endFrame)
     }
 
     private fun celebration(id: Int) = GamePlayCelebration(

@@ -39,6 +39,7 @@ import io.github.alexzhirkevich.compottie.LottieCompositionSpec
 import io.github.alexzhirkevich.compottie.animateLottieCompositionAsState
 import io.github.alexzhirkevich.compottie.rememberLottieComposition
 import io.github.alexzhirkevich.compottie.rememberLottiePainter
+import io.github.maximerollin.yams.core.designsystem.preview.YamsPhoneStoreScreenshotPreviews
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
 import io.github.maximerollin.yams.core.designsystem.theme.colors
 import io.github.maximerollin.yams.feature.game.play.model.CelebrationFallbackEnterMillis
@@ -263,3 +264,61 @@ private val GamePlayCelebrationType.assetPath: String
         GamePlayCelebrationType.YAMS -> "files/celebration_yams.json"
         GamePlayCelebrationType.BIG_SCORE -> "files/celebration_big_score.json"
     }
+
+@Composable
+private fun CelebrationPreview(
+    type: GamePlayCelebrationType,
+    forceFallback: Boolean = false,
+) {
+    YamsTheme {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+        ) {
+            GamePlayCelebrationOverlay(
+                celebration = GamePlayCelebration(
+                    id = 1,
+                    type = type,
+                    playerName = "Lina",
+                    score = if (type == GamePlayCelebrationType.YAMS) 50 else 40,
+                ),
+                onFinished = {},
+                modifier = Modifier.fillMaxSize(),
+                autoDismiss = false,
+                forceFallback = forceFallback,
+                previewProgress = if (forceFallback) null else 0.55f,
+            )
+        }
+    }
+}
+
+@YamsPhoneStoreScreenshotPreviews
+@Composable
+private fun YamsCelebrationPreview() {
+    CelebrationPreview(type = GamePlayCelebrationType.YAMS)
+}
+
+@YamsPhoneStoreScreenshotPreviews
+@Composable
+private fun BigScoreCelebrationPreview() {
+    CelebrationPreview(type = GamePlayCelebrationType.BIG_SCORE)
+}
+
+@YamsPhoneStoreScreenshotPreviews
+@Composable
+private fun YamsCelebrationFallbackPreview() {
+    CelebrationPreview(
+        type = GamePlayCelebrationType.YAMS,
+        forceFallback = true,
+    )
+}
+
+@YamsPhoneStoreScreenshotPreviews
+@Composable
+private fun BigScoreCelebrationFallbackPreview() {
+    CelebrationPreview(
+        type = GamePlayCelebrationType.BIG_SCORE,
+        forceFallback = true,
+    )
+}
