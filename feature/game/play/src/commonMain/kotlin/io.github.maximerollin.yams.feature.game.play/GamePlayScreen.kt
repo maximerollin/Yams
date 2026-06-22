@@ -1,20 +1,6 @@
 package io.github.maximerollin.yams.feature.game.play
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,10 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.FloatingActionButton
@@ -35,7 +18,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -48,32 +30,25 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import io.github.maximerollin.yams.core.designsystem.component.YamsCelebrationConfetti
 import io.github.maximerollin.yams.core.designsystem.icon.Undo
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
 import io.github.maximerollin.yams.core.designsystem.preview.YamsPhoneStoreScreenshotPreviews
 import io.github.maximerollin.yams.core.designsystem.preview.YamsStoreScreenshotPreviews
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
-import io.github.maximerollin.yams.core.designsystem.theme.colors
 import io.github.maximerollin.yams.core.model.Game
 import io.github.maximerollin.yams.core.model.GameId
 import io.github.maximerollin.yams.core.model.GameSettings
 import io.github.maximerollin.yams.core.model.ScoreKey
 import io.github.maximerollin.yams.data.game.model.ScoreCellRef
 import io.github.maximerollin.yams.data.preference.GamePlayUiDensity
+import io.github.maximerollin.yams.feature.game.play.components.GamePlayCelebrationOverlay
 import io.github.maximerollin.yams.feature.game.play.components.GamePlayCombinationSection
 import io.github.maximerollin.yams.feature.game.play.components.GamePlayCustomRulesSection
 import io.github.maximerollin.yams.feature.game.play.components.GamePlayDensityDiscoveryOverlay
@@ -85,20 +60,16 @@ import io.github.maximerollin.yams.feature.game.play.components.GamePlayUpperSco
 import io.github.maximerollin.yams.feature.game.play.components.shouldShowGamePlayDensityDiscovery
 import io.github.maximerollin.yams.feature.game.play.mock.gamePlayPreviewUiState
 import io.github.maximerollin.yams.feature.game.play.model.GamePlayCelebration
-import io.github.maximerollin.yams.feature.game.play.model.GamePlayCelebrationType
 import io.github.maximerollin.yams.feature.game.play.model.GamePlayColumnSummary
 import io.github.maximerollin.yams.feature.game.play.model.GamePlayStateUi
 import io.github.maximerollin.yams.feature.game.play.model.GameStatus
 import io.github.maximerollin.yams.feature.game.play.model.PlayerState
 import io.github.maximerollin.yams.feature.game.play.model.celebrationTypeFor
-import kotlinx.coroutines.delay
+import io.github.maximerollin.yams.feature.game.play.model.clearIfCompleted
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.sin
 import yams.feature.game.play.generated.resources.*
 
 @Composable
@@ -460,9 +431,7 @@ private fun GamePlayScreen(
                     celebration = currentCelebration,
                     modifier = Modifier.fillMaxSize(),
                     onFinished = {
-                        if (celebration?.id == currentCelebration.id) {
-                            celebration = null
-                        }
+                        celebration = celebration.clearIfCompleted(currentCelebration.id)
                     },
                 )
             }
@@ -555,376 +524,6 @@ private fun GamePlayMessageState(
     }
 }
 
-@Composable
-private fun GamePlayCelebrationOverlay(
-    celebration: GamePlayCelebration,
-    onFinished: () -> Unit,
-    modifier: Modifier = Modifier,
-    autoDismiss: Boolean = true,
-    initiallyVisible: Boolean = false,
-) {
-    var isVisible by remember { mutableStateOf(initiallyVisible) }
-    val accentColor = when (celebration.type) {
-        GamePlayCelebrationType.YAMS -> YamsTheme.colors.gold
-        GamePlayCelebrationType.BIG_SCORE -> YamsTheme.colors.info
-    }
-    val onAccentColor = when (celebration.type) {
-        GamePlayCelebrationType.YAMS -> YamsTheme.colors.onGold
-        GamePlayCelebrationType.BIG_SCORE -> YamsTheme.colors.onInfo
-    }
-    val title = when (celebration.type) {
-        GamePlayCelebrationType.YAMS -> stringResource(Res.string.play_celebration_yams_title)
-        GamePlayCelebrationType.BIG_SCORE -> stringResource(
-            Res.string.play_celebration_big_score_title,
-        )
-    }
-
-    LaunchedEffect(celebration.id, autoDismiss) {
-        isVisible = true
-        if (autoDismiss) {
-            delay(GamePlayCelebrationVisibleMillis)
-            isVisible = false
-            delay(GamePlayCelebrationExitMillis)
-            onFinished()
-        }
-    }
-
-    Box(
-        modifier = modifier.background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.18f)),
-        contentAlignment = Alignment.Center,
-    ) {
-        if (celebration.type == GamePlayCelebrationType.YAMS) {
-            YamsCelebrationConfetti(modifier = Modifier.fillMaxSize())
-        }
-
-        AnimatedVisibility(
-            visible = isVisible,
-            enter = scaleIn(
-                initialScale = 0.72f,
-                animationSpec = tween(durationMillis = 220),
-            ) + fadeIn(animationSpec = tween(durationMillis = 160)),
-            exit = scaleOut(
-                targetScale = 0.9f,
-                animationSpec = tween(durationMillis = GamePlayCelebrationExitMillis.toInt()),
-            ) + fadeOut(animationSpec = tween(durationMillis = GamePlayCelebrationExitMillis.toInt())),
-        ) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center,
-            ) {
-                GamePlayCelebrationDiceBurst(
-                    type = celebration.type,
-                    accentColor = accentColor,
-                    modifier = Modifier.fillMaxSize(),
-                )
-
-                Surface(
-                    modifier = Modifier
-                        .padding(24.dp)
-                        .fillMaxWidth()
-                        .widthIn(max = 420.dp),
-                    shape = MaterialTheme.shapes.extraLarge,
-                    color = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f),
-                    tonalElevation = 8.dp,
-                    shadowElevation = 18.dp,
-                    border = BorderStroke(
-                        width = 2.dp,
-                        color = accentColor.copy(alpha = 0.72f),
-                    ),
-                ) {
-                    Column(
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 28.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
-                        Text(
-                            text = title,
-                            modifier = Modifier.fillMaxWidth(),
-                            style = MaterialTheme.typography.displaySmall,
-                            color = accentColor,
-                            fontWeight = FontWeight.ExtraBold,
-                            textAlign = TextAlign.Center,
-                        )
-                        Text(
-                            text = stringResource(
-                                Res.string.play_celebration_score_message,
-                                celebration.playerName,
-                            ),
-                            modifier = Modifier.fillMaxWidth(),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = TextAlign.Center,
-                        )
-                        Surface(
-                            color = accentColor,
-                            contentColor = onAccentColor,
-                            shape = MaterialTheme.shapes.large,
-                        ) {
-                            Text(
-                                text = stringResource(
-                                    Res.string.play_points_value,
-                                    celebration.score,
-                                ),
-                                modifier = Modifier.padding(horizontal = 18.dp, vertical = 8.dp),
-                                style = MaterialTheme.typography.headlineSmall,
-                                fontWeight = FontWeight.Bold,
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun GamePlayCelebrationDiceBurst(
-    type: GamePlayCelebrationType,
-    accentColor: Color,
-    modifier: Modifier = Modifier,
-) {
-    val diceConfigs = remember(type) { celebrationDiceConfigs(type) }
-    val transition = rememberInfiniteTransition(label = "celebrationDiceBurst")
-    val spin by transition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(
-                durationMillis = if (type == GamePlayCelebrationType.YAMS) 880 else 1_120,
-                easing = LinearEasing,
-            ),
-            repeatMode = RepeatMode.Restart,
-        ),
-        label = "celebrationDiceSpin",
-    )
-    val pulse by transition.animateFloat(
-        initialValue = 0.94f,
-        targetValue = 1.08f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 620, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse,
-        ),
-        label = "celebrationDicePulse",
-    )
-
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center,
-    ) {
-        diceConfigs.forEach { config ->
-            val direction = if (config.spinDirection < 0f) -1f else 1f
-            val animationDegrees = spin * FullCircleDegrees * direction + config.phaseDegrees
-            val angle = animationDegrees.toRadians()
-            val animatedOffsetY = config.offsetY + (sin(angle) * 10).dp
-            GamePlayCelebrationDie(
-                value = config.value,
-                accentColor = accentColor,
-                animationDegrees = animationDegrees,
-                modifier = Modifier
-                    .offset(x = config.offsetX, y = animatedOffsetY)
-                    .size(config.size * pulse * config.scale),
-            )
-        }
-    }
-}
-
-@Composable
-private fun GamePlayCelebrationDie(
-    value: Int,
-    accentColor: Color,
-    animationDegrees: Float,
-    modifier: Modifier = Modifier,
-) {
-    val dotColor = YamsTheme.colors.brown
-
-    Canvas(modifier = modifier) {
-        drawProjectedDie(
-            value = value,
-            accentColor = accentColor,
-            dotColor = dotColor,
-            animationDegrees = animationDegrees,
-        )
-    }
-}
-
-private fun DrawScope.drawProjectedDie(
-    value: Int,
-    accentColor: Color,
-    dotColor: Color,
-    animationDegrees: Float,
-) {
-    val phase = animationDegrees.toRadians()
-    val cubeSide = size.minDimension * 0.58f
-    val depthX = cubeSide * (0.3f + 0.05f * cos(phase).toFloat())
-    val depthY = -cubeSide * (0.26f + 0.045f * sin(phase).toFloat())
-    val totalWidth = cubeSide + depthX
-    val totalHeight = cubeSide - depthY
-    val frontTopLeft = Offset(
-        x = (size.width - totalWidth) / 2f,
-        y = (size.height - totalHeight) / 2f - depthY,
-    )
-    val a = frontTopLeft
-    val b = frontTopLeft + Offset(cubeSide, 0f)
-    val c = frontTopLeft + Offset(cubeSide, cubeSide)
-    val d = frontTopLeft + Offset(0f, cubeSide)
-    val depth = Offset(depthX, depthY)
-    val backA = a + depth
-    val backB = b + depth
-    val backC = c + depth
-    val strokeWidth = size.minDimension * 0.026f
-    val frontFace = listOf(a, b, c, d)
-    val topFace = listOf(backA, backB, b, a)
-    val sideFace = listOf(b, backB, backC, c)
-
-    drawFace(
-        points = topFace,
-        color = Color.White.copy(alpha = 0.98f),
-        strokeColor = accentColor.copy(alpha = 0.28f),
-        strokeWidth = strokeWidth,
-    )
-    drawFace(
-        points = sideFace,
-        color = accentColor.copy(alpha = 0.28f),
-        strokeColor = accentColor.copy(alpha = 0.38f),
-        strokeWidth = strokeWidth,
-    )
-    drawFace(
-        points = frontFace,
-        color = Color.White,
-        strokeColor = accentColor.copy(alpha = 0.4f),
-        strokeWidth = strokeWidth,
-    )
-
-    drawFacePips(
-        value = nextDieFaceValue(value, 1),
-        dotColor = dotColor.copy(alpha = 0.62f),
-        topLeft = backA,
-        topRight = backB,
-        bottomLeft = a,
-        dotRadius = cubeSide * 0.04f,
-    )
-    drawFacePips(
-        value = nextDieFaceValue(value, 2),
-        dotColor = dotColor.copy(alpha = 0.54f),
-        topLeft = b,
-        topRight = backB,
-        bottomLeft = c,
-        dotRadius = cubeSide * 0.04f,
-    )
-    drawFacePips(
-        value = value,
-        dotColor = dotColor,
-        topLeft = a,
-        topRight = b,
-        bottomLeft = d,
-        dotRadius = cubeSide * 0.062f,
-    )
-}
-
-private fun DrawScope.drawFace(
-    points: List<Offset>,
-    color: Color,
-    strokeColor: Color,
-    strokeWidth: Float,
-) {
-    val path = points.toPath()
-    drawPath(path = path, color = color)
-    drawPath(
-        path = path,
-        color = strokeColor,
-        style = Stroke(width = strokeWidth),
-    )
-}
-
-private fun DrawScope.drawFacePips(
-    value: Int,
-    dotColor: Color,
-    topLeft: Offset,
-    topRight: Offset,
-    bottomLeft: Offset,
-    dotRadius: Float,
-) {
-    val left = 0.28f
-    val center = 0.5f
-    val right = 0.72f
-    val top = 0.28f
-    val bottom = 0.72f
-
-    fun pip(horizontal: Float, vertical: Float) {
-        drawCircle(
-            color = dotColor,
-            radius = dotRadius,
-            center = pointOnFace(
-                topLeft = topLeft,
-                topRight = topRight,
-                bottomLeft = bottomLeft,
-                horizontal = horizontal,
-                vertical = vertical,
-            ),
-        )
-    }
-
-    when (value.coerceIn(1, 6)) {
-        1 -> pip(center, center)
-        2 -> {
-            pip(left, top)
-            pip(right, bottom)
-        }
-        3 -> {
-            pip(left, top)
-            pip(center, center)
-            pip(right, bottom)
-        }
-        4 -> {
-            pip(left, top)
-            pip(right, top)
-            pip(left, bottom)
-            pip(right, bottom)
-        }
-        5 -> {
-            pip(left, top)
-            pip(right, top)
-            pip(center, center)
-            pip(left, bottom)
-            pip(right, bottom)
-        }
-        6 -> {
-            pip(left, top)
-            pip(right, top)
-            pip(left, center)
-            pip(right, center)
-            pip(left, bottom)
-            pip(right, bottom)
-        }
-    }
-}
-
-private fun List<Offset>.toPath(): Path = Path().apply {
-    val firstPoint = first()
-    moveTo(firstPoint.x, firstPoint.y)
-    drop(1).forEach { point -> lineTo(point.x, point.y) }
-    close()
-}
-
-private fun pointOnFace(
-    topLeft: Offset,
-    topRight: Offset,
-    bottomLeft: Offset,
-    horizontal: Float,
-    vertical: Float,
-): Offset =
-    Offset(
-        x = topLeft.x + (topRight.x - topLeft.x) * horizontal +
-            (bottomLeft.x - topLeft.x) * vertical,
-        y = topLeft.y + (topRight.y - topLeft.y) * horizontal +
-            (bottomLeft.y - topLeft.y) * vertical,
-    )
-
-private fun nextDieFaceValue(value: Int, offset: Int): Int =
-    ((value.coerceIn(1, 6) - 1 + offset) % 6) + 1
-
-private fun Float.toRadians(): Double = this * PI / 180.0
-
 private val AllFiveDiceScoreOptions: List<Int> = listOf(0) + (5..30).toList()
 private val MatchingThreeDiceScoreOptions: List<Int> = listOf(0) + (1..6).map { it * 3 }
 private val MatchingFourDiceScoreOptions: List<Int> = listOf(0) + (1..6).map { it * 4 }
@@ -932,9 +531,6 @@ private val ThreeOfAKindAllDiceScoreOptions: List<Int> =
     possibleAllDiceScoreOptions(minMatchingDiceCount = 3)
 private val FourOfAKindAllDiceScoreOptions: List<Int> =
     possibleAllDiceScoreOptions(minMatchingDiceCount = 4)
-private const val GamePlayCelebrationVisibleMillis = 2_300L
-private const val GamePlayCelebrationExitMillis = 220L
-private const val FullCircleDegrees = 360f
 
 private fun possibleAllDiceScoreOptions(minMatchingDiceCount: Int): List<Int> = buildSet {
     add(0)
@@ -1453,34 +1049,6 @@ internal data class ScoreSelectionOption(
     val awardsExtraFiveOfAKindBonus: Boolean = false,
 )
 
-private data class CelebrationDiceConfig(
-    val value: Int,
-    val offsetX: Dp,
-    val offsetY: Dp,
-    val size: Dp,
-    val baseRotationDegrees: Float,
-    val spinDirection: Float,
-    val phaseDegrees: Float,
-    val scale: Float,
-)
-
-private fun celebrationDiceConfigs(type: GamePlayCelebrationType): List<CelebrationDiceConfig> =
-    when (type) {
-        GamePlayCelebrationType.YAMS -> listOf(
-            CelebrationDiceConfig(6, (-132).dp, (-116).dp, 76.dp, -18f, 0.7f, 0f, 1.05f),
-            CelebrationDiceConfig(5, 122.dp, (-112).dp, 70.dp, 16f, -0.8f, 72f, 0.98f),
-            CelebrationDiceConfig(4, (-152).dp, 116.dp, 64.dp, 24f, -0.65f, 144f, 0.9f),
-            CelebrationDiceConfig(3, 150.dp, 118.dp, 66.dp, -22f, 0.76f, 216f, 0.92f),
-            CelebrationDiceConfig(6, 0.dp, (-176).dp, 58.dp, 8f, 0.92f, 288f, 0.86f),
-        )
-
-        GamePlayCelebrationType.BIG_SCORE -> listOf(
-            CelebrationDiceConfig(6, (-118).dp, (-104).dp, 62.dp, -14f, 0.55f, 0f, 0.94f),
-            CelebrationDiceConfig(5, 112.dp, (-96).dp, 58.dp, 18f, -0.62f, 120f, 0.88f),
-            CelebrationDiceConfig(4, 0.dp, 128.dp, 60.dp, -8f, 0.64f, 240f, 0.9f),
-        )
-    }
-
 private fun ScoreRowUi.isYamsCelebration(
     option: ScoreSelectionOption,
     settings: GameSettings,
@@ -1537,30 +1105,5 @@ public fun GamePlaySingleColumnStoreScreenshotContent() {
         GamePlayScreen(
             uiState = gamePlayPreviewUiState(columnCount = 1),
         )
-    }
-}
-
-@YamsPhoneStoreScreenshotPreviews
-@Composable
-private fun GamePlayCelebrationOverlayPreview() {
-    YamsTheme {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
-        ) {
-            GamePlayCelebrationOverlay(
-                celebration = GamePlayCelebration(
-                    id = 1,
-                    type = GamePlayCelebrationType.YAMS,
-                    playerName = "Lina",
-                    score = 50,
-                ),
-                modifier = Modifier.fillMaxSize(),
-                autoDismiss = false,
-                initiallyVisible = true,
-                onFinished = {},
-            )
-        }
     }
 }
