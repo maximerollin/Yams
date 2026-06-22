@@ -84,10 +84,13 @@ import io.github.maximerollin.yams.feature.game.play.components.GamePlayTopBar
 import io.github.maximerollin.yams.feature.game.play.components.GamePlayUpperScoreSection
 import io.github.maximerollin.yams.feature.game.play.components.shouldShowGamePlayDensityDiscovery
 import io.github.maximerollin.yams.feature.game.play.mock.gamePlayPreviewUiState
+import io.github.maximerollin.yams.feature.game.play.model.GamePlayCelebration
+import io.github.maximerollin.yams.feature.game.play.model.GamePlayCelebrationType
 import io.github.maximerollin.yams.feature.game.play.model.GamePlayColumnSummary
 import io.github.maximerollin.yams.feature.game.play.model.GamePlayStateUi
 import io.github.maximerollin.yams.feature.game.play.model.GameStatus
 import io.github.maximerollin.yams.feature.game.play.model.PlayerState
+import io.github.maximerollin.yams.feature.game.play.model.celebrationTypeFor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
@@ -278,7 +281,12 @@ private fun GamePlayScreen(
         }
         allRows
             .firstOrNull { row -> row.key == cell.key }
-            ?.celebrationTypeFor(option = option, settings = settings)
+            ?.let { row ->
+                celebrationTypeFor(
+                    score = option.score,
+                    isYams = row.isYamsCelebration(option = option, settings = settings),
+                )
+            }
             ?.let { type ->
                 celebrationId += 1
                 celebration = GamePlayCelebration(
@@ -924,7 +932,6 @@ private val ThreeOfAKindAllDiceScoreOptions: List<Int> =
     possibleAllDiceScoreOptions(minMatchingDiceCount = 3)
 private val FourOfAKindAllDiceScoreOptions: List<Int> =
     possibleAllDiceScoreOptions(minMatchingDiceCount = 4)
-private const val BigScoreThreshold = 30
 private const val GamePlayCelebrationVisibleMillis = 2_300L
 private const val GamePlayCelebrationExitMillis = 220L
 private const val FullCircleDegrees = 360f
@@ -1446,18 +1453,6 @@ internal data class ScoreSelectionOption(
     val awardsExtraFiveOfAKindBonus: Boolean = false,
 )
 
-private data class GamePlayCelebration(
-    val id: Int,
-    val type: GamePlayCelebrationType,
-    val playerName: String,
-    val score: Int,
-)
-
-private enum class GamePlayCelebrationType {
-    YAMS,
-    BIG_SCORE,
-}
-
 private data class CelebrationDiceConfig(
     val value: Int,
     val offsetX: Dp,
@@ -1485,19 +1480,6 @@ private fun celebrationDiceConfigs(type: GamePlayCelebrationType): List<Celebrat
             CelebrationDiceConfig(4, 0.dp, 128.dp, 60.dp, -8f, 0.64f, 240f, 0.9f),
         )
     }
-
-private fun ScoreRowUi.celebrationTypeFor(
-    option: ScoreSelectionOption,
-    settings: GameSettings,
-): GamePlayCelebrationType? {
-    if (option.score <= 0) return null
-
-    return when {
-        isYamsCelebration(option = option, settings = settings) -> GamePlayCelebrationType.YAMS
-        option.score >= BigScoreThreshold -> GamePlayCelebrationType.BIG_SCORE
-        else -> null
-    }
-}
 
 private fun ScoreRowUi.isYamsCelebration(
     option: ScoreSelectionOption,
