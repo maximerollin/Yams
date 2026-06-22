@@ -9,6 +9,7 @@ kotlin {
             api(projects.data.game)
             implementation(projects.data.preference)
             implementation(libs.coil.compose)
+            implementation(libs.compottie.lite)
         }
     }
 }
