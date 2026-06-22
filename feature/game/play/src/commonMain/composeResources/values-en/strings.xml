@@ -8,6 +8,9 @@
     <string name="play_home_cd">Home</string>
     <string name="play_title">Score sheet</string>
     <string name="play_info_cd">Information</string>
+    <string name="play_density_discovery_title">Two display modes available</string>
+    <string name="play_density_discovery_body">Switch between normal and compact mode from Information.</string>
+    <string name="play_density_discovery_acknowledge">Got it</string>
     <string name="play_density_switch_compact_cd">Switch to compact display</string>
     <string name="play_density_switch_normal_cd">Switch to normal display</string>
     <string name="play_info_display">Display</string>

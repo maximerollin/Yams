@@ -8,6 +8,9 @@
     <string name="play_home_cd">Accueil</string>
     <string name="play_title">Feuille de score</string>
     <string name="play_info_cd">Informations</string>
+    <string name="play_density_discovery_title">Deux affichages disponibles</string>
+    <string name="play_density_discovery_body">Passe du mode normal au mode condensé depuis les Informations.</string>
+    <string name="play_density_discovery_acknowledge">J’ai compris</string>
     <string name="play_density_switch_compact_cd">Passer en affichage condensé</string>
     <string name="play_density_switch_normal_cd">Passer en affichage normal</string>
     <string name="play_info_display">Affichage</string>

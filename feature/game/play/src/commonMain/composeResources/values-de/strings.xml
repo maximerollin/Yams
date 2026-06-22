@@ -8,6 +8,9 @@
     <string name="play_home_cd">Startseite</string>
     <string name="play_title">Punkteblatt</string>
     <string name="play_info_cd">Informationen</string>
+    <string name="play_density_discovery_title">Zwei Ansichten verfügbar</string>
+    <string name="play_density_discovery_body">Wechsle in den Informationen zwischen normaler und kompakter Ansicht.</string>
+    <string name="play_density_discovery_acknowledge">Verstanden</string>
     <string name="play_density_switch_compact_cd">Zur kompakten Ansicht wechseln</string>
     <string name="play_density_switch_normal_cd">Zur normalen Ansicht wechseln</string>
     <string name="play_info_display">Anzeige</string>

@@ -8,6 +8,9 @@
     <string name="play_home_cd">Inicio</string>
     <string name="play_title">Hoja de puntuación</string>
     <string name="play_info_cd">Información</string>
+    <string name="play_density_discovery_title">Dos modos de visualización</string>
+    <string name="play_density_discovery_body">Cambia entre el modo normal y el compacto desde Información.</string>
+    <string name="play_density_discovery_acknowledge">Entendido</string>
     <string name="play_density_switch_compact_cd">Cambiar a vista compacta</string>
     <string name="play_density_switch_normal_cd">Cambiar a vista normal</string>
     <string name="play_info_display">Visualización</string>

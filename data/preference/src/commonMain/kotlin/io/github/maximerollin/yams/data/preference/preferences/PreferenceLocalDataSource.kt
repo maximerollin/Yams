@@ -24,6 +24,8 @@ internal interface PreferenceLocalDataSource {
     suspend fun setIsHapticFeedbackEnabled(isEnabled: Boolean)
     fun getGamePlayUiDensity(): Flow<GamePlayUiDensity>
     suspend fun setGamePlayUiDensity(density: GamePlayUiDensity)
+    fun getHasSeenGamePlayDensityDiscovery(): Flow<Boolean>
+    suspend fun setHasSeenGamePlayDensityDiscovery()
     fun getYamsPlusStatus(): Flow<Boolean>
     suspend fun setYamsPlusStatus(isSubscribed: Boolean)
 }
@@ -94,6 +96,17 @@ internal class PreferencePreferencesDataSource(
         }
     }
 
+    override fun getHasSeenGamePlayDensityDiscovery(): Flow<Boolean> =
+        dataStore.data.map { preferences ->
+            preferences[HAS_SEEN_GAME_PLAY_DENSITY_DISCOVERY_KEY] ?: false
+        }
+
+    override suspend fun setHasSeenGamePlayDensityDiscovery() {
+        dataStore.edit { preferences ->
+            preferences[HAS_SEEN_GAME_PLAY_DENSITY_DISCOVERY_KEY] = true
+        }
+    }
+
     override fun getYamsPlusStatus(): Flow<Boolean> =
         dataStore.data.map { preferences ->
             preferences[YAMS_PLUS_SUBSCRIPTION_STATUS_KEY] ?: false
@@ -111,8 +124,9 @@ internal class PreferencePreferencesDataSource(
         val IS_USER_ORDER_RANDOMIZED_KEY = booleanPreferencesKey("is_user_order_randomized")
         val IS_HAPTIC_FEEDBACK_ENABLED_KEY = booleanPreferencesKey("is_haptic_feedback_enabled")
         val GAME_PLAY_UI_DENSITY_KEY = stringPreferencesKey("game_play_ui_density")
+        val HAS_SEEN_GAME_PLAY_DENSITY_DISCOVERY_KEY =
+            booleanPreferencesKey("has_seen_game_play_density_discovery")
         val YAMS_PLUS_SUBSCRIPTION_STATUS_KEY = booleanPreferencesKey("yams_plus_subscription_status")
     }
 
 }
-

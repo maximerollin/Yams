@@ -8,6 +8,9 @@
     <string name="play_home_cd">Home</string>
     <string name="play_title">Scheda punti</string>
     <string name="play_info_cd">Informazioni</string>
+    <string name="play_density_discovery_title">Due modalità di visualizzazione</string>
+    <string name="play_density_discovery_body">Passa dalla modalità normale a quella compatta da Informazioni.</string>
+    <string name="play_density_discovery_acknowledge">Ho capito</string>
     <string name="play_density_switch_compact_cd">Passa alla visualizzazione compatta</string>
     <string name="play_density_switch_normal_cd">Passa alla visualizzazione normale</string>
     <string name="play_info_display">Visualizzazione</string>

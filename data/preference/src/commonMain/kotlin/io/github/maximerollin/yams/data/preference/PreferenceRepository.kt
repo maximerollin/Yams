@@ -18,6 +18,8 @@ public interface PreferenceRepository {
     public suspend fun setIsHapticFeedbackEnabled(isEnabled: Boolean)
     public fun getGamePlayUiDensity(): Flow<GamePlayUiDensity>
     public suspend fun setGamePlayUiDensity(density: GamePlayUiDensity)
+    public fun getHasSeenGamePlayDensityDiscovery(): Flow<Boolean>
+    public suspend fun setHasSeenGamePlayDensityDiscovery()
     public fun getYamsPlusStatus(): Flow<Boolean>
     public suspend fun setYamsPlusStatus(isSubscribed: Boolean)
 }
@@ -63,6 +65,14 @@ internal class DefaultPreferenceRepository(
 
     override suspend fun setGamePlayUiDensity(density: GamePlayUiDensity) {
         preferenceLocalDataSource.setGamePlayUiDensity(density)
+    }
+
+    override fun getHasSeenGamePlayDensityDiscovery(): Flow<Boolean> {
+        return preferenceLocalDataSource.getHasSeenGamePlayDensityDiscovery()
+    }
+
+    override suspend fun setHasSeenGamePlayDensityDiscovery() {
+        preferenceLocalDataSource.setHasSeenGamePlayDensityDiscovery()
     }
 
     override fun getYamsPlusStatus(): Flow<Boolean> {

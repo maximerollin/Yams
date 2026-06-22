@@ -76,11 +76,13 @@ import io.github.maximerollin.yams.data.game.model.ScoreCellRef
 import io.github.maximerollin.yams.data.preference.GamePlayUiDensity
 import io.github.maximerollin.yams.feature.game.play.components.GamePlayCombinationSection
 import io.github.maximerollin.yams.feature.game.play.components.GamePlayCustomRulesSection
+import io.github.maximerollin.yams.feature.game.play.components.GamePlayDensityDiscoveryOverlay
 import io.github.maximerollin.yams.feature.game.play.components.GamePlayFinishedDialog
 import io.github.maximerollin.yams.feature.game.play.components.GamePlayInformationBottomSheet
 import io.github.maximerollin.yams.feature.game.play.components.GamePlayScoreSheetOverviewCard
 import io.github.maximerollin.yams.feature.game.play.components.GamePlayTopBar
 import io.github.maximerollin.yams.feature.game.play.components.GamePlayUpperScoreSection
+import io.github.maximerollin.yams.feature.game.play.components.shouldShowGamePlayDensityDiscovery
 import io.github.maximerollin.yams.feature.game.play.mock.gamePlayPreviewUiState
 import io.github.maximerollin.yams.feature.game.play.model.GamePlayColumnSummary
 import io.github.maximerollin.yams.feature.game.play.model.GamePlayStateUi
@@ -107,6 +109,8 @@ internal fun GamePlayRoute(
     val navigateToGameResult by viewModel.navigateToGameResult.collectAsStateWithLifecycle()
     val isHapticFeedbackEnabled by viewModel.isHapticFeedbackEnabled.collectAsStateWithLifecycle()
     val gamePlayUiDensity by viewModel.gamePlayUiDensity.collectAsStateWithLifecycle()
+    val hasSeenGamePlayDensityDiscovery by
+        viewModel.hasSeenGamePlayDensityDiscovery.collectAsStateWithLifecycle()
 
     LaunchedEffect(navigateToGameResult) {
         if (navigateToGameResult) {
@@ -119,8 +123,10 @@ internal fun GamePlayRoute(
         uiState = uiState,
         isHapticFeedbackEnabled = isHapticFeedbackEnabled,
         gamePlayUiDensity = gamePlayUiDensity,
+        hasSeenGamePlayDensityDiscovery = hasSeenGamePlayDensityDiscovery,
         onNavigateHome = onNavigateHome,
         onGamePlayUiDensityChange = viewModel::onGamePlayUiDensityChange,
+        onGamePlayDensityDiscoverySeen = viewModel::onGamePlayDensityDiscoverySeen,
         onScore = viewModel::onScore,
         onUndo = viewModel::onUndo,
         onGoToResults = viewModel::onGoToResults,
@@ -132,14 +138,17 @@ private fun GamePlayScreen(
     uiState: GamePlayStateUi?,
     isHapticFeedbackEnabled: Boolean = true,
     gamePlayUiDensity: GamePlayUiDensity = GamePlayUiDensity.NORMAL,
+    hasSeenGamePlayDensityDiscovery: Boolean? = true,
     onNavigateHome: () -> Unit = {},
     onGamePlayUiDensityChange: (GamePlayUiDensity) -> Unit = {},
+    onGamePlayDensityDiscoverySeen: () -> Unit = {},
     onScore: (Int, ScoreCellRef, Boolean) -> Unit = { _, _, _ -> },
     onUndo: () -> Unit = {},
     onGoToResults: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     var isInfoSheetVisible by rememberSaveable { mutableStateOf(false) }
+    var isDensityDiscoveryDismissedForSession by rememberSaveable { mutableStateOf(false) }
     var scoreSelectionRequest by remember { mutableStateOf<ScoreSelectionRequest?>(null) }
     var celebrationId by rememberSaveable { mutableStateOf(0) }
     var celebration by remember { mutableStateOf<GamePlayCelebration?>(null) }
@@ -462,6 +471,26 @@ private fun GamePlayScreen(
                     bottom = 16.dp,
                 )
                 .zIndex(3f),
+        )
+    }
+
+    val isDensityDiscoveryVisible = shouldShowGamePlayDensityDiscovery(
+        hasSeenDiscovery = hasSeenGamePlayDensityDiscovery,
+        hasPlayers = uiState.playerStates.isNotEmpty(),
+    ) && !isDensityDiscoveryDismissedForSession
+
+    fun dismissDensityDiscovery() {
+        isDensityDiscoveryDismissedForSession = true
+        onGamePlayDensityDiscoverySeen()
+    }
+
+    if (isDensityDiscoveryVisible) {
+        GamePlayDensityDiscoveryOverlay(
+            onDismiss = ::dismissDensityDiscovery,
+            onShowInformation = {
+                dismissDensityDiscovery()
+                isInfoSheetVisible = true
+            },
         )
     }
 
@@ -1507,6 +1536,17 @@ public fun GamePlayTwoColumnsStoreScreenshotContent() {
 @Composable
 private fun GamePlayScreenSingleColumnPreview() {
     GamePlaySingleColumnStoreScreenshotContent()
+}
+
+@YamsPhoneStoreScreenshotPreviews
+@Composable
+private fun GamePlayDensityDiscoveryPreview() {
+    YamsTheme {
+        GamePlayScreen(
+            uiState = gamePlayPreviewUiState(columnCount = 1),
+            hasSeenGamePlayDensityDiscovery = false,
+        )
+    }
 }
 
 @Composable

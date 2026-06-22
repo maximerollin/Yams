@@ -15,6 +15,7 @@ import io.github.maximerollin.yams.feature.game.play.model.GameStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.InjectedParam
@@ -51,12 +52,27 @@ internal class GamePlayViewModel(
                 initialValue = GamePlayUiDensity.NORMAL,
             )
 
+    val hasSeenGamePlayDensityDiscovery: StateFlow<Boolean?> =
+        preferenceRepository.getHasSeenGamePlayDensityDiscovery()
+            .map<Boolean, Boolean?> { it }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = null,
+            )
+
     private val _navigateToGameResult: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val navigateToGameResult: StateFlow<Boolean> = _navigateToGameResult
 
     fun onGamePlayUiDensityChange(density: GamePlayUiDensity) {
         viewModelScope.launch {
             preferenceRepository.setGamePlayUiDensity(density)
+        }
+    }
+
+    fun onGamePlayDensityDiscoverySeen() {
+        viewModelScope.launch {
+            preferenceRepository.setHasSeenGamePlayDensityDiscovery()
         }
     }
 
