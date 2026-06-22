@@ -145,7 +145,12 @@ internal fun GamePlayCelebrationOverlay(
             Image(
                 painter = rememberLottiePainter(
                     composition = composition,
-                    progress = { progress },
+                    // The animation State must be read *inside* this lambda. compottie
+                    // wraps it in a derivedStateOf, which only recomputes when a snapshot
+                    // State is read during its calculation. Passing a value captured in the
+                    // composition scope reads no State here, so the painter stays frozen on
+                    // the first frame (progress ~0 = blank) and the animation never plays.
+                    progress = { previewProgress ?: animationState.progress },
                 ),
                 contentDescription = null,
                 modifier = Modifier
