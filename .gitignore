@@ -19,3 +19,4 @@ captures
 composeApp/release/
 app/release/
 screenshot/**/*.png
+.superpowers/
