@@ -27,7 +27,7 @@ import kotlin.test.assertTrue
  */
 class GamePlayCelebrationLottieTest {
     private fun render(progressInsideLambda: Boolean): Boolean {
-        val json = File("src/commonMain/composeResources/files/celebration_yams.json").readText()
+        val json = File("src/commonMain/composeResources/files/celebration_yams_5.json").readText()
         var progress by mutableStateOf(0f)
         val scene = ImageComposeScene(width = 540, height = 540, density = Density(1f)) {
             val composition = rememberLottieComposition {
