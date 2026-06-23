@@ -12,16 +12,16 @@ class GamePlayCelebrationAssetTest {
         )
 
     @Test
-    fun allYamsFaceVariantsParseWith108Frames() {
+    fun allYamsFaceVariantsParseWith80Frames() {
         for (face in 1..6) {
             val composition = parse("celebration_yams_$face.json")
-            assertEquals(108f, composition.endFrame, "face $face endFrame")
+            assertEquals(80f, composition.endFrame, "face $face endFrame")
         }
     }
 
     @Test
-    fun bigScoreAssetParsesWith72Frames() {
+    fun bigScoreAssetParsesWith54Frames() {
         val composition = parse("celebration_big_score.json")
-        assertEquals(72f, composition.endFrame)
+        assertEquals(54f, composition.endFrame)
     }
 }
