@@ -6,21 +6,22 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class GamePlayCelebrationAssetTest {
-    @Test
-    fun bundledYamsAssetParsesWithCompottie() {
-        val composition = LottieComposition.parse(
-            File("src/commonMain/composeResources/files/celebration_yams.json").readText(),
+    private fun parse(name: String): LottieComposition =
+        LottieComposition.parse(
+            File("src/commonMain/composeResources/files/$name").readText(),
         )
 
-        assertEquals(108f, composition.endFrame)
+    @Test
+    fun allYamsFaceVariantsParseWith108Frames() {
+        for (face in 1..6) {
+            val composition = parse("celebration_yams_$face.json")
+            assertEquals(108f, composition.endFrame, "face $face endFrame")
+        }
     }
 
     @Test
-    fun bundledBigScoreAssetParsesWithCompottie() {
-        val composition = LottieComposition.parse(
-            File("src/commonMain/composeResources/files/celebration_big_score.json").readText(),
-        )
-
+    fun bigScoreAssetParsesWith72Frames() {
+        val composition = parse("celebration_big_score.json")
         assertEquals(72f, composition.endFrame)
     }
 }
