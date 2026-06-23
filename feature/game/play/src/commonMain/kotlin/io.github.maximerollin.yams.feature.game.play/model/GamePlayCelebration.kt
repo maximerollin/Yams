@@ -1,5 +1,7 @@
 package io.github.maximerollin.yams.feature.game.play.model
 
+import io.github.maximerollin.yams.core.model.ScoreKey
+
 internal const val BigScoreThreshold: Int = 30
 internal const val CelebrationFallbackEnterMillis: Long = 120L
 internal const val CelebrationFallbackHoldMillis: Long = 800L
@@ -10,6 +12,7 @@ internal data class GamePlayCelebration(
     val type: GamePlayCelebrationType,
     val playerName: String,
     val score: Int,
+    val dieFace: Int? = null,
 )
 
 internal enum class GamePlayCelebrationType {
@@ -42,3 +45,16 @@ internal fun celebrationTypeFor(
 internal fun GamePlayCelebration?.clearIfCompleted(
     completedId: Int,
 ): GamePlayCelebration? = takeUnless { celebration -> celebration?.id == completedId }
+
+internal fun fiveOfAKindDieFace(scoreKey: ScoreKey, score: Int): Int? {
+    val value = when (scoreKey) {
+        ScoreKey.ONES -> 1
+        ScoreKey.TWOS -> 2
+        ScoreKey.THREES -> 3
+        ScoreKey.FOURS -> 4
+        ScoreKey.FIVES -> 5
+        ScoreKey.SIXES -> 6
+        else -> return null
+    }
+    return value.takeIf { score == value * 5 }
+}
