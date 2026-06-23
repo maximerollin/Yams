@@ -75,12 +75,12 @@ internal fun GamePlayCelebrationOverlay(
     var fallbackVisible by remember(celebration.id) { mutableStateOf(!autoDismiss) }
     var hasFinished by remember(celebration.id) { mutableStateOf(false) }
     val latestOnFinished by rememberUpdatedState(onFinished)
-    val assetPath = celebration.type.assetPath
+    val assetPath = assetPathFor(celebration.type, celebration.dieFace)
 
     val compositionResult = if (useFallback) {
         null
     } else {
-        rememberLottieComposition(celebration.type) {
+        rememberLottieComposition(celebration.type, celebration.dieFace) {
             LottieCompositionSpec.JsonString(
                 Res.readBytes(assetPath).decodeToString(),
             )
@@ -264,11 +264,16 @@ private fun CelebrationCopy(
     }
 }
 
-private val GamePlayCelebrationType.assetPath: String
-    get() = when (this) {
-        GamePlayCelebrationType.YAMS -> "files/celebration_yams.json"
-        GamePlayCelebrationType.BIG_SCORE -> "files/celebration_big_score.json"
-    }
+private const val DefaultYamsDieFace = 5
+
+private fun assetPathFor(
+    type: GamePlayCelebrationType,
+    dieFace: Int?,
+): String = when (type) {
+    GamePlayCelebrationType.YAMS ->
+        "files/celebration_yams_${(dieFace ?: DefaultYamsDieFace).coerceIn(1, 6)}.json"
+    GamePlayCelebrationType.BIG_SCORE -> "files/celebration_big_score.json"
+}
 
 @Composable
 private fun CelebrationPreview(
