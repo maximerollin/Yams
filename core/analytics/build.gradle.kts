@@ -12,6 +12,9 @@ kotlin {
         androidMain.dependencies {
             // PostHog
             implementation(libs.posthog.android)
+
+            // LogSnag (temporary analytics mirror)
+            implementation(libs.logsnag.kotlin)
         }
     }
 

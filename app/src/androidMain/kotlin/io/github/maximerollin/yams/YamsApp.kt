@@ -4,6 +4,7 @@ import android.app.Application
 import com.revenuecat.purchases.kmp.LogLevel
 import com.revenuecat.purchases.kmp.Purchases
 import com.revenuecat.purchases.kmp.configure
+import io.github.maximerollin.yams.core.analytics.LogSnagAnalyticsInitializer
 import io.github.maximerollin.yams.core.analytics.PostHogAnalyticsInitializer
 import io.github.maximerollin.yams.di.appModule
 import org.koin.android.ext.koin.androidContext
@@ -31,6 +32,12 @@ class YamsApp : Application(), KoinStartup {
                 releaseChannel = YamsBuildConfig.ANALYTICS_RELEASE_CHANNEL,
             )
         }
+
+        // LogSnag - only configured when both a token and project are provided in local.properties.
+        LogSnagAnalyticsInitializer.setup(
+            token = YamsBuildConfig.LOGSNAG_TOKEN,
+            project = YamsBuildConfig.LOGSNAG_PROJECT,
+        )
     }
 
     override fun onKoinStartup() = KoinConfiguration {

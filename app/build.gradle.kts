@@ -175,4 +175,10 @@ buildConfig {
     buildConfigField("POSTHOG_API_KEY", postHogApiKey)
     buildConfigField("POSTHOG_HOST", postHogHost)
     buildConfigField("ANALYTICS_RELEASE_CHANNEL", analyticsReleaseChannel)
+
+    // Empty when absent from local.properties -> LogSnag mirroring is skipped.
+    val logSnagToken = localProperties.getProperty("LOGSNAG_TOKEN").orEmpty()
+    val logSnagProject = localProperties.getProperty("LOGSNAG_PROJECT").orEmpty()
+    buildConfigField("LOGSNAG_TOKEN", logSnagToken)
+    buildConfigField("LOGSNAG_PROJECT", logSnagProject)
 }

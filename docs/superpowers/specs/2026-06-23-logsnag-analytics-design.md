@@ -10,7 +10,8 @@ Add LogSnag as a temporary second analytics destination while keeping the existi
 - Keep PostHog event names, properties, setup, and delivery behavior unchanged.
 - Mirror the existing events, including `application installed`, through the central Android analytics tracker.
 - Use `io.github.vinceglb:logsnag-kotlin:1.2.0`.
-- Do not add LogSnag user identification, insights, notifications, descriptions, icons, or new product events.
+- Do not add LogSnag user identification, notifications, descriptions, icons, or new product events.
+- Increment a LogSnag insight counter for the `game created`, `game completed`, and `game abandoned` events (see Insight Counters).
 - Do not send LogSnag events from local, internal, or unknown release channels.
 
 ## Configuration
@@ -59,6 +60,18 @@ production: game created
 ```
 
 LogSnag receives every non-null property sent to PostHog, including the derived `platform` and `release_channel` properties. Because LogSnag accepts string tags only, each non-null property value is converted with its Kotlin string representation. Property keys remain unchanged.
+
+## Insight Counters
+
+Alongside the mirrored event, the tracker increments a LogSnag insight counter (by 1) for a fixed set of game lifecycle events:
+
+| Raw event | Insight title (production) | Insight title (`closed`) |
+| --- | --- | --- |
+| `game created` | `Games created` | `Test Games created` |
+| `game completed` | `Games completed` | `Test Games completed` |
+| `game abandoned` | `Games abandoned` | `Test Games abandoned` |
+
+Insight titles carry the same `Test ` prefix as events on the `closed` channel so alpha builds never touch the production counters. Events without a mapping increment nothing, and counters follow the same channel gating as events (nothing on local, internal, or unknown). The increment is isolated in its own `runCatching` and never affects the event mirror or PostHog.
 
 ## Failure Isolation
 

@@ -36,6 +36,8 @@ jobs:
           REVENUECAT_PLAY_STORE_API_KEY: ${{ secrets.REVENUECAT_PLAY_STORE_API_KEY }}
           POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
           POSTHOG_HOST: ${{ secrets.POSTHOG_HOST }}
+          LOGSNAG_TOKEN: ${{ secrets.LOGSNAG_TOKEN }}
+          LOGSNAG_PROJECT: ${{ secrets.LOGSNAG_PROJECT }}
           PLAY_STORE_TRACK: ${{ github.event.inputs.track }}
         run: |
           case "$PLAY_STORE_TRACK" in
@@ -53,6 +55,8 @@ jobs:
           printf 'POSTHOG_API_KEY=%s\n' "$POSTHOG_API_KEY" >> local.properties
           printf 'POSTHOG_HOST=%s\n' "${POSTHOG_HOST:-https://eu.i.posthog.com}" >> local.properties
           printf 'ANALYTICS_RELEASE_CHANNEL=%s\n' "$analytics_release_channel" >> local.properties
+          printf 'LOGSNAG_TOKEN=%s\n' "$LOGSNAG_TOKEN" >> local.properties
+          printf 'LOGSNAG_PROJECT=%s\n' "$LOGSNAG_PROJECT" >> local.properties
 
       - name: Calculate version
         id: version

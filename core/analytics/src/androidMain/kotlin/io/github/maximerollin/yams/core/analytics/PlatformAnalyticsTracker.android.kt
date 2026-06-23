@@ -7,15 +7,19 @@ internal actual class PlatformAnalyticsTracker actual constructor() : AnalyticsT
         event: String,
         properties: Map<String, Any?>,
     ) {
+        val enrichedProperties = properties
+            .withAnalyticsPlatform(ANDROID_ANALYTICS_PLATFORM)
+            .withAnalyticsReleaseChannel(AnalyticsRuntimeConfig.releaseChannel)
+
         runCatching {
             PostHog.capture(
                 event = event.withAnalyticsPlatformPrefix(ANDROID_ANALYTICS_PLATFORM),
-                properties = properties
-                    .withAnalyticsPlatform(ANDROID_ANALYTICS_PLATFORM)
-                    .withAnalyticsReleaseChannel(AnalyticsRuntimeConfig.releaseChannel)
-                    .toPostHogProperties(),
+                properties = enrichedProperties.toPostHogProperties(),
             )
         }
+
+        // Mirror the raw (un-prefixed) event and equivalent properties to LogSnag.
+        LogSnagAnalyticsInitializer.mirror(event = event, properties = enrichedProperties)
     }
 
     private fun Map<String, Any?>.toPostHogProperties(): Map<String, Any> =
