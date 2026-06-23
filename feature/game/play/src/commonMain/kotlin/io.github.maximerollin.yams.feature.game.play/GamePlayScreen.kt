@@ -60,11 +60,13 @@ import io.github.maximerollin.yams.feature.game.play.components.GamePlayUpperSco
 import io.github.maximerollin.yams.feature.game.play.components.shouldShowGamePlayDensityDiscovery
 import io.github.maximerollin.yams.feature.game.play.mock.gamePlayPreviewUiState
 import io.github.maximerollin.yams.feature.game.play.model.GamePlayCelebration
+import io.github.maximerollin.yams.feature.game.play.model.GamePlayCelebrationType
 import io.github.maximerollin.yams.feature.game.play.model.GamePlayColumnSummary
 import io.github.maximerollin.yams.feature.game.play.model.GamePlayStateUi
 import io.github.maximerollin.yams.feature.game.play.model.GameStatus
 import io.github.maximerollin.yams.feature.game.play.model.PlayerState
 import io.github.maximerollin.yams.feature.game.play.model.celebrationTypeFor
+import io.github.maximerollin.yams.feature.game.play.model.fiveOfAKindDieFace
 import io.github.maximerollin.yams.feature.game.play.model.clearIfCompleted
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
@@ -253,18 +255,21 @@ private fun GamePlayScreen(
         allRows
             .firstOrNull { row -> row.key == cell.key }
             ?.let { row ->
-                celebrationTypeFor(
+                val type = celebrationTypeFor(
                     score = option.score,
                     isYams = row.isYamsCelebration(option = option, settings = settings),
-                )
-            }
-            ?.let { type ->
+                ) ?: return@let
                 celebrationId += 1
                 celebration = GamePlayCelebration(
                     id = celebrationId,
                     type = type,
                     playerName = selectedPlayer.player.name,
                     score = option.score,
+                    dieFace = if (type == GamePlayCelebrationType.YAMS) {
+                        fiveOfAKindDieFace(row.key, option.score)
+                    } else {
+                        null
+                    },
                 )
             }
         coroutineScope.launch {
