@@ -23,6 +23,13 @@ class YamsApp : Application(), KoinStartup {
             Purchases.configure(apiKey = apiKey)
         }
 
+        // LogSnag - must be initialised before PostHog so that events fired during
+        // PostHog setup (e.g. "application installed") are already mirrored correctly.
+        LogSnagAnalyticsInitializer.setup(
+            token = YamsBuildConfig.LOGSNAG_TOKEN,
+            project = YamsBuildConfig.LOGSNAG_PROJECT,
+        )
+
         // PostHog - only configured when an API key is provided in local.properties.
         YamsBuildConfig.POSTHOG_API_KEY.takeIf { it.isNotBlank() }?.let { apiKey ->
             PostHogAnalyticsInitializer.setup(
@@ -32,12 +39,6 @@ class YamsApp : Application(), KoinStartup {
                 releaseChannel = YamsBuildConfig.ANALYTICS_RELEASE_CHANNEL,
             )
         }
-
-        // LogSnag - only configured when both a token and project are provided in local.properties.
-        LogSnagAnalyticsInitializer.setup(
-            token = YamsBuildConfig.LOGSNAG_TOKEN,
-            project = YamsBuildConfig.LOGSNAG_PROJECT,
-        )
     }
 
     override fun onKoinStartup() = KoinConfiguration {
