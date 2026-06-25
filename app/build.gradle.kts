@@ -93,7 +93,7 @@ kotlin {
         val mobileMain by creating {
             dependsOn(commonMain.get())
             dependencies {
-                // RevenueCat (configured on Android in YamsApp)
+                // RevenueCat (configured by each mobile platform entry point)
                 implementation(libs.revenuecat.purchases.core)
             }
         }
@@ -164,8 +164,10 @@ buildConfig {
     useKotlinOutput { internalVisibility = false }
 
     // Empty when absent from local.properties -> RevenueCat configuration is skipped.
-    val revenueCatApiKey = localProperties.getProperty("REVENUECAT_PLAY_STORE_API_KEY").orEmpty()
-    buildConfigField("REVENUECAT_PLAY_STORE_API_KEY", revenueCatApiKey)
+    val revenueCatPlayStoreApiKey = localProperties.getProperty("REVENUECAT_PLAY_STORE_API_KEY").orEmpty()
+    val revenueCatAppStoreApiKey = localProperties.getProperty("REVENUECAT_APP_STORE_API_KEY").orEmpty()
+    buildConfigField("REVENUECAT_PLAY_STORE_API_KEY", revenueCatPlayStoreApiKey)
+    buildConfigField("REVENUECAT_APP_STORE_API_KEY", revenueCatAppStoreApiKey)
 
     // Empty when absent from local.properties -> PostHog configuration is skipped.
     val postHogApiKey = localProperties.getProperty("POSTHOG_API_KEY").orEmpty()

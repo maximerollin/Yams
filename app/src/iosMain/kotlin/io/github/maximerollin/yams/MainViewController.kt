@@ -6,26 +6,44 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.ComposeUIViewController
+import com.revenuecat.purchases.kmp.LogLevel
+import com.revenuecat.purchases.kmp.Purchases
+import com.revenuecat.purchases.kmp.configure
 import io.github.maximerollin.yams.di.appModule
+import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
-import org.koin.core.context.startKoin
+import org.koin.dsl.koinConfiguration
+import platform.UIKit.UIViewController
 
 @Suppress("FunctionName", "unused")
-fun MainViewController() = ComposeUIViewController {
-    LaunchedEffect(Unit) {
-        startKoin {
-            modules(appModule)
+fun MainViewController(): UIViewController {
+    configureRevenueCat()
+
+    return ComposeUIViewController {
+        KoinApplication(
+            configuration = koinConfiguration {
+                modules(appModule)
+            },
+        ) {
+            val appViewModel = koinInject<AppViewModel>()
+            var isAppInitialized by remember { mutableStateOf(false) }
+            LaunchedEffect(Unit) {
+                appViewModel.initializeApp()
+                isAppInitialized = true
+            }
+
+            if (isAppInitialized) {
+                App()
+            }
         }
     }
+}
 
-    val appViewModel = koinInject<AppViewModel>()
-    var isAppInitialized by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) {
-        appViewModel.initializeApp()
-        isAppInitialized = true
-    }
+private fun configureRevenueCat() {
+    YamsBuildConfig.REVENUECAT_APP_STORE_API_KEY.takeIf { it.isNotBlank() }?.let { apiKey ->
+        if (runCatching { Purchases.sharedInstance }.isSuccess) return
 
-    if (isAppInitialized) {
-        App()
+        Purchases.logLevel = LogLevel.DEBUG
+        Purchases.configure(apiKey = apiKey)
     }
 }

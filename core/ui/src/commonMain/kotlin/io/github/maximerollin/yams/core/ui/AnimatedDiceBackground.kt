@@ -47,7 +47,7 @@ public fun AnimatedDiceBackground(
                 startAngle = random.nextFloat() * 360f,
                 diceValue = random.nextInt(1, 7),
                 rotationSpeed = random.nextFloat() * 2f - 1f, // -1 to 1
-                size = 20f + random.nextFloat() * 15f, // 20-35dp
+                sizeDp = 20f + random.nextFloat() * 15f,
                 duration = baseDuration + random.nextLong(-20_000, 40_000)
             )
         }
@@ -90,7 +90,7 @@ public fun AnimatedDiceBackground(
             drawDice(
                 position = position,
                 diceValue = config.diceValue,
-                size = config.size,
+                size = config.sizeDp * density,
                 color = diceColor.copy(alpha = 0.08f),
                 rotation = circleAngle * config.rotationSpeed
             )
@@ -103,7 +103,7 @@ private data class DiceConfig(
     val startAngle: Float,
     val diceValue: Int,
     val rotationSpeed: Float,
-    val size: Float,
+    val sizeDp: Float,
     val duration: Long
 )
 
