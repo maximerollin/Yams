@@ -68,9 +68,30 @@ class LogSnagMirrorTest {
 
         assertEquals(
             mapOf(
-                "rule_set" to "yams",
-                "player_count_bucket" to "3",
+                "rule-set" to "yams",
+                "player-count-bucket" to "3",
                 "platform" to "android",
+            ),
+            tags,
+        )
+    }
+
+    @Test
+    fun tagKeysAreNormalizedToLogSnagFormat() {
+        val tags = mapOf(
+            "release_channel" to "closed",
+            "Average Score Per Turn Bucket" to "10-20",
+            "app.build" to 42,
+            "\$current_url" to "https://example.com",
+            "___" to "dropped",
+        ).toLogSnagTags()
+
+        assertEquals(
+            mapOf(
+                "release-channel" to "closed",
+                "average-score-per-turn-bucket" to "10-20",
+                "app-build" to "42",
+                "current-url" to "https://example.com",
             ),
             tags,
         )

@@ -20,10 +20,22 @@ internal fun logSnagEventName(event: String, releaseChannel: String): String? =
 /**
  * Converts analytics properties to LogSnag string tags, dropping null values and
  * rendering each remaining value with its Kotlin string representation. Keys are
- * left unchanged.
+ * normalized to LogSnag's lowercase dash-separated tag format.
  */
 internal fun Map<String, Any?>.toLogSnagTags(): Map<String, String> =
-    mapNotNull { (key, value) -> value?.let { key to it.toString() } }.toMap()
+    mapNotNull { (key, value) ->
+        val tagKey = key.toLogSnagTagKey()
+        if (tagKey.isBlank()) {
+            null
+        } else {
+            value?.let { tagKey to it.toString() }
+        }
+    }.toMap()
+
+private fun String.toLogSnagTagKey(): String =
+    lowercase()
+        .replace(LOGSNAG_TAG_KEY_SEPARATOR_REGEX, "-")
+        .trim('-')
 
 /**
  * Returns the LogSnag insight title whose counter should be incremented for the
@@ -45,6 +57,7 @@ internal fun logSnagInsightTitle(event: String, releaseChannel: String): String?
 private const val CLOSED_RELEASE_CHANNEL = "closed"
 private const val PRODUCTION_RELEASE_CHANNEL = "production"
 private const val CLOSED_EVENT_PREFIX = "Test "
+private val LOGSNAG_TAG_KEY_SEPARATOR_REGEX = Regex("[^a-z]+")
 
 private val INSIGHT_TITLES_BY_EVENT: Map<String, String> = mapOf(
     "game created" to "Games created",
