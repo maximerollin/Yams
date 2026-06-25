@@ -23,15 +23,9 @@ internal fun Project.configureKotlinMultiplatform(
     }
 
     // iOS
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = moduleName
-            isStatic = true
-        }
+    iosArm64().binaries.framework {
+        baseName = moduleName
+        isStatic = true
     }
 
     // JVM
