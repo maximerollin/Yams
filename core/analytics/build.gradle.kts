@@ -10,6 +10,9 @@ kotlin {
         }
 
         androidMain.dependencies {
+            // Ktor engine used by logsnag-kotlin's Android worker.
+            implementation(libs.ktor.client.okhttp)
+
             // PostHog
             implementation(libs.posthog.android)
 
