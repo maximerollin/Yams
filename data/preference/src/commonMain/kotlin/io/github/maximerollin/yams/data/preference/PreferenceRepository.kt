@@ -10,6 +10,8 @@ import kotlin.time.Instant
 public interface PreferenceRepository {
     public fun getInAppReviewShownDate(): Flow<Instant?>
     public suspend fun inAppReviewShown()
+    public fun getIsInAppReviewPending(): Flow<Boolean>
+    public suspend fun setIsInAppReviewPending(isPending: Boolean)
     public fun getIsUserOrderRandomized(): Flow<Boolean>
     public suspend fun setIsUserOrderRandomized(isUserOrderRandomized: Boolean)
     public fun getGameSettings(): Flow<GameSettings>
@@ -33,6 +35,14 @@ internal class DefaultPreferenceRepository(
 
     override suspend fun inAppReviewShown() {
         preferenceLocalDataSource.setLastInAppReviewShownDate(Clock.System.now())
+    }
+
+    override fun getIsInAppReviewPending(): Flow<Boolean> {
+        return preferenceLocalDataSource.getIsInAppReviewPending()
+    }
+
+    override suspend fun setIsInAppReviewPending(isPending: Boolean) {
+        preferenceLocalDataSource.setIsInAppReviewPending(isPending)
     }
 
     override fun getIsUserOrderRandomized(): Flow<Boolean> {

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import io.github.maximerollin.yams.core.analytics.AnalyticsTracker
 import io.github.maximerollin.yams.core.analytics.toAnalyticsCountBucket
 import io.github.maximerollin.yams.core.model.GameId
+import io.github.maximerollin.yams.core.review.InAppReview
 import io.github.maximerollin.yams.data.billing.BillingRepository
 import io.github.maximerollin.yams.data.game.GameRepository
 import io.github.maximerollin.yams.data.game.model.GamePlayState
@@ -12,12 +13,17 @@ import io.github.maximerollin.yams.data.preference.GamePlayUiDensity
 import io.github.maximerollin.yams.data.preference.PreferenceRepository
 import io.github.maximerollin.yams.feature.user.common.toGameSummaries
 import io.github.maximerollin.yams.feature.user.common.toHomeStats
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.ExperimentalTime
 
 internal class HomeViewModel(
     private val gameRepository: GameRepository,
@@ -71,6 +77,15 @@ internal class HomeViewModel(
         }
     }
 
+    fun requestPendingInAppReview() {
+        viewModelScope.launch {
+            if (!preferenceRepository.getIsInAppReviewPending().first()) return@launch
+
+            delay(600.milliseconds)
+            requestInAppReviewIfEligible()
+        }
+    }
+
     fun abandonGame(gameId: GameId) {
         viewModelScope.launch {
             val state = gameRepository.getGamePlayState(gameId).first()
@@ -84,6 +99,34 @@ internal class HomeViewModel(
                 ),
             )
         }
+    }
+
+    @OptIn(ExperimentalTime::class)
+    private suspend fun requestInAppReviewIfEligible() {
+        val numberOfFinishedGames = gameRepository.getNumberOfFinishedGames().first()
+        val lastInAppReviewShownDate = preferenceRepository.getInAppReviewShownDate().first()
+        val isSixMonthsPassed = lastInAppReviewShownDate?.let {
+            val now = Clock.System.now()
+            val sixMonthsLater = it + (30 * 6).days
+            now > sixMonthsLater
+        } ?: false
+        val shouldShowInAppReview =
+            numberOfFinishedGames >= 3 && (lastInAppReviewShownDate == null || isSixMonthsPassed)
+
+        if (!shouldShowInAppReview) {
+            preferenceRepository.setIsInAppReviewPending(false)
+            return
+        }
+
+        InAppReview.requestReview()
+        preferenceRepository.inAppReviewShown()
+        preferenceRepository.setIsInAppReviewPending(false)
+        analyticsTracker.capture(
+            event = "review prompt shown",
+            properties = mapOf(
+                "finished_games_bucket" to numberOfFinishedGames.toAnalyticsCountBucket(),
+            ),
+        )
     }
 }
 

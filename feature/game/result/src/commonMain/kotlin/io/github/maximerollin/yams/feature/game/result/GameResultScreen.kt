@@ -115,10 +115,6 @@ internal fun GameResultRoute(
     val navigationTarget by viewModel.navigationTarget.collectAsStateWithLifecycle()
     val isActionInProgress by viewModel.isActionInProgress.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        viewModel.checkInAppReview()
-    }
-
     LaunchedEffect(navigationTarget) {
         when (navigationTarget) {
             GameResultNavigationTarget.GAME_PLAY -> {

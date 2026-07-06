@@ -9,6 +9,7 @@ kotlin {
             implementation(projects.data.billing)
             implementation(projects.data.game)
             implementation(projects.data.preference)
+            implementation(projects.core.review)
             implementation(projects.feature.user.common)
 
             implementation(libs.coil.compose)

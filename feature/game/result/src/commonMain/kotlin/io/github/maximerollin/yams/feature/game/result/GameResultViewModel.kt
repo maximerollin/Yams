@@ -7,13 +7,11 @@ import io.github.maximerollin.yams.core.analytics.toAnalyticsAverageBucket
 import io.github.maximerollin.yams.core.analytics.toAnalyticsCountBucket
 import io.github.maximerollin.yams.core.model.Game
 import io.github.maximerollin.yams.core.model.GameId
-import io.github.maximerollin.yams.core.review.InAppReview
 import io.github.maximerollin.yams.data.game.GameRepository
 import io.github.maximerollin.yams.data.preference.PreferenceRepository
 import io.github.maximerollin.yams.feature.game.result.domain.FinishGameUseCase
 import io.github.maximerollin.yams.feature.game.result.domain.GetGameResultPreviewUseCase
 import io.github.maximerollin.yams.feature.game.result.model.GameResultUiState
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -21,10 +19,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.InjectedParam
-import kotlin.time.Clock
-import kotlin.time.Duration.Companion.days
-import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.ExperimentalTime
 
 internal class GameResultViewModel(
     @InjectedParam private val gameId: GameId,
@@ -87,6 +81,7 @@ internal class GameResultViewModel(
                         "column_count_bucket" to state.game.settings.columnCount.toAnalyticsCountBucket(),
                     ),
                 )
+                preferenceRepository.setIsInAppReviewPending(true)
                 _navigationTarget.value = GameResultNavigationTarget.HOME
             } finally {
                 if (_navigationTarget.value == null) {
@@ -99,33 +94,6 @@ internal class GameResultViewModel(
     fun onNavigationHandled() {
         _navigationTarget.value = null
         _isActionInProgress.value = false
-    }
-
-    @OptIn(ExperimentalTime::class)
-    fun checkInAppReview() {
-        viewModelScope.launch {
-            val numberOfFinishedGames = gameRepository.getNumberOfFinishedGames().first()
-            val lastInAppReviewShownDate = preferenceRepository.getInAppReviewShownDate().first()
-            val isSixMonthsPassed = lastInAppReviewShownDate?.let {
-                val now = Clock.System.now()
-                val sixMonthsLater = it + (30 * 6).days
-                now > sixMonthsLater
-            } ?: false
-            val shouldShowInAppReview =
-                numberOfFinishedGames >= 3 && (lastInAppReviewShownDate == null || isSixMonthsPassed)
-
-            if (shouldShowInAppReview) {
-                delay(1200.milliseconds)
-                InAppReview.requestReview()
-                preferenceRepository.inAppReviewShown()
-                analyticsTracker.capture(
-                    event = "review prompt shown",
-                    properties = mapOf(
-                        "finished_games_bucket" to numberOfFinishedGames.toAnalyticsCountBucket(),
-                    ),
-                )
-            }
-        }
     }
 }
 

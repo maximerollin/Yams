@@ -16,6 +16,8 @@ import kotlin.time.Instant
 internal interface PreferenceLocalDataSource {
     fun getLastInAppReviewShownDate(): Flow<Instant?>
     suspend fun setLastInAppReviewShownDate(date: Instant)
+    fun getIsInAppReviewPending(): Flow<Boolean>
+    suspend fun setIsInAppReviewPending(isPending: Boolean)
     fun getIsUserOrderRandomized(): Flow<Boolean>
     suspend fun setIsUserOrderRandomized(isUserOrderRandomized: Boolean)
     fun getGameSettings(): Flow<GameSettings?>
@@ -42,6 +44,17 @@ internal class PreferencePreferencesDataSource(
     override suspend fun setLastInAppReviewShownDate(date: Instant) {
         dataStore.edit { preferences ->
             preferences[LAST_IN_APP_REVIEW_SHOWN_DATE_KEY] = date.toEpochMilliseconds()
+        }
+    }
+
+    override fun getIsInAppReviewPending(): Flow<Boolean> =
+        dataStore.data.map { preferences ->
+            preferences[IS_IN_APP_REVIEW_PENDING_KEY] ?: false
+        }
+
+    override suspend fun setIsInAppReviewPending(isPending: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[IS_IN_APP_REVIEW_PENDING_KEY] = isPending
         }
     }
 
@@ -120,6 +133,7 @@ internal class PreferencePreferencesDataSource(
 
     private companion object {
         val LAST_IN_APP_REVIEW_SHOWN_DATE_KEY = longPreferencesKey("last_in_app_review_shown_date")
+        val IS_IN_APP_REVIEW_PENDING_KEY = booleanPreferencesKey("is_in_app_review_pending")
         val GAME_SETTINGS_KEY = stringPreferencesKey("game_settings")
         val IS_USER_ORDER_RANDOMIZED_KEY = booleanPreferencesKey("is_user_order_randomized")
         val IS_HAPTIC_FEEDBACK_ENABLED_KEY = booleanPreferencesKey("is_haptic_feedback_enabled")
