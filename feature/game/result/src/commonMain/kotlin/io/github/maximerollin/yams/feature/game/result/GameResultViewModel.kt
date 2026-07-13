@@ -69,9 +69,11 @@ internal class GameResultViewModel(
             _isActionInProgress.value = true
             try {
                 finishGameUseCase(gameId, state)
+                val gameCount = gameRepository.getNumberOfGames().first()
                 analyticsTracker.capture(
                     event = "game completed",
                     properties = mapOf(
+                        "game_count" to gameCount,
                         "rule_set" to state.game.settings.ruleSet.name.lowercase(),
                         "player_count_bucket" to state.playerResults.size.toAnalyticsCountBucket(),
                         "winner_count_bucket" to state.winnerResults.size.toAnalyticsCountBucket(),

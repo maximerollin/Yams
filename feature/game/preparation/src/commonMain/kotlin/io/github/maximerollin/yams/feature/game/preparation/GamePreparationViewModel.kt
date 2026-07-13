@@ -95,10 +95,12 @@ internal class GamePreparationViewModel(
                     },
                 ),
             )
+            val gameCount = gameRepository.getNumberOfGames().first()
 
             analyticsTracker.capture(
                 event = "game created",
                 properties = mapOf(
+                    "game_count" to gameCount,
                     "rule_set" to gameSettings.ruleSet.name.lowercase(),
                     "player_count_bucket" to usersIds.size.toAnalyticsCountBucket(),
                     "column_count_bucket" to gameSettings.columnCount.toAnalyticsCountBucket(),
