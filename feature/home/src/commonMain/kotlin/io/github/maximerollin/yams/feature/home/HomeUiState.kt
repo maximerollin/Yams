@@ -12,6 +12,7 @@ internal sealed interface HomeUiState {
         val recentGames: List<GameSummaryUiState>,
         val activeGame: ActiveGameUiState?,
         val isPremium: Boolean,
+        val canRequestInAppReview: Boolean,
     ) : HomeUiState
 }
 

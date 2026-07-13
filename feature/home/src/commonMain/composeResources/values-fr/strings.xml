@@ -17,6 +17,11 @@
     <string name="home_abandon_cancel">Garder</string>
     <string name="home_abandon_confirm">Abandonner</string>
     <string name="home_info_cd">Afficher les informations</string>
+    <string name="home_rate_app_cd">Noter l'application</string>
+    <string name="home_rate_app_title">Vous aimez Yams Score ?</string>
+    <string name="home_rate_app_message">Si l'application vous plaît, laissez un avis sur le store. Ça aide d'autres joueurs à la trouver.</string>
+    <string name="home_rate_app_confirm">Laisser un avis</string>
+    <string name="home_rate_app_later">Plus tard</string>
     <string name="home_info_title">Informations</string>
     <string name="home_info_subtitle">Règles du jeu, bibliothèques utilisées et version de l'application.</string>
     <string name="home_settings_title">Réglages</string>

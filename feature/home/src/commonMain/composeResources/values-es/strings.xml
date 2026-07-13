@@ -17,6 +17,11 @@
     <string name="home_abandon_cancel">Conservar</string>
     <string name="home_abandon_confirm">Abandonar</string>
     <string name="home_info_cd">Mostrar información</string>
+    <string name="home_rate_app_cd">Valorar la app</string>
+    <string name="home_rate_app_title">¿Te gusta Yahtzee Score?</string>
+    <string name="home_rate_app_message">Si te gusta la app, deja una reseña en la tienda. Ayuda a otros jugadores a encontrarla.</string>
+    <string name="home_rate_app_confirm">Dejar reseña</string>
+    <string name="home_rate_app_later">Más tarde</string>
     <string name="home_info_title">Información</string>
     <string name="home_info_subtitle">Reglas del juego, bibliotecas usadas y versión de la app.</string>
     <string name="home_settings_title">Ajustes</string>

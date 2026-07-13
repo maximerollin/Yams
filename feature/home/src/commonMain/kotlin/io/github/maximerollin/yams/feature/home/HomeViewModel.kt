@@ -13,7 +13,6 @@ import io.github.maximerollin.yams.data.preference.GamePlayUiDensity
 import io.github.maximerollin.yams.data.preference.PreferenceRepository
 import io.github.maximerollin.yams.feature.user.common.toGameSummaries
 import io.github.maximerollin.yams.feature.user.common.toHomeStats
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -22,8 +21,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.days
-import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 internal class HomeViewModel(
     private val gameRepository: GameRepository,
@@ -35,12 +34,19 @@ internal class HomeViewModel(
         gameRepository.getFinishedGamesResults(),
         gameRepository.getInProgressGamesPlayState(),
         billingRepository.getYamsPlusStatus(),
-    ) { results, inProgressGames, isPremium ->
+        preferenceRepository.getIsInAppReviewPending(),
+        preferenceRepository.getInAppReviewShownDate(),
+    ) { results, inProgressGames, isPremium, isInAppReviewPending, lastInAppReviewShownDate ->
         HomeUiState.Success(
             stats = results.toHomeStats(),
             recentGames = results.toGameSummaries().take(8),
             activeGame = inProgressGames.firstOrNull()?.toActiveGameUiState(),
             isPremium = isPremium,
+            canRequestInAppReview = shouldRequestInAppReview(
+                isInAppReviewPending = isInAppReviewPending,
+                numberOfFinishedGames = results.size,
+                lastInAppReviewShownDate = lastInAppReviewShownDate,
+            ),
         )
     }
         .stateIn(
@@ -77,12 +83,15 @@ internal class HomeViewModel(
         }
     }
 
-    fun requestPendingInAppReview() {
+    fun requestInAppReview() {
         viewModelScope.launch {
-            if (!preferenceRepository.getIsInAppReviewPending().first()) return@launch
-
-            delay(600.milliseconds)
             requestInAppReviewIfEligible()
+        }
+    }
+
+    fun dismissInAppReviewRequest() {
+        viewModelScope.launch {
+            preferenceRepository.setIsInAppReviewPending(false)
         }
     }
 
@@ -104,16 +113,15 @@ internal class HomeViewModel(
     @OptIn(ExperimentalTime::class)
     private suspend fun requestInAppReviewIfEligible() {
         val numberOfFinishedGames = gameRepository.getNumberOfFinishedGames().first()
+        val isInAppReviewPending = preferenceRepository.getIsInAppReviewPending().first()
         val lastInAppReviewShownDate = preferenceRepository.getInAppReviewShownDate().first()
-        val isSixMonthsPassed = lastInAppReviewShownDate?.let {
-            val now = Clock.System.now()
-            val sixMonthsLater = it + (30 * 6).days
-            now > sixMonthsLater
-        } ?: false
-        val shouldShowInAppReview =
-            numberOfFinishedGames >= 3 && (lastInAppReviewShownDate == null || isSixMonthsPassed)
+        val shouldRequestInAppReview = shouldRequestInAppReview(
+            isInAppReviewPending = isInAppReviewPending,
+            numberOfFinishedGames = numberOfFinishedGames,
+            lastInAppReviewShownDate = lastInAppReviewShownDate,
+        )
 
-        if (!shouldShowInAppReview) {
+        if (!shouldRequestInAppReview) {
             preferenceRepository.setIsInAppReviewPending(false)
             return
         }
@@ -128,6 +136,25 @@ internal class HomeViewModel(
             ),
         )
     }
+}
+
+private const val IN_APP_REVIEW_MIN_FINISHED_GAMES = 3
+private const val IN_APP_REVIEW_COOLDOWN_DAYS = 30 * 6
+
+@OptIn(ExperimentalTime::class)
+internal fun shouldRequestInAppReview(
+    isInAppReviewPending: Boolean,
+    numberOfFinishedGames: Int,
+    lastInAppReviewShownDate: Instant?,
+    now: Instant = Clock.System.now(),
+): Boolean {
+    if (!isInAppReviewPending || numberOfFinishedGames < IN_APP_REVIEW_MIN_FINISHED_GAMES) {
+        return false
+    }
+
+    return lastInAppReviewShownDate?.let { shownDate ->
+        now > shownDate + IN_APP_REVIEW_COOLDOWN_DAYS.days
+    } ?: true
 }
 
 private fun GamePlayState.toActiveGameUiState(): ActiveGameUiState =

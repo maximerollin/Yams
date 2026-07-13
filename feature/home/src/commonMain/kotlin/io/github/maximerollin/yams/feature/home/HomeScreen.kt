@@ -1,5 +1,10 @@
 package io.github.maximerollin.yams.feature.home
 
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -33,8 +38,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -45,6 +53,7 @@ import io.github.maximerollin.yams.core.designsystem.component.YamsPrimarySmallB
 import io.github.maximerollin.yams.core.designsystem.icon.Delete
 import io.github.maximerollin.yams.core.designsystem.icon.Info
 import io.github.maximerollin.yams.core.designsystem.icon.RocketLaunch
+import io.github.maximerollin.yams.core.designsystem.icon.Star
 import io.github.maximerollin.yams.core.designsystem.icon.Timer
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
 import io.github.maximerollin.yams.core.designsystem.preview.YamsStoreScreenshotPreviews
@@ -83,6 +92,11 @@ import yams.feature.home.generated.resources.home_logo_cd
 import yams.feature.home.generated.resources.home_new_game
 import yams.feature.home.generated.resources.home_no_finished_games_message
 import yams.feature.home.generated.resources.home_no_finished_games_title
+import yams.feature.home.generated.resources.home_rate_app_cd
+import yams.feature.home.generated.resources.home_rate_app_confirm
+import yams.feature.home.generated.resources.home_rate_app_later
+import yams.feature.home.generated.resources.home_rate_app_message
+import yams.feature.home.generated.resources.home_rate_app_title
 import yams.feature.home.generated.resources.home_recent_games_title
 import yams.feature.home.generated.resources.home_resume_game
 import kotlin.time.Clock
@@ -104,10 +118,6 @@ internal fun HomeRoute(
     val isHapticFeedbackEnabled by viewModel.isHapticFeedbackEnabled.collectAsStateWithLifecycle()
     val gamePlayUiDensity by viewModel.gamePlayUiDensity.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        viewModel.requestPendingInAppReview()
-    }
-
     HomeScreen(
         uiState = uiState,
         appVersionName = appVersionName,
@@ -119,6 +129,8 @@ internal fun HomeRoute(
         onNavigateToUsers = onNavigateToUsers,
         onNavigateToPaywall = onNavigateToPaywall,
         onAbandonGame = viewModel::abandonGame,
+        onRequestInAppReview = viewModel::requestInAppReview,
+        onDismissInAppReviewRequest = viewModel::dismissInAppReviewRequest,
         onHapticFeedbackEnabledChange = viewModel::setIsHapticFeedbackEnabled,
         onGamePlayUiDensityChange = viewModel::setGamePlayUiDensity,
         modifier = modifier,
@@ -137,13 +149,24 @@ internal fun HomeScreen(
     onNavigateToUsers: () -> Unit,
     onNavigateToPaywall: () -> Unit,
     onAbandonGame: (GameId) -> Unit,
+    onRequestInAppReview: () -> Unit,
+    onDismissInAppReviewRequest: () -> Unit,
     onHapticFeedbackEnabledChange: (Boolean) -> Unit,
     onGamePlayUiDensityChange: (GamePlayUiDensity) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var pendingAbandonGameId by remember { mutableStateOf<GameId?>(null) }
     var showInformationSheet by remember { mutableStateOf(false) }
-    val activeGame = (uiState as? HomeUiState.Success)?.activeGame
+    var showInAppReviewDialog by remember { mutableStateOf(false) }
+    val successUiState = uiState as? HomeUiState.Success
+    val activeGame = successUiState?.activeGame
+    val canRequestInAppReview = successUiState?.canRequestInAppReview == true
+
+    LaunchedEffect(canRequestInAppReview) {
+        if (!canRequestInAppReview) {
+            showInAppReviewDialog = false
+        }
+    }
 
     Scaffold(
         modifier = modifier.background(MaterialTheme.colorScheme.background),
@@ -153,6 +176,13 @@ internal fun HomeScreen(
                 isDividerVisible = false,
                 center = {
                     HomeBrandTitle()
+                },
+                start = {
+                    if (canRequestInAppReview) {
+                        HomeInAppReviewIconButton(
+                            onClick = { showInAppReviewDialog = true },
+                        )
+                    }
                 },
                 end = {
                     AppIconButton(
@@ -238,6 +268,20 @@ internal fun HomeScreen(
         )
     }
 
+    if (showInAppReviewDialog) {
+        InAppReviewDialog(
+            onDismiss = { showInAppReviewDialog = false },
+            onConfirm = {
+                showInAppReviewDialog = false
+                onRequestInAppReview()
+            },
+            onPostpone = {
+                showInAppReviewDialog = false
+                onDismissInAppReviewRequest()
+            },
+        )
+    }
+
     if (showInformationSheet) {
         HomeInformationBottomSheet(
             appVersionName = appVersionName,
@@ -248,6 +292,30 @@ internal fun HomeScreen(
             onDismiss = { showInformationSheet = false },
         )
     }
+}
+
+@Composable
+private fun HomeInAppReviewIconButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val pulseTransition = rememberInfiniteTransition(label = "inAppReviewPulse")
+    val scale by pulseTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.12f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 850),
+            repeatMode = RepeatMode.Reverse,
+        ),
+        label = "inAppReviewPulseScale",
+    )
+
+    AppIconButton(
+        icon = YamsIcons.Star,
+        contentDescription = stringResource(Res.string.home_rate_app_cd),
+        onClick = onClick,
+        modifier = modifier.scale(scale),
+    )
 }
 
 @Composable
@@ -498,11 +566,115 @@ private fun AbandonGameDialog(
     )
 }
 
+@Composable
+private fun InAppReviewDialog(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit,
+    onPostpone: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(text = stringResource(Res.string.home_rate_app_title))
+        },
+        text = {
+            Text(text = stringResource(Res.string.home_rate_app_message))
+        },
+        icon = {
+            Icon(
+                imageVector = YamsIcons.Star,
+                contentDescription = null,
+            )
+        },
+        dismissButton = {
+            TextButton(onClick = onPostpone) {
+                Text(text = stringResource(Res.string.home_rate_app_later))
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text(text = stringResource(Res.string.home_rate_app_confirm))
+            }
+        },
+    )
+}
+
+@Composable
+private fun InAppReviewDialogPreviewContent(
+    onConfirm: () -> Unit,
+    onPostpone: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.extraLarge,
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 6.dp,
+        shadowElevation = 6.dp,
+    ) {
+        Column(
+            modifier = Modifier.padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Icon(
+                imageVector = YamsIcons.Star,
+                contentDescription = null,
+                modifier = Modifier.size(32.dp),
+                tint = MaterialTheme.colorScheme.primary,
+            )
+            Text(
+                text = stringResource(Res.string.home_rate_app_title),
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center,
+            )
+            Text(
+                text = stringResource(Res.string.home_rate_app_message),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                TextButton(onClick = onPostpone) {
+                    Text(text = stringResource(Res.string.home_rate_app_later))
+                }
+                TextButton(onClick = onConfirm) {
+                    Text(text = stringResource(Res.string.home_rate_app_confirm))
+                }
+            }
+        }
+    }
+}
+
 @OptIn(ExperimentalTime::class)
 @YamsStoreScreenshotPreviews
 @Composable
 private fun HomeScreenPreview() {
     HomeStoreScreenshotContent()
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun InAppReviewDialogPreview() {
+    YamsTheme {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(24.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            InAppReviewDialogPreviewContent(
+                onConfirm = {},
+                onPostpone = {},
+            )
+        }
+    }
 }
 
 @OptIn(ExperimentalTime::class)
@@ -520,6 +692,8 @@ public fun HomeStoreScreenshotContent() {
             onNavigateToUsers = {},
             onNavigateToPaywall = {},
             onAbandonGame = {},
+            onRequestInAppReview = {},
+            onDismissInAppReviewRequest = {},
             onHapticFeedbackEnabledChange = {},
             onGamePlayUiDensityChange = {},
         )
@@ -527,7 +701,33 @@ public fun HomeStoreScreenshotContent() {
 }
 
 @OptIn(ExperimentalTime::class)
-private fun previewHomeUiState(): HomeUiState.Success {
+@Preview
+@Composable
+private fun HomeScreenInAppReviewPreview() {
+    YamsTheme {
+        HomeScreen(
+            uiState = previewHomeUiState(canRequestInAppReview = true),
+            appVersionName = "1.0.0",
+            isHapticFeedbackEnabled = true,
+            gamePlayUiDensity = GamePlayUiDensity.NORMAL,
+            onNavigateToGameCreation = {},
+            onNavigateToGamePlay = {},
+            onNavigateToGameResult = {},
+            onNavigateToUsers = {},
+            onNavigateToPaywall = {},
+            onAbandonGame = {},
+            onRequestInAppReview = {},
+            onDismissInAppReviewRequest = {},
+            onHapticFeedbackEnabledChange = {},
+            onGamePlayUiDensityChange = {},
+        )
+    }
+}
+
+@OptIn(ExperimentalTime::class)
+private fun previewHomeUiState(
+    canRequestInAppReview: Boolean = false,
+): HomeUiState.Success {
     val users = UserMocks.users
     val players = users.take(4).mapIndexed { index, user ->
         PlayerSummaryUiState(
@@ -585,5 +785,6 @@ private fun previewHomeUiState(): HomeUiState.Success {
             },
         ),
         isPremium = true,
+        canRequestInAppReview = canRequestInAppReview,
     )
 }

@@ -17,6 +17,11 @@
     <string name="home_abandon_cancel">Keep</string>
     <string name="home_abandon_confirm">Abandon</string>
     <string name="home_info_cd">Show information</string>
+    <string name="home_rate_app_cd">Rate the app</string>
+    <string name="home_rate_app_title">Enjoying Yahtzee Score?</string>
+    <string name="home_rate_app_message">If you like the app, leave a review on the store. It helps other players find it.</string>
+    <string name="home_rate_app_confirm">Leave a review</string>
+    <string name="home_rate_app_later">Later</string>
     <string name="home_info_title">Information</string>
     <string name="home_info_subtitle">Game rules, third-party libraries, and app version.</string>
     <string name="home_settings_title">Settings</string>
