@@ -26,6 +26,7 @@ class YamsApp : Application(), KoinStartup {
         // LogSnag - must be initialised before PostHog so that events fired during
         // PostHog setup (e.g. "application installed") are already mirrored correctly.
         LogSnagAnalyticsInitializer.setup(
+            context = this,
             token = YamsBuildConfig.LOGSNAG_TOKEN,
             project = YamsBuildConfig.LOGSNAG_PROJECT,
         )

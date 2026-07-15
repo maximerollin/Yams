@@ -64,8 +64,21 @@ enum IOSAnalytics {
 }
 
 private enum LogSnagClient {
+    private static let userIDKey = "logsnag_user_id"
     private static let logURL = URL(string: "https://api.logsnag.com/v1/log")!
     private static let insightURL = URL(string: "https://api.logsnag.com/v1/insight")!
+    private static var userID: String {
+        let defaults = UserDefaults.standard
+        if let existingUserID = defaults.string(forKey: userIDKey)?
+            .trimmingCharacters(in: .whitespacesAndNewlines),
+           !existingUserID.isEmpty {
+            return existingUserID
+        }
+
+        let generatedUserID = "ios-\(UUID().uuidString.lowercased())"
+        defaults.set(generatedUserID, forKey: userIDKey)
+        return generatedUserID
+    }
 
     static func capture(
         token: String,
@@ -86,6 +99,7 @@ private enum LogSnagClient {
                 "project": cleanProject,
                 "channel": "analytics",
                 "event": event,
+                "user_id": userID,
                 "tags": tags,
                 "notify": false,
             ]
