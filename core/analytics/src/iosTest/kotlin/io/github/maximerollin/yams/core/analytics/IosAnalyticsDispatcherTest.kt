@@ -9,6 +9,8 @@ class IosAnalyticsDispatcherTest {
     fun trackerForwardsEquivalentPostHogAndLogSnagEvents() {
         var postHogEvent: String? = null
         var postHogProperties: Map<String, Any>? = null
+        var firebaseEvent: String? = null
+        var firebaseProperties: Map<String, String>? = null
         var logSnagEvent: String? = null
         var logSnagTags: Map<String, String>? = null
         var logSnagInsight: String? = "not-null"
@@ -18,6 +20,10 @@ class IosAnalyticsDispatcherTest {
             postHogCapture = { event, properties ->
                 postHogEvent = event
                 postHogProperties = properties
+            },
+            firebaseCapture = { event, properties ->
+                firebaseEvent = event
+                firebaseProperties = properties
             },
             logSnagCapture = { event, tags, insight ->
                 logSnagEvent = event
@@ -39,6 +45,15 @@ class IosAnalyticsDispatcherTest {
                 "release_channel" to "production",
             ),
             postHogProperties,
+        )
+        assertEquals("player_created", firebaseEvent)
+        assertEquals(
+            mapOf(
+                "avatar_source" to "preset",
+                "platform" to "ios",
+                "release_channel" to "production",
+            ),
+            firebaseProperties,
         )
         assertEquals("player created", logSnagEvent)
         assertEquals(
@@ -63,6 +78,7 @@ class IosAnalyticsDispatcherTest {
                 capturedEvent = event
                 capturedProperties = properties
             },
+            firebaseCapture = { _, _ -> },
             logSnagCapture = { _, _, _ -> },
         )
 

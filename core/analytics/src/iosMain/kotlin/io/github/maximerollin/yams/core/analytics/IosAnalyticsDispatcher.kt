@@ -2,15 +2,18 @@ package io.github.maximerollin.yams.core.analytics
 
 public object IosAnalyticsDispatcher {
     private var postHogCapture: ((String, Map<String, Any>) -> Unit)? = null
+    private var firebaseCapture: ((String, Map<String, String>) -> Unit)? = null
     private var logSnagCapture: ((String, Map<String, String>, String?) -> Unit)? = null
 
     public fun configure(
         releaseChannel: String,
         postHogCapture: (String, Map<String, Any>) -> Unit,
+        firebaseCapture: (String, Map<String, String>) -> Unit,
         logSnagCapture: (String, Map<String, String>, String?) -> Unit,
     ) {
         AnalyticsRuntimeConfig.releaseChannel = releaseChannel.trim().ifBlank { DEFAULT_RELEASE_CHANNEL }
         this.postHogCapture = postHogCapture
+        this.firebaseCapture = firebaseCapture
         this.logSnagCapture = logSnagCapture
     }
 
@@ -32,6 +35,13 @@ public object IosAnalyticsDispatcher {
         properties: Map<String, Any>,
     ) {
         postHogCapture?.invoke(event, properties)
+    }
+
+    internal fun captureFirebase(
+        event: String,
+        properties: Map<String, String>,
+    ) {
+        firebaseCapture?.invoke(event, properties)
     }
 
     internal fun mirrorLogSnag(

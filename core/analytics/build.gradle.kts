@@ -13,6 +13,10 @@ kotlin {
             // Ktor engine used by logsnag-kotlin's Android worker.
             implementation(libs.ktor.client.okhttp)
 
+            // Firebase
+            implementation(project.dependencies.platform(libs.firebase.bom))
+            implementation(libs.firebase.analytics)
+
             // PostHog
             implementation(libs.posthog.android)
 

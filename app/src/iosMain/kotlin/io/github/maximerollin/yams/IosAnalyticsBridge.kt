@@ -6,11 +6,13 @@ public object IosAnalyticsBridge {
     public fun configure(
         releaseChannel: String,
         postHogCapture: (String, Map<String, Any>) -> Unit,
+        firebaseCapture: (String, Map<String, String>) -> Unit,
         logSnagCapture: (String, Map<String, String>, String?) -> Unit,
     ) {
         IosAnalyticsDispatcher.configure(
             releaseChannel = releaseChannel,
             postHogCapture = postHogCapture,
+            firebaseCapture = firebaseCapture,
             logSnagCapture = logSnagCapture,
         )
     }

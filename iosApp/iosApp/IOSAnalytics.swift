@@ -1,4 +1,5 @@
 import Foundation
+import FirebaseAnalytics
 import PostHog
 import YamsApp
 
@@ -23,6 +24,12 @@ enum IOSAnalytics {
                 guard !apiKey.isEmpty else { return }
                 PostHogSDK.shared.capture(event, properties: properties)
             },
+            firebaseCapture: { event, properties in
+                Analytics.logEvent(
+                    event,
+                    parameters: properties.mapValues { $0 as Any }
+                )
+            },
             logSnagCapture: { event, tags, insightTitle in
                 LogSnagClient.capture(
                     token: buildConfig.LOGSNAG_TOKEN,
@@ -34,9 +41,7 @@ enum IOSAnalytics {
             }
         )
 
-        if !apiKey.isEmpty {
-            captureApplicationInstalledIfNeeded()
-        }
+        captureApplicationInstalledIfNeeded()
     }
 
     private static func configurePostHog(apiKey: String, host: String) {

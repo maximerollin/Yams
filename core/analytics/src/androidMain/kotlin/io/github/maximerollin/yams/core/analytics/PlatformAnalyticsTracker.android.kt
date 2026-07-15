@@ -18,6 +18,10 @@ internal actual class PlatformAnalyticsTracker actual constructor() : AnalyticsT
             )
         }
 
+        runCatching {
+            FirebaseAnalyticsInitializer.capture(event = event, properties = enrichedProperties)
+        }
+
         // Mirror the raw (un-prefixed) event and equivalent properties to LogSnag.
         LogSnagAnalyticsInitializer.mirror(event = event, properties = enrichedProperties)
     }

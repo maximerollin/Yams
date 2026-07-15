@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "616173546799",
+    "project_id": "yams-score-37766",
+    "storage_bucket": "yams-score-37766.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:616173546799:android:84a8f5cc60e4a93a3fc5da",
+        "android_client_info": {
+          "package_name": "io.github.maximerollin.yams"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDogGkXs6kBjCEPuiazQfSWB39JK8-P9Mc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
