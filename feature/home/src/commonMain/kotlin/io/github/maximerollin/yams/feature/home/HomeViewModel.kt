@@ -83,15 +83,21 @@ internal class HomeViewModel(
         }
     }
 
-    fun requestInAppReview() {
+    fun openInAppReviewDialog() {
         viewModelScope.launch {
-            requestInAppReviewIfEligible()
+            val numberOfFinishedGames = gameRepository.getNumberOfFinishedGames().first()
+            analyticsTracker.capture(
+                event = "review dialog opened",
+                properties = mapOf(
+                    "finished_games_bucket" to numberOfFinishedGames.toAnalyticsCountBucket(),
+                ),
+            )
         }
     }
 
-    fun dismissInAppReviewRequest() {
+    fun requestInAppReview() {
         viewModelScope.launch {
-            preferenceRepository.setIsInAppReviewPending(false)
+            requestInAppReviewIfEligible()
         }
     }
 

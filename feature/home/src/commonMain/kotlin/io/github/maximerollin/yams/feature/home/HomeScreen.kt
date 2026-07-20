@@ -129,8 +129,8 @@ internal fun HomeRoute(
         onNavigateToUsers = onNavigateToUsers,
         onNavigateToPaywall = onNavigateToPaywall,
         onAbandonGame = viewModel::abandonGame,
+        onOpenInAppReviewDialog = viewModel::openInAppReviewDialog,
         onRequestInAppReview = viewModel::requestInAppReview,
-        onDismissInAppReviewRequest = viewModel::dismissInAppReviewRequest,
         onHapticFeedbackEnabledChange = viewModel::setIsHapticFeedbackEnabled,
         onGamePlayUiDensityChange = viewModel::setGamePlayUiDensity,
         modifier = modifier,
@@ -149,8 +149,8 @@ internal fun HomeScreen(
     onNavigateToUsers: () -> Unit,
     onNavigateToPaywall: () -> Unit,
     onAbandonGame: (GameId) -> Unit,
+    onOpenInAppReviewDialog: () -> Unit,
     onRequestInAppReview: () -> Unit,
-    onDismissInAppReviewRequest: () -> Unit,
     onHapticFeedbackEnabledChange: (Boolean) -> Unit,
     onGamePlayUiDensityChange: (GamePlayUiDensity) -> Unit,
     modifier: Modifier = Modifier,
@@ -180,7 +180,10 @@ internal fun HomeScreen(
                 start = {
                     if (canRequestInAppReview) {
                         HomeInAppReviewIconButton(
-                            onClick = { showInAppReviewDialog = true },
+                            onClick = {
+                                showInAppReviewDialog = true
+                                onOpenInAppReviewDialog()
+                            },
                         )
                     }
                 },
@@ -277,7 +280,6 @@ internal fun HomeScreen(
             },
             onPostpone = {
                 showInAppReviewDialog = false
-                onDismissInAppReviewRequest()
             },
         )
     }
@@ -692,8 +694,8 @@ public fun HomeStoreScreenshotContent() {
             onNavigateToUsers = {},
             onNavigateToPaywall = {},
             onAbandonGame = {},
+            onOpenInAppReviewDialog = {},
             onRequestInAppReview = {},
-            onDismissInAppReviewRequest = {},
             onHapticFeedbackEnabledChange = {},
             onGamePlayUiDensityChange = {},
         )
@@ -716,8 +718,8 @@ private fun HomeScreenInAppReviewPreview() {
             onNavigateToUsers = {},
             onNavigateToPaywall = {},
             onAbandonGame = {},
+            onOpenInAppReviewDialog = {},
             onRequestInAppReview = {},
-            onDismissInAppReviewRequest = {},
             onHapticFeedbackEnabledChange = {},
             onGamePlayUiDensityChange = {},
         )
