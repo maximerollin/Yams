@@ -22,6 +22,9 @@
     <string name="home_rate_app_message">Wenn dir die App gefällt, hinterlasse eine Bewertung im Store. So finden andere Spieler sie leichter.</string>
     <string name="home_rate_app_confirm">Bewertung abgeben</string>
     <string name="home_rate_app_later">Später</string>
+    <string name="home_rate_app_discovery_title">Deine Meinung zählt</string>
+    <string name="home_rate_app_discovery_body">Über die Stern-Schaltfläche kannst du jederzeit eine Bewertung abgeben. Dein Feedback ist wichtig, um die App zu verbessern.</string>
+    <string name="home_rate_app_discovery_acknowledge">Verstanden</string>
     <string name="home_info_title">Informationen</string>
     <string name="home_info_subtitle">Spielregeln, verwendete Bibliotheken und App-Version.</string>
     <string name="home_settings_title">Einstellungen</string>

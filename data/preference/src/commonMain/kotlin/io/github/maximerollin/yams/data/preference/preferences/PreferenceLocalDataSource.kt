@@ -28,6 +28,8 @@ internal interface PreferenceLocalDataSource {
     suspend fun setGamePlayUiDensity(density: GamePlayUiDensity)
     fun getHasSeenGamePlayDensityDiscovery(): Flow<Boolean>
     suspend fun setHasSeenGamePlayDensityDiscovery()
+    fun getHasSeenInAppReviewDiscovery(): Flow<Boolean>
+    suspend fun setHasSeenInAppReviewDiscovery()
     fun getYamsPlusStatus(): Flow<Boolean>
     suspend fun setYamsPlusStatus(isSubscribed: Boolean)
 }
@@ -120,6 +122,17 @@ internal class PreferencePreferencesDataSource(
         }
     }
 
+    override fun getHasSeenInAppReviewDiscovery(): Flow<Boolean> =
+        dataStore.data.map { preferences ->
+            preferences[HAS_SEEN_IN_APP_REVIEW_DISCOVERY_KEY] ?: false
+        }
+
+    override suspend fun setHasSeenInAppReviewDiscovery() {
+        dataStore.edit { preferences ->
+            preferences[HAS_SEEN_IN_APP_REVIEW_DISCOVERY_KEY] = true
+        }
+    }
+
     override fun getYamsPlusStatus(): Flow<Boolean> =
         dataStore.data.map { preferences ->
             preferences[YAMS_PLUS_SUBSCRIPTION_STATUS_KEY] ?: false
@@ -140,6 +153,8 @@ internal class PreferencePreferencesDataSource(
         val GAME_PLAY_UI_DENSITY_KEY = stringPreferencesKey("game_play_ui_density")
         val HAS_SEEN_GAME_PLAY_DENSITY_DISCOVERY_KEY =
             booleanPreferencesKey("has_seen_game_play_density_discovery")
+        val HAS_SEEN_IN_APP_REVIEW_DISCOVERY_KEY =
+            booleanPreferencesKey("has_seen_in_app_review_discovery")
         val YAMS_PLUS_SUBSCRIPTION_STATUS_KEY = booleanPreferencesKey("yams_plus_subscription_status")
     }
 

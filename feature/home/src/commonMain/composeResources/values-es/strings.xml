@@ -22,6 +22,9 @@
     <string name="home_rate_app_message">Si te gusta la app, deja una reseña en la tienda. Ayuda a otros jugadores a encontrarla.</string>
     <string name="home_rate_app_confirm">Dejar reseña</string>
     <string name="home_rate_app_later">Más tarde</string>
+    <string name="home_rate_app_discovery_title">Tu opinión cuenta</string>
+    <string name="home_rate_app_discovery_body">El botón de estrella permite dejar una reseña en cualquier momento. Tus comentarios son importantes para mejorar la aplicación.</string>
+    <string name="home_rate_app_discovery_acknowledge">Entendido</string>
     <string name="home_info_title">Información</string>
     <string name="home_info_subtitle">Reglas del juego, bibliotecas usadas y versión de la app.</string>
     <string name="home_settings_title">Ajustes</string>

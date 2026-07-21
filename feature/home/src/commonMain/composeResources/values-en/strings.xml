@@ -22,6 +22,9 @@
     <string name="home_rate_app_message">If you like the app, leave a review on the store. It helps other players find it.</string>
     <string name="home_rate_app_confirm">Leave a review</string>
     <string name="home_rate_app_later">Later</string>
+    <string name="home_rate_app_discovery_title">Your feedback matters</string>
+    <string name="home_rate_app_discovery_body">Use the star button to leave a review whenever you want. Your feedback is important for improving the app.</string>
+    <string name="home_rate_app_discovery_acknowledge">Got it</string>
     <string name="home_info_title">Information</string>
     <string name="home_info_subtitle">Game rules, third-party libraries, and app version.</string>
     <string name="home_settings_title">Settings</string>

@@ -34,6 +34,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -117,12 +118,15 @@ internal fun HomeRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isHapticFeedbackEnabled by viewModel.isHapticFeedbackEnabled.collectAsStateWithLifecycle()
     val gamePlayUiDensity by viewModel.gamePlayUiDensity.collectAsStateWithLifecycle()
+    val hasSeenInAppReviewDiscovery by
+        viewModel.hasSeenInAppReviewDiscovery.collectAsStateWithLifecycle()
 
     HomeScreen(
         uiState = uiState,
         appVersionName = appVersionName,
         isHapticFeedbackEnabled = isHapticFeedbackEnabled,
         gamePlayUiDensity = gamePlayUiDensity,
+        hasSeenInAppReviewDiscovery = hasSeenInAppReviewDiscovery,
         onNavigateToGameCreation = onNavigateToGameCreation,
         onNavigateToGamePlay = onNavigateToGamePlay,
         onNavigateToGameResult = onNavigateToGameResult,
@@ -131,6 +135,8 @@ internal fun HomeRoute(
         onAbandonGame = viewModel::abandonGame,
         onOpenInAppReviewDialog = viewModel::openInAppReviewDialog,
         onRequestInAppReview = viewModel::requestInAppReview,
+        onInAppReviewDiscoverySeen = viewModel::onInAppReviewDiscoverySeen,
+        onInAppReviewDiscoveryAcknowledged = viewModel::onInAppReviewDiscoveryAcknowledged,
         onHapticFeedbackEnabledChange = viewModel::setIsHapticFeedbackEnabled,
         onGamePlayUiDensityChange = viewModel::setGamePlayUiDensity,
         modifier = modifier,
@@ -143,6 +149,7 @@ internal fun HomeScreen(
     appVersionName: String,
     isHapticFeedbackEnabled: Boolean,
     gamePlayUiDensity: GamePlayUiDensity,
+    hasSeenInAppReviewDiscovery: Boolean? = true,
     onNavigateToGameCreation: () -> Unit,
     onNavigateToGamePlay: (GameId) -> Unit,
     onNavigateToGameResult: (GameId) -> Unit,
@@ -151,6 +158,8 @@ internal fun HomeScreen(
     onAbandonGame: (GameId) -> Unit,
     onOpenInAppReviewDialog: () -> Unit,
     onRequestInAppReview: () -> Unit,
+    onInAppReviewDiscoverySeen: () -> Unit = {},
+    onInAppReviewDiscoveryAcknowledged: () -> Unit = {},
     onHapticFeedbackEnabledChange: (Boolean) -> Unit,
     onGamePlayUiDensityChange: (GamePlayUiDensity) -> Unit,
     modifier: Modifier = Modifier,
@@ -158,6 +167,7 @@ internal fun HomeScreen(
     var pendingAbandonGameId by remember { mutableStateOf<GameId?>(null) }
     var showInformationSheet by remember { mutableStateOf(false) }
     var showInAppReviewDialog by remember { mutableStateOf(false) }
+    var isInAppReviewDiscoveryDismissedForSession by rememberSaveable { mutableStateOf(false) }
     val successUiState = uiState as? HomeUiState.Success
     val activeGame = successUiState?.activeGame
     val canRequestInAppReview = successUiState?.canRequestInAppReview == true
@@ -258,6 +268,31 @@ internal fun HomeScreen(
                 }
             }
         }
+    }
+
+    val isInAppReviewDiscoveryVisible = shouldShowHomeInAppReviewDiscovery(
+        hasSeenDiscovery = hasSeenInAppReviewDiscovery,
+        canRequestInAppReview = canRequestInAppReview,
+    ) && !isInAppReviewDiscoveryDismissedForSession
+
+    fun dismissInAppReviewDiscovery() {
+        isInAppReviewDiscoveryDismissedForSession = true
+        onInAppReviewDiscoverySeen()
+    }
+
+    if (isInAppReviewDiscoveryVisible) {
+        HomeInAppReviewDiscoveryOverlay(
+            onDismiss = ::dismissInAppReviewDiscovery,
+            onAcknowledge = {
+                isInAppReviewDiscoveryDismissedForSession = true
+                onInAppReviewDiscoveryAcknowledged()
+            },
+            onShowReview = {
+                dismissInAppReviewDiscovery()
+                showInAppReviewDialog = true
+                onOpenInAppReviewDialog()
+            },
+        )
     }
 
     val gameIdToAbandon = pendingAbandonGameId
@@ -696,6 +731,8 @@ public fun HomeStoreScreenshotContent() {
             onAbandonGame = {},
             onOpenInAppReviewDialog = {},
             onRequestInAppReview = {},
+            onInAppReviewDiscoverySeen = {},
+            onInAppReviewDiscoveryAcknowledged = {},
             onHapticFeedbackEnabledChange = {},
             onGamePlayUiDensityChange = {},
         )
@@ -720,6 +757,35 @@ private fun HomeScreenInAppReviewPreview() {
             onAbandonGame = {},
             onOpenInAppReviewDialog = {},
             onRequestInAppReview = {},
+            onInAppReviewDiscoverySeen = {},
+            onInAppReviewDiscoveryAcknowledged = {},
+            onHapticFeedbackEnabledChange = {},
+            onGamePlayUiDensityChange = {},
+        )
+    }
+}
+
+@OptIn(ExperimentalTime::class)
+@Preview
+@Composable
+private fun HomeScreenInAppReviewDiscoveryPreview() {
+    YamsTheme {
+        HomeScreen(
+            uiState = previewHomeUiState(canRequestInAppReview = true),
+            appVersionName = "1.0.0",
+            isHapticFeedbackEnabled = true,
+            gamePlayUiDensity = GamePlayUiDensity.NORMAL,
+            hasSeenInAppReviewDiscovery = false,
+            onNavigateToGameCreation = {},
+            onNavigateToGamePlay = {},
+            onNavigateToGameResult = {},
+            onNavigateToUsers = {},
+            onNavigateToPaywall = {},
+            onAbandonGame = {},
+            onOpenInAppReviewDialog = {},
+            onRequestInAppReview = {},
+            onInAppReviewDiscoverySeen = {},
+            onInAppReviewDiscoveryAcknowledged = {},
             onHapticFeedbackEnabledChange = {},
             onGamePlayUiDensityChange = {},
         )

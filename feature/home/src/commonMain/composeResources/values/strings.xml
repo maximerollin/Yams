@@ -22,6 +22,9 @@
     <string name="home_rate_app_message">Si l'application vous plaît, laissez un avis sur le store. Ça aide d'autres joueurs à la trouver.</string>
     <string name="home_rate_app_confirm">Laisser un avis</string>
     <string name="home_rate_app_later">Plus tard</string>
+    <string name="home_rate_app_discovery_title">Votre avis compte</string>
+    <string name="home_rate_app_discovery_body">Le bouton étoile permet de laisser un avis à tout moment. Vos retours sont importants pour améliorer l'application.</string>
+    <string name="home_rate_app_discovery_acknowledge">J’ai compris</string>
     <string name="home_info_title">Informations</string>
     <string name="home_info_subtitle">Règles du jeu, bibliothèques utilisées et version de l'application.</string>
     <string name="home_settings_title">Réglages</string>

@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.time.Clock
@@ -71,6 +72,15 @@ internal class HomeViewModel(
                 initialValue = GamePlayUiDensity.NORMAL,
             )
 
+    val hasSeenInAppReviewDiscovery: StateFlow<Boolean?> =
+        preferenceRepository.getHasSeenInAppReviewDiscovery()
+            .map<Boolean, Boolean?> { it }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = null,
+            )
+
     fun setIsHapticFeedbackEnabled(isEnabled: Boolean) {
         viewModelScope.launch {
             preferenceRepository.setIsHapticFeedbackEnabled(isEnabled)
@@ -80,6 +90,25 @@ internal class HomeViewModel(
     fun setGamePlayUiDensity(density: GamePlayUiDensity) {
         viewModelScope.launch {
             preferenceRepository.setGamePlayUiDensity(density)
+        }
+    }
+
+    fun onInAppReviewDiscoverySeen() {
+        viewModelScope.launch {
+            preferenceRepository.setHasSeenInAppReviewDiscovery()
+        }
+    }
+
+    fun onInAppReviewDiscoveryAcknowledged() {
+        viewModelScope.launch {
+            preferenceRepository.setHasSeenInAppReviewDiscovery()
+            val numberOfFinishedGames = gameRepository.getNumberOfFinishedGames().first()
+            analyticsTracker.capture(
+                event = "review discovery acknowledged",
+                properties = mapOf(
+                    "finished_games_bucket" to numberOfFinishedGames.toAnalyticsCountBucket(),
+                ),
+            )
         }
     }
 
