@@ -1,1 +1,2 @@
 "CFBundleDisplayName" = "Yahtzee Score";
+"NSCameraUsageDescription" = "Yams uses the camera locally to recognize your dice during a game.";

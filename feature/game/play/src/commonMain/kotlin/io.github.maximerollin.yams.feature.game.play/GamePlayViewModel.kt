@@ -3,6 +3,7 @@ package io.github.maximerollin.yams.feature.game.play
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.maximerollin.yams.core.model.GameId
+import io.github.maximerollin.yams.data.billing.BillingRepository
 import io.github.maximerollin.yams.data.game.GameRepository
 import io.github.maximerollin.yams.data.game.ScoreEntryRepository
 import io.github.maximerollin.yams.data.game.model.CreateScoreEntry
@@ -26,6 +27,7 @@ internal class GamePlayViewModel(
     private val scoreEntryRepository: ScoreEntryRepository,
     private val getGetGamePlayStateUseCase: GetGamePlayStateUseCase,
     private val preferenceRepository: PreferenceRepository,
+    billingRepository: BillingRepository,
 ) : ViewModel() {
 
     val gamePlayStateUi: StateFlow<GamePlayStateUi?> =
@@ -61,6 +63,32 @@ internal class GamePlayViewModel(
                 initialValue = null,
             )
 
+    val hasSeenDiceAssistantDiscovery: StateFlow<Boolean?> =
+        preferenceRepository.getHasSeenDiceAssistantDiscovery()
+            .map<Boolean, Boolean?> { it }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = null,
+            )
+
+    val hasSeenDiceAssistantGuide: StateFlow<Boolean?> =
+        preferenceRepository.getHasSeenDiceAssistantGuide()
+            .map<Boolean, Boolean?> { it }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = null,
+            )
+
+    val isYamsPlus: StateFlow<Boolean> =
+        billingRepository.getYamsPlusStatus()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = false,
+            )
+
     private val _navigateToGameResult: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val navigateToGameResult: StateFlow<Boolean> = _navigateToGameResult
 
@@ -73,6 +101,18 @@ internal class GamePlayViewModel(
     fun onGamePlayDensityDiscoverySeen() {
         viewModelScope.launch {
             preferenceRepository.setHasSeenGamePlayDensityDiscovery()
+        }
+    }
+
+    fun onDiceAssistantDiscoverySeen() {
+        viewModelScope.launch {
+            preferenceRepository.setHasSeenDiceAssistantDiscovery()
+        }
+    }
+
+    fun onDiceAssistantGuideSeen() {
+        viewModelScope.launch {
+            preferenceRepository.setHasSeenDiceAssistantGuide()
         }
     }
 

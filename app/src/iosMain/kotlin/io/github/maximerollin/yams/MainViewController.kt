@@ -10,13 +10,18 @@ import com.revenuecat.purchases.kmp.LogLevel
 import com.revenuecat.purchases.kmp.Purchases
 import com.revenuecat.purchases.kmp.configure
 import io.github.maximerollin.yams.di.appModule
+import io.github.maximerollin.yams.feature.game.play.assistant.IosDiceAssistantBridge
+import io.github.maximerollin.yams.feature.game.play.assistant.installIosDiceAssistantBridge
 import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
 import org.koin.dsl.koinConfiguration
 import platform.UIKit.UIViewController
 
 @Suppress("FunctionName", "unused")
-fun MainViewController(): UIViewController {
+fun MainViewController(
+    diceAssistantBridge: IosDiceAssistantBridge? = null,
+): UIViewController {
+    installIosDiceAssistantBridge(diceAssistantBridge)
     configureRevenueCat()
 
     return ComposeUIViewController {

@@ -22,12 +22,14 @@ public fun NavController.navigateToGamePlay(
 public fun NavGraphBuilder.gamePlayScreen(
     onNavigateHome: () -> Unit,
     onNavigateToResults: (gameId: GameId) -> Unit,
+    onNavigateToPaywall: () -> Unit,
 ) {
     composable<GamePlayRoute> {
         GamePlayRoute(
             gameId = GameId(it.toRoute<GamePlayRoute>().gameId),
             onNavigateHome = onNavigateHome,
             onNavigateToResults = onNavigateToResults,
+            onNavigateToPaywall = onNavigateToPaywall,
         )
     }
 }

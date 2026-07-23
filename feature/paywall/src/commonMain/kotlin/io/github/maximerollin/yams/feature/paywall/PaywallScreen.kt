@@ -34,6 +34,7 @@ import io.github.maximerollin.yams.core.designsystem.icon.AwardStar
 import io.github.maximerollin.yams.core.designsystem.icon.Crown
 import io.github.maximerollin.yams.core.designsystem.icon.HeartSmile
 import io.github.maximerollin.yams.core.designsystem.icon.History
+import io.github.maximerollin.yams.core.designsystem.icon.PencilSparkles
 import io.github.maximerollin.yams.core.designsystem.icon.Strategy
 import io.github.maximerollin.yams.core.designsystem.icon.Timeline
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
@@ -122,6 +123,11 @@ internal fun PaywallScreen(
                         style = MaterialTheme.typography.titleMedium,
                         color = YamsTheme.colors.brown,
                         fontWeight = FontWeight.SemiBold,
+                    )
+                    PaywallFeatureCard(
+                        icon = YamsIcons.PencilSparkles,
+                        title = "Assistant caméra IA",
+                        description = "Scannez vos 5 dés et obtenez un conseil sur les dés à garder, à relancer ou la case à remplir.",
                     )
                     PaywallFeatureCard(
                         icon = YamsIcons.History,

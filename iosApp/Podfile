@@ -1,0 +1,9 @@
+platform :ios, '15.0'
+
+project 'iosApp.xcodeproj'
+
+target 'iosApp' do
+  use_frameworks! :linkage => :static
+
+  pod 'TensorFlowLiteSwift', '~> 2.17'
+end

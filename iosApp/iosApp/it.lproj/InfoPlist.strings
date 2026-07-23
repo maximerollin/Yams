@@ -1,1 +1,2 @@
 "CFBundleDisplayName" = "Yahtzee Score";
+"NSCameraUsageDescription" = "Yams usa la fotocamera localmente per riconoscere i dadi durante la partita.";

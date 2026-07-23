@@ -1,1 +1,2 @@
 "CFBundleDisplayName" = "Kniffel Score";
+"NSCameraUsageDescription" = "Yams nutzt die Kamera lokal, um deine Würfel während der Partie zu erkennen.";

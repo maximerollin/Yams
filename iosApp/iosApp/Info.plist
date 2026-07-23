@@ -6,5 +6,7 @@
 	<true/>
 	<key>CFBundleDisplayName</key>
 	<string>Yahtzee Score</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Yams uses the camera locally to recognize your dice during a game.</string>
 </dict>
 </plist>
