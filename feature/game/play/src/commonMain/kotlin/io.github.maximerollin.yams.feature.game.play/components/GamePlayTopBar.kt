@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.maximerollin.yams.core.designsystem.component.AppIconButton
@@ -34,6 +35,7 @@ internal fun GamePlayTopBar(
     AppTopBar(
         modifier = modifier.statusBarsPadding(),
         isDividerVisible = false,
+        centerUsesAvailableWidth = true,
         start = {
             AppIconButton(
                 icon = YamsIcons.Home,
@@ -48,6 +50,8 @@ internal fun GamePlayTopBar(
                 style = MaterialTheme.typography.titleMedium,
                 color = YamsTheme.colors.brown,
                 textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
         },
         end = {
