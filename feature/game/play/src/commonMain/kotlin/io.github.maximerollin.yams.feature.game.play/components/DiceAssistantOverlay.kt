@@ -789,7 +789,7 @@ private fun RecommendationContent(
             ) {
                 Text(
                     text = state.roll.rollIndex.localizedLabel(),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
@@ -834,7 +834,7 @@ private fun RecommendationMessage(
         is DiceRecommendation.KeepDice -> {
             Text(
                 text = stringResource(Res.string.play_assistant_recommendation_keep),
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.SemiBold,
                 color = YamsTheme.colors.brown,
             )
@@ -905,7 +905,7 @@ private fun ObjectiveList(
     ) {
         Text(
             text = stringResource(Res.string.play_assistant_recommendation_objectives),
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onSurface,
         )
@@ -1063,7 +1063,7 @@ private fun DiceFacePill(
         Box(contentAlignment = Alignment.Center) {
             Text(
                 text = face.toString(),
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.SemiBold,
             )
         }
