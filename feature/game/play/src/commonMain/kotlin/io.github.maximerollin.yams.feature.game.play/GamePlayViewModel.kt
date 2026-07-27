@@ -2,6 +2,7 @@ package io.github.maximerollin.yams.feature.game.play
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.maximerollin.yams.core.analytics.AnalyticsTracker
 import io.github.maximerollin.yams.core.model.GameId
 import io.github.maximerollin.yams.data.billing.BillingRepository
 import io.github.maximerollin.yams.data.game.GameRepository
@@ -27,6 +28,7 @@ internal class GamePlayViewModel(
     private val scoreEntryRepository: ScoreEntryRepository,
     private val getGetGamePlayStateUseCase: GetGamePlayStateUseCase,
     private val preferenceRepository: PreferenceRepository,
+    private val analyticsTracker: AnalyticsTracker,
     billingRepository: BillingRepository,
 ) : ViewModel() {
 
@@ -116,6 +118,19 @@ internal class GamePlayViewModel(
         }
     }
 
+    fun onDiceAssistantClicked(isYamsPlus: Boolean) {
+        analyticsTracker.capture(
+            event = ASSISTANT_IA_CLICKED_EVENT,
+            properties = mapOf(
+                "is_yams_plus" to isYamsPlus,
+            ),
+        )
+    }
+
+    fun onDiceAssistantScanStarted() {
+        analyticsTracker.capture(event = ASSISTANT_IA_SCAN_STARTED_EVENT)
+    }
+
     fun onScore(
         score: Int,
         cell: ScoreCellRef,
@@ -151,5 +166,10 @@ internal class GamePlayViewModel(
 
     fun onGameResultNavigationHandled() {
         _navigateToGameResult.value = false
+    }
+
+    private companion object {
+        const val ASSISTANT_IA_CLICKED_EVENT = "assistant ia clicked"
+        const val ASSISTANT_IA_SCAN_STARTED_EVENT = "assistant ia scan started"
     }
 }

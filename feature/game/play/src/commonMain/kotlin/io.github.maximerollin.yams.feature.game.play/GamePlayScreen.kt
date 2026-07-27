@@ -119,6 +119,8 @@ internal fun GamePlayRoute(
         onGamePlayDensityDiscoverySeen = viewModel::onGamePlayDensityDiscoverySeen,
         onDiceAssistantDiscoverySeen = viewModel::onDiceAssistantDiscoverySeen,
         onDiceAssistantGuideSeen = viewModel::onDiceAssistantGuideSeen,
+        onDiceAssistantClicked = viewModel::onDiceAssistantClicked,
+        onDiceAssistantScanStarted = viewModel::onDiceAssistantScanStarted,
         onScore = viewModel::onScore,
         onUndo = viewModel::onUndo,
         onGoToResults = viewModel::onGoToResults,
@@ -140,6 +142,8 @@ private fun GamePlayScreen(
     onGamePlayDensityDiscoverySeen: () -> Unit = {},
     onDiceAssistantDiscoverySeen: () -> Unit = {},
     onDiceAssistantGuideSeen: () -> Unit = {},
+    onDiceAssistantClicked: (Boolean) -> Unit = {},
+    onDiceAssistantScanStarted: () -> Unit = {},
     onScore: (Int, ScoreCellRef, Boolean) -> Unit = { _, _, _ -> },
     onUndo: () -> Unit = {},
     onGoToResults: () -> Unit = {},
@@ -341,6 +345,7 @@ private fun GamePlayScreen(
     }
 
     fun showDiceAssistant() {
+        onDiceAssistantClicked(isYamsPlus)
         if (isYamsPlus) {
             isDiceAssistantVisible = true
         } else {
@@ -543,6 +548,7 @@ private fun GamePlayScreen(
             context = assistantContext,
             hasSeenUsageGuide = hasSeenDiceAssistantGuide,
             onUsageGuideSeen = onDiceAssistantGuideSeen,
+            onScanStarted = onDiceAssistantScanStarted,
             onDismiss = { isDiceAssistantVisible = false },
         )
     }

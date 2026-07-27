@@ -145,6 +145,7 @@ internal fun DiceAssistantOverlay(
     context: DiceAssistantContext,
     hasSeenUsageGuide: Boolean? = true,
     onUsageGuideSeen: () -> Unit = {},
+    onScanStarted: () -> Unit = {},
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -182,6 +183,12 @@ internal fun DiceAssistantOverlay(
                 faces = calculatingState.roll.faces,
                 context = context,
             )
+        }
+    }
+
+    LaunchedEffect(isUsageGuideVisible, uiState) {
+        if (!isUsageGuideVisible && uiState is DiceAssistantUiState.Scanning) {
+            onScanStarted()
         }
     }
 
