@@ -24,6 +24,10 @@ public interface PreferenceRepository {
     public suspend fun setHasSeenGamePlayDensityDiscovery()
     public fun getHasSeenInAppReviewDiscovery(): Flow<Boolean>
     public suspend fun setHasSeenInAppReviewDiscovery()
+    public fun getHasSeenDiceAssistantDiscovery(): Flow<Boolean>
+    public suspend fun setHasSeenDiceAssistantDiscovery()
+    public fun getHasSeenDiceAssistantGuide(): Flow<Boolean>
+    public suspend fun setHasSeenDiceAssistantGuide()
     public fun getYamsPlusStatus(): Flow<Boolean>
     public suspend fun setYamsPlusStatus(isSubscribed: Boolean)
 }
@@ -93,6 +97,22 @@ internal class DefaultPreferenceRepository(
 
     override suspend fun setHasSeenInAppReviewDiscovery() {
         preferenceLocalDataSource.setHasSeenInAppReviewDiscovery()
+    }
+
+    override fun getHasSeenDiceAssistantDiscovery(): Flow<Boolean> {
+        return preferenceLocalDataSource.getHasSeenDiceAssistantDiscovery()
+    }
+
+    override suspend fun setHasSeenDiceAssistantDiscovery() {
+        preferenceLocalDataSource.setHasSeenDiceAssistantDiscovery()
+    }
+
+    override fun getHasSeenDiceAssistantGuide(): Flow<Boolean> {
+        return preferenceLocalDataSource.getHasSeenDiceAssistantGuide()
+    }
+
+    override suspend fun setHasSeenDiceAssistantGuide() {
+        preferenceLocalDataSource.setHasSeenDiceAssistantGuide()
     }
 
     override fun getYamsPlusStatus(): Flow<Boolean> {

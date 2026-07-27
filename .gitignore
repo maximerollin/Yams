@@ -20,3 +20,5 @@ composeApp/release/
 app/release/
 screenshot/**/*.png
 .superpowers/
+iosApp/Pods/
+tools/dice_model/

@@ -50,6 +50,7 @@ import io.github.maximerollin.yams.data.game.model.ScoreCellRef
 import io.github.maximerollin.yams.data.preference.GamePlayUiDensity
 import io.github.maximerollin.yams.feature.game.play.components.GamePlayCelebrationOverlay
 import io.github.maximerollin.yams.feature.game.play.components.GamePlayCombinationSection
+import io.github.maximerollin.yams.feature.game.play.components.GamePlayDiceAssistantDiscoveryOverlay
 import io.github.maximerollin.yams.feature.game.play.components.GamePlayCustomRulesSection
 import io.github.maximerollin.yams.feature.game.play.components.GamePlayDensityDiscoveryOverlay
 import io.github.maximerollin.yams.feature.game.play.components.GamePlayFinishedDialog
@@ -57,6 +58,9 @@ import io.github.maximerollin.yams.feature.game.play.components.GamePlayInformat
 import io.github.maximerollin.yams.feature.game.play.components.GamePlayScoreSheetOverviewCard
 import io.github.maximerollin.yams.feature.game.play.components.GamePlayTopBar
 import io.github.maximerollin.yams.feature.game.play.components.GamePlayUpperScoreSection
+import io.github.maximerollin.yams.feature.game.play.components.DiceAssistantOverlay
+import io.github.maximerollin.yams.feature.game.play.assistant.DiceAssistantContext
+import io.github.maximerollin.yams.feature.game.play.components.shouldShowDiceAssistantDiscovery
 import io.github.maximerollin.yams.feature.game.play.components.shouldShowGamePlayDensityDiscovery
 import io.github.maximerollin.yams.feature.game.play.mock.gamePlayPreviewUiState
 import io.github.maximerollin.yams.feature.game.play.model.GamePlayCelebration
@@ -79,6 +83,7 @@ internal fun GamePlayRoute(
     gameId: GameId,
     onNavigateHome: () -> Unit,
     onNavigateToResults: (gameId: GameId) -> Unit,
+    onNavigateToPaywall: () -> Unit,
     viewModel: GamePlayViewModel = koinViewModel { parametersOf(gameId) },
 ) {
     val uiState by viewModel.gamePlayStateUi.collectAsStateWithLifecycle()
@@ -87,6 +92,11 @@ internal fun GamePlayRoute(
     val gamePlayUiDensity by viewModel.gamePlayUiDensity.collectAsStateWithLifecycle()
     val hasSeenGamePlayDensityDiscovery by
         viewModel.hasSeenGamePlayDensityDiscovery.collectAsStateWithLifecycle()
+    val hasSeenDiceAssistantDiscovery by
+        viewModel.hasSeenDiceAssistantDiscovery.collectAsStateWithLifecycle()
+    val hasSeenDiceAssistantGuide by
+        viewModel.hasSeenDiceAssistantGuide.collectAsStateWithLifecycle()
+    val isYamsPlus by viewModel.isYamsPlus.collectAsStateWithLifecycle()
 
     LaunchedEffect(navigateToGameResult) {
         if (navigateToGameResult) {
@@ -100,9 +110,15 @@ internal fun GamePlayRoute(
         isHapticFeedbackEnabled = isHapticFeedbackEnabled,
         gamePlayUiDensity = gamePlayUiDensity,
         hasSeenGamePlayDensityDiscovery = hasSeenGamePlayDensityDiscovery,
+        hasSeenDiceAssistantDiscovery = hasSeenDiceAssistantDiscovery,
+        hasSeenDiceAssistantGuide = hasSeenDiceAssistantGuide,
+        isYamsPlus = isYamsPlus,
         onNavigateHome = onNavigateHome,
+        onNavigateToPaywall = onNavigateToPaywall,
         onGamePlayUiDensityChange = viewModel::onGamePlayUiDensityChange,
         onGamePlayDensityDiscoverySeen = viewModel::onGamePlayDensityDiscoverySeen,
+        onDiceAssistantDiscoverySeen = viewModel::onDiceAssistantDiscoverySeen,
+        onDiceAssistantGuideSeen = viewModel::onDiceAssistantGuideSeen,
         onScore = viewModel::onScore,
         onUndo = viewModel::onUndo,
         onGoToResults = viewModel::onGoToResults,
@@ -115,9 +131,15 @@ private fun GamePlayScreen(
     isHapticFeedbackEnabled: Boolean = true,
     gamePlayUiDensity: GamePlayUiDensity = GamePlayUiDensity.NORMAL,
     hasSeenGamePlayDensityDiscovery: Boolean? = true,
+    hasSeenDiceAssistantDiscovery: Boolean? = true,
+    hasSeenDiceAssistantGuide: Boolean? = true,
+    isYamsPlus: Boolean = false,
     onNavigateHome: () -> Unit = {},
+    onNavigateToPaywall: () -> Unit = {},
     onGamePlayUiDensityChange: (GamePlayUiDensity) -> Unit = {},
     onGamePlayDensityDiscoverySeen: () -> Unit = {},
+    onDiceAssistantDiscoverySeen: () -> Unit = {},
+    onDiceAssistantGuideSeen: () -> Unit = {},
     onScore: (Int, ScoreCellRef, Boolean) -> Unit = { _, _, _ -> },
     onUndo: () -> Unit = {},
     onGoToResults: () -> Unit = {},
@@ -125,7 +147,9 @@ private fun GamePlayScreen(
 ) {
     var isInfoSheetVisible by rememberSaveable { mutableStateOf(false) }
     var isDensityDiscoveryDismissedForSession by rememberSaveable { mutableStateOf(false) }
+    var isAssistantDiscoveryDismissedForSession by rememberSaveable { mutableStateOf(false) }
     var scoreSelectionRequest by remember { mutableStateOf<ScoreSelectionRequest?>(null) }
+    var isDiceAssistantVisible by rememberSaveable { mutableStateOf(false) }
     var celebrationId by rememberSaveable { mutableStateOf(0) }
     var celebration by remember { mutableStateOf<GamePlayCelebration?>(null) }
     val snackbarHostState = remember { SnackbarHostState() }
@@ -200,6 +224,7 @@ private fun GamePlayScreen(
             columnScores.any { it != null }
         }
     }
+    val assistantContext = currentTurnPlayer.toDiceAssistantContext(settings)
 
     val upperRows = buildUpperScoreRows()
     val lowerRows = buildMainScoreRows(settings)
@@ -315,6 +340,14 @@ private fun GamePlayScreen(
         )
     }
 
+    fun showDiceAssistant() {
+        if (isYamsPlus) {
+            isDiceAssistantVisible = true
+        } else {
+            onNavigateToPaywall()
+        }
+    }
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -325,6 +358,8 @@ private fun GamePlayScreen(
             topBar = {
                 GamePlayTopBar(
                     onNavigateHome = onNavigateHome,
+                    isAssistantPremiumEnabled = isYamsPlus,
+                    onShowAssistant = ::showDiceAssistant,
                     onShowInformation = { isInfoSheetVisible = true },
                 )
             },
@@ -456,17 +491,35 @@ private fun GamePlayScreen(
         )
     }
 
+    val isAssistantDiscoveryVisible = shouldShowDiceAssistantDiscovery(
+        hasSeenDiscovery = hasSeenDiceAssistantDiscovery,
+        hasPlayers = uiState.playerStates.isNotEmpty(),
+    ) && !isAssistantDiscoveryDismissedForSession
     val isDensityDiscoveryVisible = shouldShowGamePlayDensityDiscovery(
         hasSeenDiscovery = hasSeenGamePlayDensityDiscovery,
         hasPlayers = uiState.playerStates.isNotEmpty(),
-    ) && !isDensityDiscoveryDismissedForSession
+    ) && !isDensityDiscoveryDismissedForSession && !isAssistantDiscoveryVisible
 
     fun dismissDensityDiscovery() {
         isDensityDiscoveryDismissedForSession = true
         onGamePlayDensityDiscoverySeen()
     }
 
-    if (isDensityDiscoveryVisible) {
+    fun dismissAssistantDiscovery() {
+        isAssistantDiscoveryDismissedForSession = true
+        onDiceAssistantDiscoverySeen()
+    }
+
+    if (isAssistantDiscoveryVisible) {
+        GamePlayDiceAssistantDiscoveryOverlay(
+            isPremiumEnabled = isYamsPlus,
+            onDismiss = ::dismissAssistantDiscovery,
+            onShowAssistant = {
+                dismissAssistantDiscovery()
+                showDiceAssistant()
+            },
+        )
+    } else if (isDensityDiscoveryVisible) {
         GamePlayDensityDiscoveryOverlay(
             onDismiss = ::dismissDensityDiscovery,
             onShowInformation = {
@@ -485,6 +538,15 @@ private fun GamePlayScreen(
         )
     }
 
+    if (isDiceAssistantVisible) {
+        DiceAssistantOverlay(
+            context = assistantContext,
+            hasSeenUsageGuide = hasSeenDiceAssistantGuide,
+            onUsageGuideSeen = onDiceAssistantGuideSeen,
+            onDismiss = { isDiceAssistantVisible = false },
+        )
+    }
+
     if (shouldShowFinishDialog) {
         GamePlayFinishedDialog(
             onGoToResults = onGoToResults,
@@ -495,6 +557,13 @@ private fun GamePlayScreen(
         )
     }
 }
+
+private fun PlayerState.toDiceAssistantContext(settings: GameSettings): DiceAssistantContext =
+    DiceAssistantContext(
+        settings = settings,
+        scoreEntries = scoreEntries,
+        extraFiveOfAKindScores = extraFiveOfAKindScores,
+    )
 
 @Composable
 private fun GamePlayMessageState(
@@ -528,32 +597,6 @@ private fun GamePlayMessageState(
         }
     }
 }
-
-private val AllFiveDiceScoreOptions: List<Int> = listOf(0) + (5..30).toList()
-private val MatchingThreeDiceScoreOptions: List<Int> = listOf(0) + (1..6).map { it * 3 }
-private val MatchingFourDiceScoreOptions: List<Int> = listOf(0) + (1..6).map { it * 4 }
-private val ThreeOfAKindAllDiceScoreOptions: List<Int> =
-    possibleAllDiceScoreOptions(minMatchingDiceCount = 3)
-private val FourOfAKindAllDiceScoreOptions: List<Int> =
-    possibleAllDiceScoreOptions(minMatchingDiceCount = 4)
-
-private fun possibleAllDiceScoreOptions(minMatchingDiceCount: Int): List<Int> = buildSet {
-    add(0)
-    for (firstDie in 1..6) {
-        for (secondDie in 1..6) {
-            for (thirdDie in 1..6) {
-                for (fourthDie in 1..6) {
-                    for (fifthDie in 1..6) {
-                        val dice = listOf(firstDie, secondDie, thirdDie, fourthDie, fifthDie)
-                        if (dice.groupingBy { it }.eachCount().values.any { it >= minMatchingDiceCount }) {
-                            add(dice.sum())
-                        }
-                    }
-                }
-            }
-        }
-    }
-}.toList().sorted()
 
 @Composable
 private fun buildUpperScoreRows(): List<ScoreRowUi> = listOf(
@@ -786,210 +829,6 @@ private fun scoringDescription(
     null -> stringResource(Res.string.play_rule_defined_score)
 }
 
-private fun fixedScore(
-    scoring: GameSettings.SettingsScoring?,
-    fixedValue: Int?,
-): Int? = when (scoring) {
-    GameSettings.SettingsScoring.FIXED,
-    GameSettings.SettingsScoring.FIXED_CUSTOM -> fixedValue ?: 0
-
-    else -> null
-}
-
-private fun upperScoreOptions(dieValue: Int): List<Int> =
-    (0..5).map { count -> count * dieValue }
-
-private fun selectableScoreOptions(
-    scoring: GameSettings.SettingsScoring?,
-    fixedValue: Int?,
-    allFiveDiceOptions: List<Int>,
-): List<Int> = when (scoring) {
-    GameSettings.SettingsScoring.SUM_ALL_FIVE_DICE -> allFiveDiceOptions
-    GameSettings.SettingsScoring.SUM_MATCHING_THREE -> MatchingThreeDiceScoreOptions
-    GameSettings.SettingsScoring.SUM_MATCHING_FOUR -> MatchingFourDiceScoreOptions
-    GameSettings.SettingsScoring.FIXED,
-    GameSettings.SettingsScoring.FIXED_CUSTOM -> listOf(0, fixedValue ?: 0).distinct().sorted()
-
-    null -> emptyList()
-}
-
-private fun scoreSelectionOptions(
-    row: ScoreRowUi,
-    columnIndex: Int,
-    selectedPlayer: PlayerState,
-    settings: GameSettings,
-): List<ScoreSelectionOption> {
-    val isExtraFiveOfAKindBonusAvailable =
-        settings.isExtraFiveOfAKindEnabled &&
-            settings.extraFiveOfAKindValue != null &&
-            row.key != ScoreKey.EXTRA_FIVE_OF_A_KIND &&
-            row.key != ScoreKey.FIVE_OF_A_KIND &&
-            (selectedPlayer.valuesFor(ScoreKey.FIVE_OF_A_KIND, settings.columnCount.coerceAtLeast(1))
-                .getOrNull(columnIndex) ?: 0) > 0
-
-    return row.scoreOptions.flatMap { score ->
-        when {
-            !isExtraFiveOfAKindBonusAvailable -> {
-                listOf(ScoreSelectionOption(score = score))
-            }
-
-            fiveOfAKindDetection(row, score, settings) == FiveOfAKindDetection.CERTAIN -> {
-                listOf(
-                    ScoreSelectionOption(
-                        score = score,
-                        awardsExtraFiveOfAKindBonus = true,
-                    )
-                )
-            }
-
-            fiveOfAKindDetection(row, score, settings) == FiveOfAKindDetection.POSSIBLE -> {
-                listOf(
-                    ScoreSelectionOption(score = score),
-                    ScoreSelectionOption(
-                        score = score,
-                        awardsExtraFiveOfAKindBonus = true,
-                    ),
-                )
-            }
-
-            else -> {
-                listOf(ScoreSelectionOption(score = score))
-            }
-        }
-    }
-}
-
-private fun fiveOfAKindDetection(
-    row: ScoreRowUi,
-    score: Int,
-    settings: GameSettings,
-): FiveOfAKindDetection {
-    if (score <= 0) return FiveOfAKindDetection.NONE
-
-    return when (row.key) {
-        ScoreKey.ONES,
-        ScoreKey.TWOS,
-        ScoreKey.THREES,
-        ScoreKey.FOURS,
-        ScoreKey.FIVES,
-        ScoreKey.SIXES -> {
-            val dieValue = upperRowDieValue(row.key) ?: return FiveOfAKindDetection.NONE
-            if (score == dieValue * 5) {
-                FiveOfAKindDetection.CERTAIN
-            } else {
-                FiveOfAKindDetection.NONE
-            }
-        }
-
-        ScoreKey.THREE_OF_A_KIND -> scoringFiveOfAKindDetection(
-            scoring = settings.threeOfAKindScoring,
-            fixedValue = settings.threeOfAKindValue,
-            score = score,
-            allowFixedScore = settings.jokerRule,
-        )
-
-        ScoreKey.FOUR_OF_A_KIND -> scoringFiveOfAKindDetection(
-            scoring = settings.fourOfAKindScoring,
-            fixedValue = settings.fourOfAKindValue,
-            score = score,
-            allowFixedScore = settings.jokerRule,
-        )
-
-        ScoreKey.FULL_HOUSE ->
-            if (settings.jokerRule && score == settings.fullHouseValue) {
-                FiveOfAKindDetection.POSSIBLE
-            } else {
-                FiveOfAKindDetection.NONE
-            }
-
-        ScoreKey.SMALL_STRAIGHT ->
-            if (settings.jokerRule && score == settings.smallStraightValue) {
-                FiveOfAKindDetection.POSSIBLE
-            } else {
-                FiveOfAKindDetection.NONE
-            }
-
-        ScoreKey.LARGE_STRAIGHT ->
-            if (settings.jokerRule && score == settings.largeStraightValue) {
-                FiveOfAKindDetection.POSSIBLE
-            } else {
-                FiveOfAKindDetection.NONE
-            }
-
-        ScoreKey.CHANCE -> scoringFiveOfAKindDetection(
-            scoring = settings.chanceValue,
-            fixedValue = null,
-            score = score,
-            allowFixedScore = false,
-        )
-
-        else -> settings.customGameSettings
-            .firstOrNull { ScoreKey.custom(it.id) == row.key }
-            ?.let { rule ->
-                scoringFiveOfAKindDetection(
-                    scoring = rule.scoring,
-                    fixedValue = rule.value,
-                    score = score,
-                    allowFixedScore = true,
-                )
-            }
-            ?: FiveOfAKindDetection.NONE
-    }
-}
-
-private fun scoringFiveOfAKindDetection(
-    scoring: GameSettings.SettingsScoring?,
-    fixedValue: Int?,
-    score: Int,
-    allowFixedScore: Boolean,
-): FiveOfAKindDetection = when (scoring) {
-    GameSettings.SettingsScoring.SUM_ALL_FIVE_DICE ->
-        if (score in AllFiveDiceScoreOptions && score % 5 == 0) {
-            FiveOfAKindDetection.POSSIBLE
-        } else {
-            FiveOfAKindDetection.NONE
-        }
-
-    GameSettings.SettingsScoring.SUM_MATCHING_THREE ->
-        if (score in MatchingThreeDiceScoreOptions) {
-            FiveOfAKindDetection.POSSIBLE
-        } else {
-            FiveOfAKindDetection.NONE
-        }
-
-    GameSettings.SettingsScoring.SUM_MATCHING_FOUR ->
-        if (score in MatchingFourDiceScoreOptions) {
-            FiveOfAKindDetection.POSSIBLE
-        } else {
-            FiveOfAKindDetection.NONE
-        }
-
-    GameSettings.SettingsScoring.FIXED,
-    GameSettings.SettingsScoring.FIXED_CUSTOM ->
-        if (allowFixedScore && score == fixedValue) {
-            FiveOfAKindDetection.POSSIBLE
-        } else {
-            FiveOfAKindDetection.NONE
-        }
-
-    null -> FiveOfAKindDetection.NONE
-}
-
-private fun upperRowDieValue(key: ScoreKey): Int? = when (key) {
-    ScoreKey.ONES -> 1
-    ScoreKey.TWOS -> 2
-    ScoreKey.THREES -> 3
-    ScoreKey.FOURS -> 4
-    ScoreKey.FIVES -> 5
-    ScoreKey.SIXES -> 6
-    else -> null
-}
-
-private fun upperBonus(subtotal: Int, settings: GameSettings): Int {
-    if (!settings.isUpperBonusEnabled) return 0
-    return if (subtotal >= settings.upperBonusThreshold) settings.upperBonusValue else 0
-}
-
 @Composable
 internal fun bonusStatusText(
     subtotal: Int,
@@ -1066,12 +905,6 @@ private fun ScoreRowUi.isYamsCelebration(
             settings = settings,
         ) == FiveOfAKindDetection.CERTAIN
 
-private enum class FiveOfAKindDetection {
-    NONE,
-    POSSIBLE,
-    CERTAIN,
-}
-
 @YamsStoreScreenshotPreviews
 @Composable
 private fun GamePlayScreenPreview() {
@@ -1100,6 +933,17 @@ private fun GamePlayDensityDiscoveryPreview() {
         GamePlayScreen(
             uiState = gamePlayPreviewUiState(columnCount = 1),
             hasSeenGamePlayDensityDiscovery = false,
+        )
+    }
+}
+
+@YamsPhoneStoreScreenshotPreviews
+@Composable
+private fun GamePlayDiceAssistantDiscoveryPreview() {
+    YamsTheme {
+        GamePlayScreen(
+            uiState = gamePlayPreviewUiState(columnCount = 1),
+            hasSeenDiceAssistantDiscovery = false,
         )
     }
 }

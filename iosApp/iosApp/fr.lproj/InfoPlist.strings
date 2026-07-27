@@ -1,1 +1,2 @@
 "CFBundleDisplayName" = "Yams Score";
+"NSCameraUsageDescription" = "Yams utilise la caméra localement pour reconnaître vos dés pendant la partie.";

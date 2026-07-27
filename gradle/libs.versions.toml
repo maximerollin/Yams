@@ -12,6 +12,7 @@ androidx-room-sqlite = "2.6.2"
 androidx-startup = "1.2.0"
 buildConfig = "6.0.10"
 coil = "3.5.0"
+cameraX = "1.5.3"
 compottie = "2.2.4"
 compose-multiplatform = "1.11.1"
 composeMultiplatformMaterial3 = "1.10.0-alpha05"
@@ -21,6 +22,7 @@ filekit = "0.14.2"
 firebase-bom = "34.15.0"
 firebase-crashlytics = "3.0.7"
 google-services = "4.5.0"
+guava = "31.1-android"
 koin = "4.2.2"
 koin-annotations = "4.2.2"
 logsnag = "1.2.0"
@@ -37,6 +39,7 @@ posthog = "3.51.1"
 reorderable = "3.1.0"
 revenuecat = "3.1.0"
 sqldelight = "2.3.2"
+liteRt = "1.4.2"
 jetbrainsKotlinJvm = "2.4.0"
 coreKtx = "1.19.0"
 junit = "4.13.2"
@@ -58,6 +61,9 @@ jetbrains-compose-uiToolingPreview = { module = "org.jetbrains.compose.ui:ui-too
 
 
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
+androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraX" }
+androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraX" }
+androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraX" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidx-datastore" }
 androidx-navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "androidx-navigation" }
 androidx-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
@@ -77,6 +83,7 @@ filekit-dialogs-compose = { module = "io.github.vinceglb:filekit-dialogs-compose
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+guava = { module = "com.google.guava:guava", version.ref = "guava" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-androidx-startup = { module = "io.insert-koin:koin-androidx-startup", version.ref = "koin" }
 koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koin-annotations" }
@@ -107,6 +114,9 @@ sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", 
 sqldelight-jvm = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
 sqldelight-native = { module = "app.cash.sqldelight:native-driver", version.ref = "sqldelight" }
 sqldelight-primitive-adapters = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "sqldelight" }
+litert = { module = "com.google.ai.edge.litert:litert", version.ref = "liteRt" }
+litert-gpu = { module = "com.google.ai.edge.litert:litert-gpu", version.ref = "liteRt" }
+litert-gpu-api = { module = "com.google.ai.edge.litert:litert-gpu-api", version.ref = "liteRt" }
 screenshot-validation-api = { group = "com.android.tools.screenshot", name = "screenshot-validation-api", version.ref = "screenshot" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

@@ -91,18 +91,24 @@ internal actual class RevenueCatBillingRepository actual constructor(
             val purchases = configuredPurchases("purchase")
                 ?: return@async Result.failure(revenueCatNotConfiguredException())
 
-            purchases
+            val purchaseResult = purchases
                 .awaitPurchaseResult(packageToPurchase = appPackage.revenueCatPackage)
-                .onSuccess {
-                    Napier.i { "purchase - 🎉 Purchase successful: $it" }
-                    val isSubscribed = getYamsPlusStatusFromCustomerInfo(it.customerInfo)
-                    Napier.i { "purchase - Yams+: $isSubscribed" }
-                    preferenceRepository.setYamsPlusStatus(true)
-                }
-                .onFailure {
-                    Napier.w { "purchase - Purchase failed: ${it.message}" }
-                }
-                .map { }
+                .onFailure { Napier.w { "purchase - Purchase failed: ${it.message}" } }
+                .getOrElse { return@async Result.failure(it) }
+
+            Napier.i { "purchase - Purchase successful" }
+            val isSubscribed = getYamsPlusStatusFromCustomerInfo(purchaseResult.customerInfo)
+            Napier.i { "purchase - Yams+: $isSubscribed" }
+            preferenceRepository.setYamsPlusStatus(isSubscribed)
+            if (isSubscribed) {
+                Result.success(Unit)
+            } else {
+                Result.failure(
+                    IllegalStateException(
+                        "Yams+ entitlement is not active after a successful purchase",
+                    ),
+                )
+            }
         }.await()
     }
 

@@ -11,10 +11,17 @@
 		B90100022E28000000A4DA20 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = B90100072E28000000A4DA20 /* FirebaseCrashlytics */; };
 		B90100032E28000000A4DA20 /* NSExceptionKtCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = B90100082E28000000A4DA20 /* NSExceptionKtCrashlytics */; };
 		B90000012DC1472C00A4DA20 /* PostHog in Frameworks */ = {isa = PBXBuildFile; productRef = B90000032DC1472C00A4DA20 /* PostHog */; };
+		DA162BDD3D4B702F9553DA5F /* Pods_iosApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC8942F43EBB8BC9890340B4 /* Pods_iosApp.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		77F8EA3D8645E70AF3AF6D42 /* Pods-iosApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.release.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.release.xcconfig"; sourceTree = "<group>"; };
+		B90000102DC1472C00A4DA20 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+		B90000112DC1472C00A4DA20 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		B90000122DC1472C00A4DA20 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		B9DA97B12DC1472C00A4DA20 /* Yams.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Yams.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC8942F43EBB8BC9890340B4 /* Pods_iosApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iosApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D74C0ABD76B244B08DD5108B /* Pods-iosApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.debug.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -37,7 +44,12 @@
 			sourceTree = "<group>";
 		};
 		B9DA98002DC14AA900A4DA20 /* Configuration */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
+			isa = PBXGroup;
+			children = (
+				B90000102DC1472C00A4DA20 /* Config.xcconfig */,
+				B90000112DC1472C00A4DA20 /* Debug.xcconfig */,
+				B90000122DC1472C00A4DA20 /* Release.xcconfig */,
+			);
 			path = Configuration;
 			sourceTree = "<group>";
 		};
@@ -52,18 +64,29 @@
 				B90100022E28000000A4DA20 /* FirebaseCrashlytics in Frameworks */,
 				B90100032E28000000A4DA20 /* NSExceptionKtCrashlytics in Frameworks */,
 				B90000012DC1472C00A4DA20 /* PostHog in Frameworks */,
+				DA162BDD3D4B702F9553DA5F /* Pods_iosApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		63820F7697906696515D781F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CC8942F43EBB8BC9890340B4 /* Pods_iosApp.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		B9DA97A82DC1472C00A4DA20 = {
 			isa = PBXGroup;
 			children = (
 				B9DA98002DC14AA900A4DA20 /* Configuration */,
 				B9DA97B32DC1472C00A4DA20 /* iosApp */,
 				B9DA97B22DC1472C00A4DA20 /* Products */,
+				C56324CEB1E3057E3C9F7AA6 /* Pods */,
+				63820F7697906696515D781F /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -75,6 +98,16 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		C56324CEB1E3057E3C9F7AA6 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				D74C0ABD76B244B08DD5108B /* Pods-iosApp.debug.xcconfig */,
+				77F8EA3D8645E70AF3AF6D42 /* Pods-iosApp.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -82,11 +115,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B9DA97BF2DC1472D00A4DA20 /* Build configuration list for PBXNativeTarget "iosApp" */;
 			buildPhases = (
+				1C482EBC9B3C1CBA9D939624 /* [CP] Check Pods Manifest.lock */,
 				B9DA97F42DC1497100A4DA20 /* Compile Kotlin Framework */,
 				B9DA97AD2DC1472C00A4DA20 /* Sources */,
 				B9DA97AE2DC1472C00A4DA20 /* Frameworks */,
 				B9DA97AF2DC1472C00A4DA20 /* Resources */,
 				B90100092E28000000A4DA20 /* Firebase Crashlytics */,
+				4414FDD17E67D3C979035D40 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -134,13 +169,13 @@
 			);
 			mainGroup = B9DA97A82DC1472C00A4DA20;
 			minimizedProjectReferenceProxies = 1;
-			preferredProjectObjectVersion = 77;
-			productRefGroup = B9DA97B22DC1472C00A4DA20 /* Products */;
 			packageReferences = (
 				B90000022DC1472C00A4DA20 /* XCRemoteSwiftPackageReference "posthog-ios" */,
 				B90100042E28000000A4DA20 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				B90100052E28000000A4DA20 /* XCRemoteSwiftPackageReference "NSExceptionKt" */,
 			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = B9DA97B22DC1472C00A4DA20 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -160,6 +195,45 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		1C482EBC9B3C1CBA9D939624 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-iosApp-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		4414FDD17E67D3C979035D40 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-iosApp/Pods-iosApp-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-iosApp/Pods-iosApp-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-iosApp/Pods-iosApp-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		B9DA97F42DC1497100A4DA20 /* Compile Kotlin Framework */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -337,8 +411,7 @@
 		};
 		B9DA97C02DC1472D00A4DA20 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = B9DA98002DC14AA900A4DA20 /* Configuration */;
-			baseConfigurationReferenceRelativePath = Config.xcconfig;
+			baseConfigurationReference = B90000112DC1472C00A4DA20 /* Debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -370,8 +443,7 @@
 		};
 		B9DA97C12DC1472D00A4DA20 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = B9DA98002DC14AA900A4DA20 /* Configuration */;
-			baseConfigurationReferenceRelativePath = Config.xcconfig;
+			baseConfigurationReference = B90000122DC1472C00A4DA20 /* Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

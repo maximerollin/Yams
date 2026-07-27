@@ -228,6 +228,9 @@ private fun NavGraphBuilder.screens(
                 launchSingleTop = true
             }
         },
+        onNavigateToPaywall = {
+            navController.navigateToPaywall(fromScreen = "gameplay_assistant")
+        },
     )
 
     gameResultScreen(
