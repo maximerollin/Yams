@@ -765,10 +765,6 @@ private fun RecommendationContent(
     hasIgnoredCustomRules: Boolean,
     onRetry: () -> Unit,
 ) {
-    val keptFaces = (state.recommendation as? DiceRecommendation.KeepDice)
-        ?.keepFaces
-        .orEmpty()
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -797,10 +793,7 @@ private fun RecommendationContent(
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
-                DiceFaceRow(
-                    faces = state.roll.faces,
-                    highlightedFaces = keptFaces,
-                )
+                DiceFaceRow(faces = state.roll.faces)
                 RecommendationMessage(
                     recommendation = state.recommendation,
                     showColumn = showColumn,
