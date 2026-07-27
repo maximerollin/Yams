@@ -1,5 +1,6 @@
 package io.github.maximerollin.yams.feature.game.play.assistant
 
+import io.github.maximerollin.yams.core.model.GameSettings
 import io.github.maximerollin.yams.core.model.ScoreKey
 import io.github.maximerollin.yams.feature.game.play.DiceScoreCell
 import io.github.maximerollin.yams.feature.game.play.DiceScoreContext
@@ -46,6 +47,10 @@ internal class DiceStrategyEngine {
                 keepFaces = bestKeep.keepFaces,
                 rerollCount = 5 - bestKeep.keepFaces.size,
                 expectedValue = bestKeep.expectedValue,
+                objectives = bestObjectivesForKeep(
+                    keepFaces = bestKeep.keepFaces,
+                    scoreContext = scoreContext,
+                ),
             )
         }
     }
@@ -136,6 +141,121 @@ internal class DiceStrategyEngine {
             )
             .firstOrNull()
 
+    private fun bestObjectivesForKeep(
+        keepFaces: List<Int>,
+        scoreContext: DiceScoreContext,
+    ): List<DiceObjective> {
+        val bestByScoreKey = outcomesForDiceCount(5 - keepFaces.size)
+            .flatMap { outcome ->
+                val targetFaces = (keepFaces + outcome.faces).sorted()
+                scoreDiceForOpenCells(
+                    dice = targetFaces,
+                    context = scoreContext,
+                )
+                    .filter { it.score > 0 }
+                    .map { cell ->
+                        ObjectiveEvaluation(
+                            targetFaces = targetFaces,
+                            cell = cell,
+                        )
+                    }
+            }
+            .groupBy { it.cell.key }
+            .mapValues { (_, evaluations) ->
+                evaluations.maxWithOrNull(objectiveComparator)!!
+            }
+            .values
+
+        return bestByScoreKey
+            .sortedWith(objectiveComparator.reversed())
+            .distinctBy(ObjectiveEvaluation::targetFaces)
+            .take(3)
+            .map { evaluation ->
+                DiceObjective(
+                    key = evaluation.cell.key,
+                    columnIndex = evaluation.cell.columnIndex,
+                    faces = objectiveFaces(
+                        key = evaluation.cell.key,
+                        targetFaces = evaluation.targetFaces,
+                        keepFaces = keepFaces,
+                        settings = scoreContext.settings,
+                    ),
+                    score = evaluation.cell.score,
+                    awardsExtraFiveOfAKindBonus = evaluation.cell.awardsExtraFiveOfAKindBonus,
+                )
+            }
+    }
+
+    private fun objectiveFaces(
+        key: ScoreKey,
+        targetFaces: List<Int>,
+        keepFaces: List<Int>,
+        settings: GameSettings,
+    ): List<Int> = when (key) {
+        ScoreKey.THREE_OF_A_KIND -> matchingObjectiveFaces(
+            targetFaces = targetFaces,
+            requiredCount = 3,
+            scoring = settings.threeOfAKindScoring,
+        )
+
+        ScoreKey.FOUR_OF_A_KIND -> matchingObjectiveFaces(
+            targetFaces = targetFaces,
+            requiredCount = 4,
+            scoring = settings.fourOfAKindScoring,
+        )
+
+        ScoreKey.SMALL_STRAIGHT -> smallStraightFaces(
+            targetFaces = targetFaces,
+            keepFaces = keepFaces,
+        ).ifEmpty { targetFaces }
+
+        else -> targetFaces
+    }
+
+    private fun matchingObjectiveFaces(
+        targetFaces: List<Int>,
+        requiredCount: Int,
+        scoring: GameSettings.SettingsScoring?,
+    ): List<Int> = when (scoring) {
+        GameSettings.SettingsScoring.SUM_ALL_FIVE_DICE -> targetFaces
+        GameSettings.SettingsScoring.SUM_MATCHING_THREE ->
+            matchingFaces(targetFaces, requiredCount = 3)
+
+        GameSettings.SettingsScoring.SUM_MATCHING_FOUR ->
+            matchingFaces(targetFaces, requiredCount = 4)
+
+        GameSettings.SettingsScoring.FIXED,
+        GameSettings.SettingsScoring.FIXED_CUSTOM -> matchingFaces(targetFaces, requiredCount)
+
+        null -> targetFaces
+    }
+
+    private fun matchingFaces(
+        faces: List<Int>,
+        requiredCount: Int,
+    ): List<Int> {
+        val matchingFace = faces
+            .groupingBy { it }
+            .eachCount()
+            .filterValues { it >= requiredCount }
+            .keys
+            .maxOrNull()
+            ?: return faces
+
+        return List(requiredCount) { matchingFace }
+    }
+
+    private fun smallStraightFaces(
+        targetFaces: List<Int>,
+        keepFaces: List<Int>,
+    ): List<Int> = smallStraightPatterns
+        .filter { pattern -> pattern.all(targetFaces::contains) }
+        .maxWithOrNull(
+            compareBy<List<Int>> { pattern -> keepFaces.count(pattern::contains) }
+                .thenByDescending { pattern -> pattern.sum() },
+        )
+        .orEmpty()
+
     private fun keepCandidates(dice: List<Int>): List<List<Int>> {
         val candidates = buildSet {
             val maxMask = 1 shl dice.size
@@ -205,7 +325,24 @@ internal class DiceStrategyEngine {
         val weight: Int,
     )
 
+    private data class ObjectiveEvaluation(
+        val targetFaces: List<Int>,
+        val cell: DiceScoreCell,
+    )
+
     private companion object {
         val outcomeCache: MutableMap<Int, List<DiceOutcome>> = mutableMapOf()
+
+        val smallStraightPatterns: List<List<Int>> = listOf(
+            listOf(1, 2, 3, 4),
+            listOf(2, 3, 4, 5),
+            listOf(3, 4, 5, 6),
+        )
+
+        val objectiveComparator: Comparator<ObjectiveEvaluation> =
+            compareBy<ObjectiveEvaluation> { it.cell.score }
+                .thenBy { it.cell.valueWithBonuses }
+                .thenByDescending { it.targetFaces.sum() }
+                .thenByDescending { it.targetFaces.joinToString(separator = "") }
     }
 }

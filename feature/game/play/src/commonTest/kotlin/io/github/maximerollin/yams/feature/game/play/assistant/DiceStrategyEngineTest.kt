@@ -60,6 +60,58 @@ class DiceStrategyEngineTest {
     }
 
     @Test
+    fun keepRecommendationIncludesThreeBestFinalObjectives() {
+        val recommendation = engine.recommend(
+            context = context(),
+            roll = confirmedRoll(
+                faces = listOf(1, 1, 1, 4, 6),
+                rollIndex = RollIndex.ONE,
+            ),
+        )
+
+        val keep = assertIs<DiceRecommendation.KeepDice>(recommendation)
+        assertEquals(listOf(4), keep.keepFaces)
+        assertEquals(3, keep.objectives.size)
+        assertEquals(ScoreKey.FIVE_OF_A_KIND, keep.objectives.first().key)
+        assertEquals(listOf(4, 4, 4, 4, 4), keep.objectives.first().faces)
+        assertTrue(keep.objectives.all { objective -> 4 in objective.faces })
+        assertEquals(
+            keep.objectives.map(DiceObjective::faces).toSet().size,
+            keep.objectives.size,
+        )
+    }
+
+    @Test
+    fun fourOfAKindObjectiveOnlyShowsMatchingDiceWhenOnlyTheyScore() {
+        val recommendation = engine.recommend(
+            context = context(),
+            roll = confirmedRoll(
+                faces = listOf(6, 6, 6, 2, 3),
+                rollIndex = RollIndex.TWO,
+            ),
+        )
+
+        val keep = assertIs<DiceRecommendation.KeepDice>(recommendation)
+        val fourOfAKind = keep.objectives.first { it.key == ScoreKey.FOUR_OF_A_KIND }
+        assertEquals(listOf(6, 6, 6, 6), fourOfAKind.faces)
+    }
+
+    @Test
+    fun fourOfAKindObjectiveShowsAllDiceWhenTheRuleUsesTheirSum() {
+        val recommendation = engine.recommend(
+            context = context(settings = GameSettings.YahtzeeSettings()),
+            roll = confirmedRoll(
+                faces = listOf(6, 6, 6, 2, 3),
+                rollIndex = RollIndex.TWO,
+            ),
+        )
+
+        val keep = assertIs<DiceRecommendation.KeepDice>(recommendation)
+        val fourOfAKind = keep.objectives.first { it.key == ScoreKey.FOUR_OF_A_KIND }
+        assertEquals(listOf(5, 6, 6, 6, 6), fourOfAKind.faces)
+    }
+
+    @Test
     fun upperBonusNearThresholdCanChangeBestScore() {
         val recommendation = engine.recommend(
             context = context(

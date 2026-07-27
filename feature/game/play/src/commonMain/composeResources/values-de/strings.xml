@@ -42,7 +42,8 @@
     <string name="play_assistant_calculating_title">Beste Wahl wird berechnet</string>
     <string name="play_assistant_calculating_body">Der Assistent vergleicht die zu behaltenden Würfel und die verfügbaren Felder.</string>
     <string name="play_assistant_recommendation_new_scan">Neuer Scan</string>
-    <string name="play_assistant_recommendation_keep_reroll">Zu behaltende Würfel: %1$d. Neu zu würfeln: %2$d.</string>
+    <string name="play_assistant_recommendation_keep">Zu behaltende Würfel:</string>
+    <string name="play_assistant_recommendation_objectives">Beste Ziele</string>
     <string name="play_assistant_recommendation_score">Werte %1$s%2$s.</string>
     <string name="play_assistant_recommendation_points">%1$d Punkte</string>
     <string name="play_assistant_recommendation_points_bonus">%1$d Punkte + Yams-Bonus</string>

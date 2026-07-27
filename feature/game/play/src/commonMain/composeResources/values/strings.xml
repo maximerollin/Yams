@@ -42,7 +42,8 @@
     <string name="play_assistant_calculating_title">Calcul du meilleur choix</string>
     <string name="play_assistant_calculating_body">L’assistant compare les dés à garder et les cases encore disponibles.</string>
     <string name="play_assistant_recommendation_new_scan">Nouveau scan</string>
-    <string name="play_assistant_recommendation_keep_reroll">Dés à garder : %1$d. Dés à relancer : %2$d.</string>
+    <string name="play_assistant_recommendation_keep">Dés à garder :</string>
+    <string name="play_assistant_recommendation_objectives">Meilleurs objectifs</string>
     <string name="play_assistant_recommendation_score">Scorez %1$s%2$s.</string>
     <string name="play_assistant_recommendation_points">%1$d points</string>
     <string name="play_assistant_recommendation_points_bonus">%1$d points + bonus Yams</string>

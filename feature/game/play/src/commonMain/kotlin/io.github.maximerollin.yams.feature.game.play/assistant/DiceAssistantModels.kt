@@ -58,6 +58,7 @@ internal sealed interface DiceRecommendation {
         val keepFaces: List<Int>,
         val rerollCount: Int,
         override val expectedValue: Double,
+        val objectives: List<DiceObjective> = emptyList(),
     ) : DiceRecommendation
 
     data class ScoreCell(
@@ -72,6 +73,14 @@ internal sealed interface DiceRecommendation {
         override val expectedValue: Double = 0.0,
     ) : DiceRecommendation
 }
+
+internal data class DiceObjective(
+    val key: ScoreKey,
+    val columnIndex: Int,
+    val faces: List<Int>,
+    val score: Int,
+    val awardsExtraFiveOfAKindBonus: Boolean,
+)
 
 internal sealed interface DiceAssistantUiState {
     data class Scanning(

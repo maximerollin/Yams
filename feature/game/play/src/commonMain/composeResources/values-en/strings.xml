@@ -42,7 +42,8 @@
     <string name="play_assistant_calculating_title">Calculating the best choice</string>
     <string name="play_assistant_calculating_body">The assistant is comparing which dice to keep and which scores are still available.</string>
     <string name="play_assistant_recommendation_new_scan">New scan</string>
-    <string name="play_assistant_recommendation_keep_reroll">Dice to keep: %1$d. Dice to reroll: %2$d.</string>
+    <string name="play_assistant_recommendation_keep">Dice to keep:</string>
+    <string name="play_assistant_recommendation_objectives">Best objectives</string>
     <string name="play_assistant_recommendation_score">Score %1$s%2$s.</string>
     <string name="play_assistant_recommendation_points">%1$d points</string>
     <string name="play_assistant_recommendation_points_bonus">%1$d points + Yams bonus</string>

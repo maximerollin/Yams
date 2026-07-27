@@ -23,6 +23,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -34,7 +35,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.AlertDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -47,8 +47,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -58,11 +58,9 @@ import io.github.maximerollin.yams.core.designsystem.component.YamsPrimaryButton
 import io.github.maximerollin.yams.core.designsystem.component.YamsSecondaryButton
 import io.github.maximerollin.yams.core.designsystem.component.YamsTextButton
 import io.github.maximerollin.yams.core.designsystem.icon.AddAPhoto
-import io.github.maximerollin.yams.core.designsystem.icon.Check
 import io.github.maximerollin.yams.core.designsystem.icon.Close
 import io.github.maximerollin.yams.core.designsystem.icon.Lock
 import io.github.maximerollin.yams.core.designsystem.icon.PencilSparkles
-import io.github.maximerollin.yams.core.designsystem.icon.Strategy
 import io.github.maximerollin.yams.core.designsystem.icon.YamsIcons
 import io.github.maximerollin.yams.core.designsystem.preview.YamsStoreScreenshotPreviews
 import io.github.maximerollin.yams.core.designsystem.theme.YamsTheme
@@ -73,10 +71,11 @@ import io.github.maximerollin.yams.core.model.ScoreKey
 import io.github.maximerollin.yams.feature.game.play.assistant.ConfirmedDiceRoll
 import io.github.maximerollin.yams.feature.game.play.assistant.CorrectionReason
 import io.github.maximerollin.yams.feature.game.play.assistant.DetectedDie
-import io.github.maximerollin.yams.feature.game.play.assistant.DiceDetectionStabilizer
 import io.github.maximerollin.yams.feature.game.play.assistant.DiceAssistantContext
 import io.github.maximerollin.yams.feature.game.play.assistant.DiceAssistantUiState
 import io.github.maximerollin.yams.feature.game.play.assistant.DiceAssistantWorkflow
+import io.github.maximerollin.yams.feature.game.play.assistant.DiceDetectionStabilizer
+import io.github.maximerollin.yams.feature.game.play.assistant.DiceObjective
 import io.github.maximerollin.yams.feature.game.play.assistant.DiceRecommendation
 import io.github.maximerollin.yams.feature.game.play.assistant.RollIndex
 import io.github.maximerollin.yams.feature.game.play.assistant.rememberDiceCameraPreview
@@ -84,7 +83,61 @@ import io.github.maximerollin.yams.feature.game.play.assistant.rememberDiceRecog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jetbrains.compose.resources.stringResource
-import yams.feature.game.play.generated.resources.*
+import yams.feature.game.play.generated.resources.Res
+import yams.feature.game.play.generated.resources.play_assistant_calculating_body
+import yams.feature.game.play.generated.resources.play_assistant_calculating_title
+import yams.feature.game.play.generated.resources.play_assistant_close
+import yams.feature.game.play.generated.resources.play_assistant_correction_body
+import yams.feature.game.play.generated.resources.play_assistant_correction_confirm
+import yams.feature.game.play.generated.resources.play_assistant_correction_count
+import yams.feature.game.play.generated.resources.play_assistant_correction_low_confidence
+import yams.feature.game.play.generated.resources.play_assistant_die_number
+import yams.feature.game.play.generated.resources.play_assistant_error_message
+import yams.feature.game.play.generated.resources.play_assistant_error_title
+import yams.feature.game.play.generated.resources.play_assistant_get_advice
+import yams.feature.game.play.generated.resources.play_assistant_guide_angle
+import yams.feature.game.play.generated.resources.play_assistant_guide_intro
+import yams.feature.game.play.generated.resources.play_assistant_guide_light
+import yams.feature.game.play.generated.resources.play_assistant_guide_start
+import yams.feature.game.play.generated.resources.play_assistant_guide_still
+import yams.feature.game.play.generated.resources.play_assistant_guide_title
+import yams.feature.game.play.generated.resources.play_assistant_manual_entry
+import yams.feature.game.play.generated.resources.play_assistant_permission_message
+import yams.feature.game.play.generated.resources.play_assistant_permission_title
+import yams.feature.game.play.generated.resources.play_assistant_private_subtitle
+import yams.feature.game.play.generated.resources.play_assistant_recommendation_column
+import yams.feature.game.play.generated.resources.play_assistant_recommendation_custom_rules_ignored
+import yams.feature.game.play.generated.resources.play_assistant_recommendation_expected
+import yams.feature.game.play.generated.resources.play_assistant_recommendation_keep
+import yams.feature.game.play.generated.resources.play_assistant_recommendation_new_scan
+import yams.feature.game.play.generated.resources.play_assistant_recommendation_none
+import yams.feature.game.play.generated.resources.play_assistant_recommendation_objectives
+import yams.feature.game.play.generated.resources.play_assistant_recommendation_points
+import yams.feature.game.play.generated.resources.play_assistant_recommendation_points_bonus
+import yams.feature.game.play.generated.resources.play_assistant_recommendation_score
+import yams.feature.game.play.generated.resources.play_assistant_retry
+import yams.feature.game.play.generated.resources.play_assistant_roll_one
+import yams.feature.game.play.generated.resources.play_assistant_roll_three
+import yams.feature.game.play.generated.resources.play_assistant_roll_two
+import yams.feature.game.play.generated.resources.play_assistant_scanning
+import yams.feature.game.play.generated.resources.play_assistant_scanning_detecting
+import yams.feature.game.play.generated.resources.play_assistant_scanning_hold
+import yams.feature.game.play.generated.resources.play_assistant_title
+import yams.feature.game.play.generated.resources.play_chance
+import yams.feature.game.play.generated.resources.play_four_of_kind
+import yams.feature.game.play.generated.resources.play_full
+import yams.feature.game.play.generated.resources.play_large_straight
+import yams.feature.game.play.generated.resources.play_row_fives
+import yams.feature.game.play.generated.resources.play_row_fours
+import yams.feature.game.play.generated.resources.play_row_ones
+import yams.feature.game.play.generated.resources.play_row_sixes
+import yams.feature.game.play.generated.resources.play_row_threes
+import yams.feature.game.play.generated.resources.play_row_twos
+import yams.feature.game.play.generated.resources.play_rule_custom
+import yams.feature.game.play.generated.resources.play_small_straight
+import yams.feature.game.play.generated.resources.play_three_of_kind
+import yams.feature.game.play.generated.resources.play_yams
+import yams.feature.game.play.generated.resources.play_yams_bonus
 import kotlin.math.roundToInt
 
 @Composable
@@ -106,6 +159,7 @@ internal fun DiceAssistantOverlay(
     var isUsageGuideDismissedForSession by rememberSaveable { mutableStateOf(false) }
     val isUsageGuideVisible =
         hasSeenUsageGuide == false && !isUsageGuideDismissedForSession
+
     fun scanningState(index: RollIndex = rollIndex): DiceAssistantUiState =
         if (recognitionEngine.isAvailable) {
             DiceAssistantUiState.Scanning(
@@ -159,7 +213,7 @@ internal fun DiceAssistantOverlay(
             onDismiss = onDismiss,
             columnCount = context.settings.columnCount,
             hasIgnoredCustomRules = context.settings.areCustomRulesEnabled &&
-                context.settings.customGameSettings.any { it.isEnabled },
+                    context.settings.customGameSettings.any { it.isEnabled },
             scanFeedback = scanFeedback,
             onRollIndexSelected = ::selectRoll,
             onManualCorrection = ::showCorrection,
@@ -711,6 +765,10 @@ private fun RecommendationContent(
     hasIgnoredCustomRules: Boolean,
     onRetry: () -> Unit,
 ) {
+    val keptFaces = (state.recommendation as? DiceRecommendation.KeepDice)
+        ?.keepFaces
+        .orEmpty()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -735,10 +793,14 @@ private fun RecommendationContent(
             ) {
                 Text(
                     text = state.roll.rollIndex.localizedLabel(),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
-                DiceFaceRow(faces = state.roll.faces)
+                DiceFaceRow(
+                    faces = state.roll.faces,
+                    highlightedFaces = keptFaces,
+                )
                 RecommendationMessage(
                     recommendation = state.recommendation,
                     showColumn = showColumn,
@@ -778,17 +840,20 @@ private fun RecommendationMessage(
     when (recommendation) {
         is DiceRecommendation.KeepDice -> {
             Text(
-                text = stringResource(
-                    Res.string.play_assistant_recommendation_keep_reroll,
-                    recommendation.keepFaces.size,
-                    recommendation.rerollCount,
-                ),
+                text = stringResource(Res.string.play_assistant_recommendation_keep),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
                 color = YamsTheme.colors.brown,
             )
-            DiceFaceRow(faces = recommendation.keepFaces)
-            ExpectedValueText(expectedValue = recommendation.expectedValue)
+            DiceFaceRow(
+                faces = recommendation.keepFaces,
+                highlightedFaces = recommendation.keepFaces,
+            )
+            ObjectiveList(
+                objectives = recommendation.objectives,
+                highlightedFaces = recommendation.keepFaces,
+                showColumn = showColumn,
+            )
         }
 
         is DiceRecommendation.ScoreCell -> {
@@ -830,6 +895,67 @@ private fun RecommendationMessage(
                 fontWeight = FontWeight.SemiBold,
                 color = YamsTheme.colors.brown,
             )
+        }
+    }
+}
+
+@Composable
+private fun ObjectiveList(
+    objectives: List<DiceObjective>,
+    highlightedFaces: List<Int>,
+    showColumn: Boolean,
+) {
+    if (objectives.isEmpty()) return
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Text(
+            text = stringResource(Res.string.play_assistant_recommendation_objectives),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        objectives.forEach { objective ->
+            Column(
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = labelForScoreKey(objective.key) + columnSuffix(
+                            columnIndex = objective.columnIndex,
+                            showColumn = showColumn,
+                        ),
+                        modifier = Modifier.weight(1f),
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    Text(
+                        text = if (objective.awardsExtraFiveOfAKindBonus) {
+                            stringResource(
+                                Res.string.play_assistant_recommendation_points_bonus,
+                                objective.score,
+                            )
+                        } else {
+                            stringResource(
+                                Res.string.play_assistant_recommendation_points,
+                                objective.score,
+                            )
+                        },
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                DiceFaceRow(
+                    faces = objective.faces,
+                    highlightedFaces = highlightedFaces,
+                )
+            }
         }
     }
 }
@@ -906,13 +1032,26 @@ private fun MessageContent(
 @Composable
 private fun DiceFaceRow(
     faces: List<Int>,
+    highlightedFaces: List<Int> = emptyList(),
 ) {
+    val remainingHighlights = highlightedFaces
+        .groupingBy { it }
+        .eachCount()
+        .toMutableMap()
+
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         faces.forEach { face ->
-            DiceFacePill(face = face)
+            val highlighted = (remainingHighlights[face] ?: 0) > 0
+            if (highlighted) {
+                remainingHighlights[face] = remainingHighlights.getValue(face) - 1
+            }
+            DiceFacePill(
+                face = face,
+                highlighted = highlighted,
+            )
         }
     }
 }
@@ -920,12 +1059,13 @@ private fun DiceFaceRow(
 @Composable
 private fun DiceFacePill(
     face: Int,
+    highlighted: Boolean = false,
 ) {
     Surface(
         modifier = Modifier.size(40.dp),
         shape = CircleShape,
-        color = YamsTheme.colors.gold,
-        contentColor = YamsTheme.colors.onGold,
+        color = if (highlighted) YamsTheme.colors.success else YamsTheme.colors.gold,
+        contentColor = if (highlighted) YamsTheme.colors.onSuccess else YamsTheme.colors.onGold,
     ) {
         Box(contentAlignment = Alignment.Center) {
             Text(
@@ -1064,6 +1204,29 @@ private fun DiceAssistantRecommendationPreview() {
                 keepFaces = listOf(6, 6, 6),
                 rerollCount = 2,
                 expectedValue = 31.4,
+                objectives = listOf(
+                    DiceObjective(
+                        key = ScoreKey.FIVE_OF_A_KIND,
+                        columnIndex = 0,
+                        faces = listOf(6, 6, 6, 6, 6),
+                        score = 50,
+                        awardsExtraFiveOfAKindBonus = false,
+                    ),
+                    DiceObjective(
+                        key = ScoreKey.FOUR_OF_A_KIND,
+                        columnIndex = 0,
+                        faces = listOf(6, 6, 6, 6),
+                        score = 24,
+                        awardsExtraFiveOfAKindBonus = false,
+                    ),
+                    DiceObjective(
+                        key = ScoreKey.FULL_HOUSE,
+                        columnIndex = 0,
+                        faces = listOf(5, 5, 6, 6, 6),
+                        score = 25,
+                        awardsExtraFiveOfAKindBonus = false,
+                    ),
+                ),
             ),
         ),
     )
