@@ -24,7 +24,7 @@
     <string name="play_assistant_correction_body">Ajusta las cinco caras antes de pedir el consejo.</string>
     <string name="play_assistant_get_advice">Obtener consejo</string>
     <string name="play_assistant_die_number">Dado %1$d</string>
-    <string name="play_assistant_discovery_title">Nuevo: asistente con cámara</string>
+    <string name="play_assistant_discovery_title">Nuevo: asistente de cámara con IA</string>
     <string name="play_assistant_discovery_body">Escanea los cinco dados para saber cuáles guardar o qué casilla puntuar.</string>
     <string name="play_assistant_discovery_acknowledge">Entendido</string>
     <string name="play_assistant_guide_title">Encuadra bien los dados</string>

@@ -55,4 +55,5 @@ dependencies {
     screenshotTestImplementation(libs.screenshot.validation.api)
     screenshotTestImplementation(libs.coil.compose)
     screenshotTestImplementation(libs.jetbrains.compose.uiTooling)
+    screenshotTestImplementation(projects.feature.user.profile)
 }

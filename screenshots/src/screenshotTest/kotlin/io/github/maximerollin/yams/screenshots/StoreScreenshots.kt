@@ -7,6 +7,7 @@ import io.github.maximerollin.yams.feature.game.creation.GameCreationEmptyStoreS
 import io.github.maximerollin.yams.feature.game.creation.GameCreationSelectedStoreScreenshotContent
 import io.github.maximerollin.yams.feature.game.play.GamePlaySingleColumnStoreScreenshotContent
 import io.github.maximerollin.yams.feature.game.play.GamePlayTwoColumnsStoreScreenshotContent
+import io.github.maximerollin.yams.feature.game.play.components.DiceAssistantStoreScreenshotContent
 import io.github.maximerollin.yams.feature.game.preparation.GamePreparationManualStoreScreenshotContent
 import io.github.maximerollin.yams.feature.game.preparation.GamePreparationRandomStoreScreenshotContent
 import io.github.maximerollin.yams.feature.game.result.GameResultStoreScreenshotContent
@@ -14,6 +15,8 @@ import io.github.maximerollin.yams.feature.home.HomeStoreScreenshotContent
 import io.github.maximerollin.yams.feature.user.edition.UserEditionStoreScreenshotContent
 import io.github.maximerollin.yams.feature.user.history.UserHistoryStoreScreenshotContent
 import io.github.maximerollin.yams.feature.user.profile.UserProfileStoreScreenshotContent
+import io.github.maximerollin.yams.feature.user.profile.UserProfileAdvancedStatsStoreScreenshotContent
+import io.github.maximerollin.yams.feature.user.profile.UserProfileProgressStoreScreenshotContent
 import io.github.maximerollin.yams.feature.user.users.UsersStoreScreenshotContent
 import io.github.maximerollin.yams.feature.welcome.WelcomeStoreScreenshotContent
 
@@ -122,6 +125,15 @@ public fun GamePlayTwoColumns() {
 }
 
 @PreviewTest
+@PhoneStorePreviews
+@Composable
+public fun DiceAssistant() {
+    StoreScreenshot {
+        DiceAssistantStoreScreenshotContent()
+    }
+}
+
+@PreviewTest
 @StorePreviews
 @Composable
 public fun GameResult() {
@@ -154,6 +166,24 @@ public fun Users() {
 public fun UserProfile() {
     StoreScreenshot {
         UserProfileStoreScreenshotContent()
+    }
+}
+
+@PreviewTest
+@PhoneStorePreviews
+@Composable
+public fun UserProfileProgress() {
+    StoreScreenshot {
+        UserProfileProgressStoreScreenshotContent()
+    }
+}
+
+@PreviewTest
+@PhoneStorePreviews
+@Composable
+public fun UserProfileAdvancedStats() {
+    StoreScreenshot {
+        UserProfileAdvancedStatsStoreScreenshotContent()
     }
 }
 

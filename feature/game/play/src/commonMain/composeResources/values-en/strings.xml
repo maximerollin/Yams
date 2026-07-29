@@ -24,7 +24,7 @@
     <string name="play_assistant_correction_body">Adjust all five faces before requesting advice.</string>
     <string name="play_assistant_get_advice">Get advice</string>
     <string name="play_assistant_die_number">Die %1$d</string>
-    <string name="play_assistant_discovery_title">New: camera assistant</string>
+    <string name="play_assistant_discovery_title">New: AI camera assistant</string>
     <string name="play_assistant_discovery_body">Scan all five dice to get advice on which ones to keep or which score to enter.</string>
     <string name="play_assistant_discovery_acknowledge">Got it</string>
     <string name="play_assistant_guide_title">Frame the dice clearly</string>

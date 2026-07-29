@@ -1281,6 +1281,48 @@ public fun UserProfileStoreScreenshotContent() {
 }
 
 @Composable
+public fun UserProfileProgressStoreScreenshotContent() {
+    YamsTheme {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            ProfileSectionTitle(
+                icon = YamsIcons.Timeline,
+                title = stringResource(Res.string.profile_detailed_stats_title),
+                subtitle = stringResource(Res.string.profile_detailed_stats_subtitle),
+            )
+            ScoreTrendChart(points = previewScoreTrend())
+        }
+    }
+}
+
+@Composable
+public fun UserProfileAdvancedStatsStoreScreenshotContent() {
+    UserProfileStoreCardScreenshotContent {
+        ProfilePremiumAnalysisCard(detailedStats = previewDetailedStats())
+    }
+}
+
+@Composable
+private fun UserProfileStoreCardScreenshotContent(
+    content: @Composable () -> Unit,
+) {
+    YamsTheme {
+        Box(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .padding(20.dp),
+        ) {
+            content()
+        }
+    }
+}
+
+@Composable
 private fun UserProfilePreviewContent(isPremium: Boolean) {
     YamsTheme {
         UserProfileScreen(

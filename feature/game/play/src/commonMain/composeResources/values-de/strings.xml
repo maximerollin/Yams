@@ -24,7 +24,7 @@
     <string name="play_assistant_correction_body">Passe alle fünf Würfelseiten an, bevor du den Tipp abrufst.</string>
     <string name="play_assistant_get_advice">Tipp anzeigen</string>
     <string name="play_assistant_die_number">Würfel %1$d</string>
-    <string name="play_assistant_discovery_title">Neu: Kamera-Assistent</string>
+    <string name="play_assistant_discovery_title">Neu: KI-Kameraassistent</string>
     <string name="play_assistant_discovery_body">Scanne alle fünf Würfel und erhalte einen Tipp, welche du behalten oder welches Feld du werten solltest.</string>
     <string name="play_assistant_discovery_acknowledge">Verstanden</string>
     <string name="play_assistant_guide_title">Würfel richtig erfassen</string>

@@ -24,7 +24,7 @@
     <string name="play_assistant_correction_body">Ajustez les cinq faces avant de demander le conseil.</string>
     <string name="play_assistant_get_advice">Obtenir le conseil</string>
     <string name="play_assistant_die_number">Dé %1$d</string>
-    <string name="play_assistant_discovery_title">Nouveau : assistant caméra</string>
+    <string name="play_assistant_discovery_title">Nouveau : Assistant IA caméra</string>
     <string name="play_assistant_discovery_body">Scanne les cinq dés pour obtenir un conseil sur ceux à garder ou la case à scorer.</string>
     <string name="play_assistant_discovery_acknowledge">J’ai compris</string>
     <string name="play_assistant_guide_title">Bien cadrer les dés</string>

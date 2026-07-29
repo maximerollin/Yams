@@ -1194,8 +1194,43 @@ private fun DiceAssistantCorrectionPreview() {
 @Preview
 @Composable
 private fun DiceAssistantRecommendationPreview() {
+    DiceAssistantRecommendationPreviewContent()
+}
+
+@Composable
+public fun DiceAssistantStoreScreenshotContent() {
+    YamsTheme {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            AssistantHeader(onDismiss = {})
+            RollSelector(
+                selectedRollIndex = RollIndex.TWO,
+                onRollIndexSelected = {},
+            )
+            RecommendationContent(
+                state = previewRecommendationState(),
+                showColumn = false,
+                hasIgnoredCustomRules = false,
+                onRetry = {},
+            )
+        }
+    }
+}
+
+@Composable
+private fun DiceAssistantRecommendationPreviewContent() {
     DiceAssistantPreviewContent(
-        state = DiceAssistantUiState.Recommendation(
+        state = previewRecommendationState(),
+    )
+}
+
+private fun previewRecommendationState(): DiceAssistantUiState.Recommendation =
+    DiceAssistantUiState.Recommendation(
             roll = ConfirmedDiceRoll(
                 faces = listOf(6, 6, 6, 2, 3),
                 rollIndex = RollIndex.TWO,
@@ -1228,9 +1263,7 @@ private fun DiceAssistantRecommendationPreview() {
                     ),
                 ),
             ),
-        ),
     )
-}
 
 @Preview
 @Composable
