@@ -12,6 +12,7 @@ class IosAnalyticsDispatcherTest {
         var firebaseEvent: String? = null
         var firebaseProperties: Map<String, String>? = null
         var logSnagEvent: String? = null
+        var logSnagIcon: String? = null
         var logSnagTags: Map<String, String>? = null
         var logSnagInsight: String? = "not-null"
 
@@ -25,8 +26,9 @@ class IosAnalyticsDispatcherTest {
                 firebaseEvent = event
                 firebaseProperties = properties
             },
-            logSnagCapture = { event, tags, insight ->
+            logSnagCapture = { event, icon, tags, insight ->
                 logSnagEvent = event
+                logSnagIcon = icon
                 logSnagTags = tags
                 logSnagInsight = insight
             },
@@ -56,6 +58,7 @@ class IosAnalyticsDispatcherTest {
             firebaseProperties,
         )
         assertEquals("player created", logSnagEvent)
+        assertEquals("👤", logSnagIcon)
         assertEquals(
             mapOf(
                 "avatar-source" to "preset",
@@ -79,7 +82,7 @@ class IosAnalyticsDispatcherTest {
                 capturedProperties = properties
             },
             firebaseCapture = { _, _ -> },
-            logSnagCapture = { _, _, _ -> },
+            logSnagCapture = { _, _, _, _ -> },
         )
 
         IosAnalyticsDispatcher.captureApplicationInstalled(

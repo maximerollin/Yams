@@ -106,9 +106,23 @@ internal class GamePlayViewModel(
         }
     }
 
+    fun onGamePlayDensityDiscoveryAcknowledged() {
+        viewModelScope.launch {
+            preferenceRepository.setHasSeenGamePlayDensityDiscovery()
+            analyticsTracker.capture(event = "gameplay density discovery acknowledged")
+        }
+    }
+
     fun onDiceAssistantDiscoverySeen() {
         viewModelScope.launch {
             preferenceRepository.setHasSeenDiceAssistantDiscovery()
+        }
+    }
+
+    fun onDiceAssistantDiscoveryAcknowledged() {
+        viewModelScope.launch {
+            preferenceRepository.setHasSeenDiceAssistantDiscovery()
+            analyticsTracker.capture(event = "dice assistant discovery acknowledged")
         }
     }
 

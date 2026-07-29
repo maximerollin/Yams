@@ -41,6 +41,7 @@ public object LogSnagAnalyticsInitializer {
             logSnag.track(
                 channel = LOGSNAG_CHANNEL,
                 event = logSnagEvent,
+                icon = logSnagEventIcon(event),
                 userId = userId,
                 tags = properties.toLogSnagTags(),
                 notify = false,

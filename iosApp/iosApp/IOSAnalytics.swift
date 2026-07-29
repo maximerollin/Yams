@@ -30,11 +30,12 @@ enum IOSAnalytics {
                     parameters: properties.mapValues { $0 as Any }
                 )
             },
-            logSnagCapture: { event, tags, insightTitle in
+            logSnagCapture: { event, icon, tags, insightTitle in
                 LogSnagClient.capture(
                     token: buildConfig.LOGSNAG_TOKEN,
                     project: buildConfig.LOGSNAG_PROJECT,
                     event: event,
+                    icon: icon,
                     tags: tags,
                     insightTitle: insightTitle
                 )
@@ -89,6 +90,7 @@ private enum LogSnagClient {
         token: String,
         project: String,
         event: String,
+        icon: String,
         tags: [String: String],
         insightTitle: String?
     ) {
@@ -96,18 +98,21 @@ private enum LogSnagClient {
         let cleanProject = project.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !cleanToken.isEmpty, !cleanProject.isEmpty else { return }
 
+        let eventBody: [String: Any] = [
+            "project": cleanProject,
+            "channel": "analytics",
+            "event": event,
+            "icon": icon,
+            "user_id": userID,
+            "tags": tags,
+            "notify": false,
+        ]
+
         send(
             url: logURL,
             method: "POST",
             token: cleanToken,
-            body: [
-                "project": cleanProject,
-                "channel": "analytics",
-                "event": event,
-                "user_id": userID,
-                "tags": tags,
-                "notify": false,
-            ]
+            body: eventBody
         )
 
         if let insightTitle {

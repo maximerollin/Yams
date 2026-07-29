@@ -33,6 +33,14 @@ class LogSnagMirrorTest {
     }
 
     @Test
+    fun everyKnownEventUsesItsOwnLogSnagEmoji() {
+        assertEquals("🎲", logSnagEventIcon("game created"))
+        assertEquals("🤖", logSnagEventIcon("assistant ia clicked"))
+        assertEquals("🧠", logSnagEventIcon("dice assistant discovery acknowledged"))
+        assertEquals("📌", logSnagEventIcon("unknown event"))
+    }
+
+    @Test
     fun countedEventsMapToInsightTitlesOnProduction() {
         assertEquals("Games created", logSnagInsightTitle("game created", "production"))
         assertEquals("Games completed", logSnagInsightTitle("game completed", "production"))

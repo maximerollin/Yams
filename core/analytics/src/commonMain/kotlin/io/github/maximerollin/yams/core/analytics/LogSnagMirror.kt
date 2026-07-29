@@ -17,6 +17,10 @@ internal fun logSnagEventName(event: String, releaseChannel: String): String? =
         else -> null
     }
 
+/** Returns the single emoji used to identify [event] in LogSnag. */
+internal fun logSnagEventIcon(event: String): String =
+    LOGSNAG_EVENT_ICONS[event] ?: DEFAULT_LOGSNAG_EVENT_ICON
+
 /**
  * Converts analytics properties to LogSnag string tags, dropping null values and
  * rendering each remaining value with its Kotlin string representation. Keys are
@@ -63,4 +67,30 @@ private val INSIGHT_TITLES_BY_EVENT: Map<String, String> = mapOf(
     "game created" to "Games created",
     "game completed" to "Games completed",
     "game abandoned" to "Games abandoned",
+)
+
+private const val DEFAULT_LOGSNAG_EVENT_ICON = "📌"
+
+private val LOGSNAG_EVENT_ICONS: Map<String, String> = mapOf(
+    "application installed" to "📲",
+    "game created" to "🎲",
+    "game completed" to "🏆",
+    "game abandoned" to "🚪",
+    "player created" to "👤",
+    "player updated" to "✏️",
+    "player deleted" to "🗑️",
+    "review discovery acknowledged" to "👍",
+    "review dialog opened" to "⭐",
+    "review prompt shown" to "💬",
+    "assistant ia clicked" to "🤖",
+    "assistant ia scan started" to "📷",
+    "dice assistant discovery acknowledged" to "🧠",
+    "gameplay density discovery acknowledged" to "📐",
+    "paywall screen viewed" to "👑",
+    "purchase started" to "🛒",
+    "purchase succeeded" to "🎉",
+    "purchase failed" to "⚠️",
+    "purchase restore started" to "🔄",
+    "purchase restore completed" to "✅",
+    "purchase restore failed" to "❌",
 )

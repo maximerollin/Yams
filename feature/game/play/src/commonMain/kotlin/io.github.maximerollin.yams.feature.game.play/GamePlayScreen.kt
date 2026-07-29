@@ -117,7 +117,9 @@ internal fun GamePlayRoute(
         onNavigateToPaywall = onNavigateToPaywall,
         onGamePlayUiDensityChange = viewModel::onGamePlayUiDensityChange,
         onGamePlayDensityDiscoverySeen = viewModel::onGamePlayDensityDiscoverySeen,
+        onGamePlayDensityDiscoveryAcknowledged = viewModel::onGamePlayDensityDiscoveryAcknowledged,
         onDiceAssistantDiscoverySeen = viewModel::onDiceAssistantDiscoverySeen,
+        onDiceAssistantDiscoveryAcknowledged = viewModel::onDiceAssistantDiscoveryAcknowledged,
         onDiceAssistantGuideSeen = viewModel::onDiceAssistantGuideSeen,
         onDiceAssistantClicked = viewModel::onDiceAssistantClicked,
         onDiceAssistantScanStarted = viewModel::onDiceAssistantScanStarted,
@@ -140,7 +142,9 @@ private fun GamePlayScreen(
     onNavigateToPaywall: () -> Unit = {},
     onGamePlayUiDensityChange: (GamePlayUiDensity) -> Unit = {},
     onGamePlayDensityDiscoverySeen: () -> Unit = {},
+    onGamePlayDensityDiscoveryAcknowledged: () -> Unit = {},
     onDiceAssistantDiscoverySeen: () -> Unit = {},
+    onDiceAssistantDiscoveryAcknowledged: () -> Unit = {},
     onDiceAssistantGuideSeen: () -> Unit = {},
     onDiceAssistantClicked: (Boolean) -> Unit = {},
     onDiceAssistantScanStarted: () -> Unit = {},
@@ -519,6 +523,10 @@ private fun GamePlayScreen(
         GamePlayDiceAssistantDiscoveryOverlay(
             isPremiumEnabled = isYamsPlus,
             onDismiss = ::dismissAssistantDiscovery,
+            onAcknowledge = {
+                isAssistantDiscoveryDismissedForSession = true
+                onDiceAssistantDiscoveryAcknowledged()
+            },
             onShowAssistant = {
                 dismissAssistantDiscovery()
                 showDiceAssistant()
@@ -527,6 +535,10 @@ private fun GamePlayScreen(
     } else if (isDensityDiscoveryVisible) {
         GamePlayDensityDiscoveryOverlay(
             onDismiss = ::dismissDensityDiscovery,
+            onAcknowledge = {
+                isDensityDiscoveryDismissedForSession = true
+                onGamePlayDensityDiscoveryAcknowledged()
+            },
             onShowInformation = {
                 dismissDensityDiscovery()
                 isInfoSheetVisible = true

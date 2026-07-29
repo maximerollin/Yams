@@ -46,6 +46,7 @@ internal fun shouldShowGamePlayDensityDiscovery(
 @Composable
 internal fun GamePlayDensityDiscoveryOverlay(
     onDismiss: () -> Unit,
+    onAcknowledge: () -> Unit,
     onShowInformation: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -110,7 +111,7 @@ internal fun GamePlayDensityDiscoveryOverlay(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     YamsTextButton(
-                        onClick = onDismiss,
+                        onClick = onAcknowledge,
                         modifier = Modifier.align(Alignment.End),
                     ) {
                         Text(text = stringResource(Res.string.play_density_discovery_acknowledge))

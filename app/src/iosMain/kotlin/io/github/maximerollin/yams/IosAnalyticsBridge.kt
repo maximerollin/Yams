@@ -7,7 +7,7 @@ public object IosAnalyticsBridge {
         releaseChannel: String,
         postHogCapture: (String, Map<String, Any>) -> Unit,
         firebaseCapture: (String, Map<String, String>) -> Unit,
-        logSnagCapture: (String, Map<String, String>, String?) -> Unit,
+        logSnagCapture: (String, String, Map<String, String>, String?) -> Unit,
     ) {
         IosAnalyticsDispatcher.configure(
             releaseChannel = releaseChannel,

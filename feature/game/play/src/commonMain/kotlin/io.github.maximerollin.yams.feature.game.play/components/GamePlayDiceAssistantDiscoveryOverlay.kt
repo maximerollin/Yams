@@ -47,6 +47,7 @@ internal fun shouldShowDiceAssistantDiscovery(
 internal fun GamePlayDiceAssistantDiscoveryOverlay(
     isPremiumEnabled: Boolean,
     onDismiss: () -> Unit,
+    onAcknowledge: () -> Unit,
     onShowAssistant: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -116,7 +117,7 @@ internal fun GamePlayDiceAssistantDiscoveryOverlay(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     YamsTextButton(
-                        onClick = onDismiss,
+                        onClick = onAcknowledge,
                         modifier = Modifier.align(Alignment.End),
                     ) {
                         Text(
