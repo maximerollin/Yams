@@ -135,6 +135,7 @@ internal fun HomeRoute(
         onAbandonGame = viewModel::abandonGame,
         onOpenInAppReviewDialog = viewModel::openInAppReviewDialog,
         onRequestInAppReview = viewModel::requestInAppReview,
+        onInAppReviewPostponed = viewModel::onInAppReviewPostponed,
         onInAppReviewDiscoverySeen = viewModel::onInAppReviewDiscoverySeen,
         onInAppReviewDiscoveryAcknowledged = viewModel::onInAppReviewDiscoveryAcknowledged,
         onHapticFeedbackEnabledChange = viewModel::setIsHapticFeedbackEnabled,
@@ -158,6 +159,7 @@ internal fun HomeScreen(
     onAbandonGame: (GameId) -> Unit,
     onOpenInAppReviewDialog: () -> Unit,
     onRequestInAppReview: () -> Unit,
+    onInAppReviewPostponed: () -> Unit = {},
     onInAppReviewDiscoverySeen: () -> Unit = {},
     onInAppReviewDiscoveryAcknowledged: () -> Unit = {},
     onHapticFeedbackEnabledChange: (Boolean) -> Unit,
@@ -286,6 +288,8 @@ internal fun HomeScreen(
             onAcknowledge = {
                 isInAppReviewDiscoveryDismissedForSession = true
                 onInAppReviewDiscoveryAcknowledged()
+                showInAppReviewDialog = true
+                onOpenInAppReviewDialog()
             },
             onShowReview = {
                 dismissInAppReviewDiscovery()
@@ -315,6 +319,7 @@ internal fun HomeScreen(
             },
             onPostpone = {
                 showInAppReviewDialog = false
+                onInAppReviewPostponed()
             },
         )
     }

@@ -81,6 +81,7 @@ private val LOGSNAG_EVENT_ICONS: Map<String, String> = mapOf(
     "player deleted" to "🗑️",
     "review discovery acknowledged" to "👍",
     "review dialog opened" to "⭐",
+    "review postponed" to "⏳",
     "review prompt shown" to "💬",
     "assistant ia clicked" to "🤖",
     "assistant ia scan started" to "📷",

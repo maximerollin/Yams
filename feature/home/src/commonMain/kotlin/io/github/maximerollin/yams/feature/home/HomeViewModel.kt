@@ -130,6 +130,18 @@ internal class HomeViewModel(
         }
     }
 
+    fun onInAppReviewPostponed() {
+        viewModelScope.launch {
+            val numberOfFinishedGames = gameRepository.getNumberOfFinishedGames().first()
+            analyticsTracker.capture(
+                event = "review postponed",
+                properties = mapOf(
+                    "finished_games_bucket" to numberOfFinishedGames.toAnalyticsCountBucket(),
+                ),
+            )
+        }
+    }
+
     fun abandonGame(gameId: GameId) {
         viewModelScope.launch {
             val state = gameRepository.getGamePlayState(gameId).first()

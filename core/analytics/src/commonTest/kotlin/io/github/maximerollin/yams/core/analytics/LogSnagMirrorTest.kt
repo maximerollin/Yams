@@ -37,6 +37,7 @@ class LogSnagMirrorTest {
         assertEquals("🎲", logSnagEventIcon("game created"))
         assertEquals("🤖", logSnagEventIcon("assistant ia clicked"))
         assertEquals("🧠", logSnagEventIcon("dice assistant discovery acknowledged"))
+        assertEquals("⏳", logSnagEventIcon("review postponed"))
         assertEquals("📌", logSnagEventIcon("unknown event"))
     }
 
