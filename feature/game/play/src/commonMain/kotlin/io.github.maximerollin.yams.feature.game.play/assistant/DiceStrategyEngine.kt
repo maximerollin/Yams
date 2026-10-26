@@ -145,31 +145,43 @@ internal class DiceStrategyEngine {
         keepFaces: List<Int>,
         scoreContext: DiceScoreContext,
     ): List<DiceObjective> {
-        val bestByScoreKey = outcomesForDiceCount(5 - keepFaces.size)
+        val evaluations = outcomesForDiceCount(5 - keepFaces.size)
             .flatMap { outcome ->
                 val targetFaces = (keepFaces + outcome.faces).sorted()
                 scoreDiceForOpenCells(
                     dice = targetFaces,
                     context = scoreContext,
                 )
-                    .filter { it.score > 0 }
+                    // Chance always scores, so it is never a meaningful objective.
+                    .filter { it.score > 0 && it.key != ScoreKey.CHANCE }
                     .map { cell ->
                         ObjectiveEvaluation(
                             targetFaces = targetFaces,
                             cell = cell,
+                            weight = outcome.weight,
                         )
                     }
             }
+        val reachableWeightByScoreKey = evaluations
             .groupBy { it.cell.key }
-            .mapValues { (_, evaluations) ->
-                evaluations.maxWithOrNull(objectiveComparator)!!
-            }
-            .values
+            .mapValues { (_, keyEvaluations) -> keyEvaluations.sumOf(ObjectiveEvaluation::weight) }
 
-        return bestByScoreKey
-            .sortedWith(objectiveComparator.reversed())
-            .distinctBy(ObjectiveEvaluation::targetFaces)
-            .take(3)
+        // A category whose best target is already shown falls back to its next best distinct target;
+        // on equal targets, the rarer category wins.
+        val selected = mutableListOf<ObjectiveEvaluation>()
+        evaluations
+            .sortedWith(
+                objectiveComparator.reversed()
+                    .thenBy { reachableWeightByScoreKey.getValue(it.cell.key) }
+            )
+            .forEach { evaluation ->
+                val isAvailable = selected.none { chosen ->
+                    chosen.cell.key == evaluation.cell.key || chosen.targetFaces == evaluation.targetFaces
+                }
+                if (selected.size < 3 && isAvailable) selected += evaluation
+            }
+
+        return selected
             .map { evaluation ->
                 DiceObjective(
                     key = evaluation.cell.key,
@@ -328,6 +340,7 @@ internal class DiceStrategyEngine {
     private data class ObjectiveEvaluation(
         val targetFaces: List<Int>,
         val cell: DiceScoreCell,
+        val weight: Int,
     )
 
     private companion object {

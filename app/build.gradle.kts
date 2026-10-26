@@ -4,18 +4,13 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.buildConfig)
-    alias(libs.plugins.google.services)
-    alias(libs.plugins.google.firebase.crashlytics)
 }
 
-val yamsVersionCode = providers.gradleProperty("YAMS_VERSION_CODE")
-    .map(String::toInt)
-    .orElse(1)
 val yamsVersionName = providers.gradleProperty("YAMS_VERSION_NAME")
     .orElse("1.0.0")
 
@@ -25,8 +20,14 @@ kotlin {
     // Toolchain
     jvmToolchain(17)
 
-    // Android
-    androidTarget {
+    // Android Kotlin Multiplatform Library
+    android {
+        namespace = "io.github.maximerollin.yams.shared"
+        compileSdk = libs.versions.android.compileSdk.get().toInt()
+        minSdk = libs.versions.android.minSdk.get().toInt()
+        androidResources.enable = true
+        withHostTest {}
+
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
         }
@@ -42,7 +43,7 @@ kotlin {
     jvm()
 
     sourceSets {
-        val jvmMain by getting
+        val jvmMain = getByName("jvmMain")
 
         commonMain.dependencies {
             implementation(libs.jetbrains.compose.runtime)
@@ -74,13 +75,7 @@ kotlin {
         }
 
         androidMain.dependencies {
-            implementation(projects.core.review)
             implementation(libs.jetbrains.compose.uiTooling)
-            implementation(libs.androidx.activity.compose)
-            implementation(libs.koin.android)
-            implementation(libs.koin.androidx.startup)
-            implementation(project.dependencies.platform(libs.firebase.bom))
-            implementation(libs.firebase.crashlytics)
         }
 
         jvmMain.dependencies {
@@ -88,7 +83,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.swing)
         }
 
-        val mobileMain by creating {
+        val mobileMain = create("mobileMain") {
             dependsOn(commonMain.get())
             dependencies {
                 // RevenueCat (configured by each mobile platform entry point)
@@ -97,48 +92,6 @@ kotlin {
         }
         androidMain.get().dependsOn(mobileMain)
         iosMain.get().dependsOn(mobileMain)
-    }
-}
-
-android {
-    namespace = "io.github.maximerollin.yams"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-
-    defaultConfig {
-        applicationId = "io.github.maximerollin.yams"
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = yamsVersionCode.get()
-        versionName = yamsVersionName.get()
-    }
-
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-
-    buildTypes {
-        getByName("debug") {
-            manifestPlaceholders["firebase_analytics_collection_enabled"] = false
-            manifestPlaceholders["firebase_crashlytics_collection_enabled"] = false
-        }
-
-        getByName("release") {
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-            manifestPlaceholders["firebase_analytics_collection_enabled"] = true
-            manifestPlaceholders["firebase_crashlytics_collection_enabled"] = true
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 

@@ -74,7 +74,7 @@ jobs:
           echo "code=${{ github.run_number }}" >> "$GITHUB_OUTPUT"
 
       - name: Build app bundle
-        run: ./gradlew :app:bundleRelease -PYAMS_VERSION_CODE=${{ steps.version.outputs.code }} -PYAMS_VERSION_NAME=1.0.${{ steps.version.outputs.code }} -x lintVitalAnalyzeRelease --no-daemon --stacktrace
+        run: ./gradlew :androidApp:bundleRelease -PYAMS_VERSION_CODE=${{ steps.version.outputs.code }} -PYAMS_VERSION_NAME=1.0.${{ steps.version.outputs.code }} -x lintVitalAnalyzeRelease --no-daemon --stacktrace
 
       - name: Decode signing keystore
         env:
@@ -93,7 +93,7 @@ jobs:
             -storepass "$SIGNING_STORE_PASSWORD" \
             -keypass "$SIGNING_KEY_PASSWORD" \
             -signedjar "$RUNNER_TEMP/app-release-signed.aab" \
-            app/build/outputs/bundle/release/app-release.aab \
+            androidApp/build/outputs/bundle/release/androidApp-release.aab \
             "$SIGNING_KEY_ALIAS"
           jarsigner -verify "$RUNNER_TEMP/app-release-signed.aab"
 
@@ -107,7 +107,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: mapping-file
-          path: app/build/outputs/mapping/release/mapping.txt
+          path: androidApp/build/outputs/mapping/release/mapping.txt
 
   deploy:
     name: Deploy to Play Store

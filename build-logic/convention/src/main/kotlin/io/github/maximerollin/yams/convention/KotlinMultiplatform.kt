@@ -1,6 +1,8 @@
 package io.github.maximerollin.yams.convention
 
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryExtension
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.configure
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
@@ -15,11 +17,9 @@ internal fun Project.configureKotlinMultiplatform(
     // Toolchain
     jvmToolchain(17)
 
-    // Android
-    androidTarget {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
-        }
+    // Android Kotlin Multiplatform Library
+    extensions.configure<KotlinMultiplatformAndroidLibraryExtension> {
+        configureKotlinAndroid(this)
     }
 
     // iOS

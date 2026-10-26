@@ -4,7 +4,9 @@ This document describes the project architecture, coding conventions, and UI des
 It is the source of truth for edits. I will check this file before making code changes.
 
 ## Architecture overview
-- Multi-module setup: `app`, `core`, `data`, `feature`, `iosApp`, plus `build-logic`.
+- Multi-module setup: `app`, `androidApp`, `core`, `data`, `feature`, `iosApp`, plus `build-logic`.
+- `app` is the shared Kotlin Multiplatform application module used by Android, iOS, and desktop.
+- `androidApp` is the standalone Android application entry point required by AGP 9.
 - `core` contains shared models and the design system (themes, components, icons).
 - `data` provides data sources and repositories.
 - `feature` holds user-facing features and UI screens.

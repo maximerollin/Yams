@@ -1,3 +1,4 @@
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryExtension
 import io.github.maximerollin.yams.convention.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -40,6 +41,10 @@ class ComposeMultiplatformConventionPlugin : Plugin<Project> {
                         implementation(composeDeps.desktop.currentOs)
                     }
                 }
+            }
+
+            configure<KotlinMultiplatformAndroidLibraryExtension> {
+                androidResources.enable = true
             }
         }
     }

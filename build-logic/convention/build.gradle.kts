@@ -5,13 +5,10 @@ plugins {
 group = "io.github.maximerollin.yams.buildlogic"
 
 dependencies {
-  compileOnly(libs.plugins.androidApplication.toDep())
-  compileOnly(libs.plugins.kotlinMultiplatform.toDep())
-  compileOnly(libs.plugins.composeMultiplatform.toDep())
-}
-
-fun Provider<PluginDependency>.toDep() = map {
-  "${it.pluginId}:${it.pluginId}.gradle.plugin:${it.version}"
+    compileOnly(libs.android.tools.gradle.api)
+    compileOnly(libs.jetbrains.compose.gradle.plugin)
+    compileOnly(libs.kotlin.compose.gradle.plugin)
+    compileOnly(libs.kotlin.multiplatform.gradle.plugin)
 }
 
 gradlePlugin {

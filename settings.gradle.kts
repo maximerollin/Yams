@@ -35,6 +35,7 @@ plugins {
 }
 
 include(":app")
+include(":androidApp")
 include(":screenshots")
 include(":core:database")
 include(":core:designsystem")

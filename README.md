@@ -15,7 +15,8 @@ This project follows a **modern, modularized architecture** based on the proven 
 
 ```
 yams/
-├── app/                    # Modern application entry point
+├── androidApp/             # Android application entry point
+├── app/                    # Shared KMP application (Android, iOS, desktop)
 ├── build-logic/            # Convention plugins for build consistency
 ├── core/                   # Foundation modules
 │   ├── database/          # Room database setup
@@ -53,7 +54,7 @@ yams/
 
 #### 📱 Android
 ```bash
-./gradlew app:installDebug
+./gradlew androidApp:installDebug
 ```
 
 #### 🍎 iOS
