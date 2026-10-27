@@ -12,6 +12,8 @@ kotlin {
         androidMain.dependencies {
             // Ktor engine used by logsnag-kotlin's Android worker.
             implementation(libs.ktor.client.okhttp)
+            // Pinned for the eMudhra CA block (Ktor and PostHog pull older OkHttp).
+            implementation(libs.okhttp)
 
             // Firebase
             implementation(project.dependencies.platform(libs.firebase.bom))
