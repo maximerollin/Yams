@@ -186,7 +186,7 @@ internal class HomeViewModel(
 }
 
 private const val IN_APP_REVIEW_MIN_FINISHED_GAMES = 3
-private const val IN_APP_REVIEW_COOLDOWN_DAYS = 30 * 6
+private const val IN_APP_REVIEW_COOLDOWN_DAYS = 30
 
 @OptIn(ExperimentalTime::class)
 internal fun shouldRequestInAppReview(

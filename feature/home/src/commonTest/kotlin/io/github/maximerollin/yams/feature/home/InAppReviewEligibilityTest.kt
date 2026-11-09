@@ -52,7 +52,7 @@ internal class InAppReviewEligibilityTest {
             shouldRequestInAppReview(
                 isInAppReviewPending = true,
                 numberOfFinishedGames = 12,
-                lastInAppReviewShownDate = Instant.parse("2026-03-01T12:00:00Z"),
+                lastInAppReviewShownDate = Instant.parse("2026-07-01T12:00:00Z"),
                 now = now,
             ),
         )
@@ -64,7 +64,7 @@ internal class InAppReviewEligibilityTest {
             shouldRequestInAppReview(
                 isInAppReviewPending = true,
                 numberOfFinishedGames = 12,
-                lastInAppReviewShownDate = Instant.parse("2025-12-01T12:00:00Z"),
+                lastInAppReviewShownDate = Instant.parse("2026-06-01T12:00:00Z"),
                 now = now,
             ),
         )
